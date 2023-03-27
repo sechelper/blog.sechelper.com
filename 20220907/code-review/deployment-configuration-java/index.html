@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="¶Java的主要版本  JAVA SE  Java平台标准版 JAVA EE Java平台企业版 JAVA ME Java平台微型版  ¶相关概念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初识Java语言配置环境">
+<meta property="og:url" content="https://blog.sechelper.com/20220907/code-review/deployment-configuration-java/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="¶Java的主要版本  JAVA SE  Java平台标准版 JAVA EE Java平台企业版 JAVA ME Java平台微型版  ¶相关概念">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/55672f38df291eae12e595b2ff024916.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/94189dfdf89ad9f90c555f8e8ba5d43a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/cbea0c1c1d16cadc0aff89023824230b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/cf8f518c76c0fd50a02ffe7c917d8a9b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/9b2fa621f1d578e4725f0a3cc439292c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/abc3988efbecd52dfc6ce6f3fee9705a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/1a0e296ebd37e27d479729493eda104b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/1e767fb528836c43b973cce18e693b4c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/00f3ea7dadb8fa3ad30570518d8c7f6e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/d94e91b586889b90cac57f53c8fde74e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/5d37f5d87de9aaa92d424d12ab3e21af.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/07/2c1a01e02fdb7fdc7499189385546ea9.png">
+<meta property="article:published_time" content="2022-09-07T02:16:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/09/07/55672f38df291eae12e595b2ff024916.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20220907/code-review/deployment-configuration-java/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>初识Java语言配置环境 | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20220907/code-review/deployment-configuration-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          初识Java语言配置环境
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-07 10:16:00" itemprop="dateCreated datePublished" datetime="2022-09-07T10:16:00+08:00">2022-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" itemprop="url" rel="index"><span itemprop="name">代码审计</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <iframe src="//player.bilibili.com/player.html?aid=387770792&bvid=BV1Md4y1X7TN&cid=826073298&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"width="720px" height="480px">  </iframe>
+<h2 id="Java的主要版本"><a class="header-anchor" href="#Java的主要版本">¶</a>Java的主要版本</h2>
+<ul>
+<li>JAVA SE  Java平台标准版</li>
+<li>JAVA EE Java平台企业版</li>
+<li>JAVA ME Java平台微型版</li>
+</ul>
+<h3 id="相关概念"><a class="header-anchor" href="#相关概念">¶</a>相关概念</h3>
+<span id="more"></span>
+<p>**jdk的目录结构 **</p>
+<ul>
+<li>bin目录-该目录下主要存放JDK的各种工具命令。</li>
+<li>conf目录-该目录下主要存放jdk的相关配置文件。</li>
+<li>include目录-该目录下主要存放了一些平台的头文件。</li>
+<li>jmods目录-该目录下主要存放了JDK的各种模块。</li>
+<li>legal目录-该目录下主要存放了JDK模块的授权文档</li>
+<li>lib目录-该目录下主要存放JDK工具的一些补充jar包和源代码</li>
+</ul>
+<p>JDK-称之为Java开发工具包。开发人员需下载和安装，主流为JDK11。</p>
+<p>JRE-称之为Java SE运行时环境，提供了运行Java应用程序所必须的软件环境等。无论是开发啊还是运行Java应用都必须安装。</p>
+<p>Javac.exe-编译器，主要用于将高级Java源代码翻译成字节码文件。</p>
+<p>Java.exe-解释器，主要用于启动JVM对字节码文件进行解释并执行。</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/55672f38df291eae12e595b2ff024916.png" alt="1"></p>
+<h3 id="编写Java程序的流程"><a class="header-anchor" href="#编写Java程序的流程">¶</a>编写Java程序的流程</h3>
+<ul>
+<li>
+<p>使用Java xx.java进行编译，生成xx.class的字节码文件</p>
+</li>
+<li>
+<p>使用java xxx.java进行解释执行，打印最终结果</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 项目名称：第一个Java程序</span></span><br><span class="line"><span class="comment"> * 项目功能：打印一句话</span></span><br><span class="line"><span class="comment"> * 作   者：悟空</span></span><br><span class="line"><span class="comment"> * 版   本：1.0</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment">//类名，类体</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Helloworld</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//主方法名，程序的入口，主方法体</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello world!是啊&quot;</span>);</span><br><span class="line">    	&#125; 	</span><br><span class="line"> 	</span><br><span class="line"> 	&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/09/07/94189dfdf89ad9f90c555f8e8ba5d43a.png" alt=""></p>
+<h3 id="常见的错误和简化的编译运行"><a class="header-anchor" href="#常见的错误和简化的编译运行">¶</a>常见的错误和简化的编译运行</h3>
+<p><strong>常见的错误</strong></p>
+<ul>
+<li>错误：需要class,interface或enum =&gt;通常都是class关键字拼写错误</li>
+<li>错误：找不到符号=&gt;通常因为单词拼写错误或Java中不支持这样的单词</li>
+<li>错误：需要’;'=&gt;通常都是因为少写分号，加上英文版分号即可</li>
+<li>错误：非法字符：‘uff1b’=&gt;通常是因为出现了中文标点符号，修改为英文版即可</li>
+<li>错误：在类PrintTest中找不到main方法，请将main方法定义为:=&gt;main写成了mian</li>
+</ul>
+<h3 id="常用的快捷键和注释"><a class="header-anchor" href="#常用的快捷键和注释">¶</a>常用的快捷键和注释</h3>
+<p><strong>常用的快捷键</strong></p>
+<p>ctrl + s保存   ctrl + c 复制   ctrl + v 粘贴   ctrl + a 全选   ctrl + x 剪切   ctrl + z 撤销   ctrl + f 搜索</p>
+<p>ctrl + shift 切换输入法，使用shift进行中英文切换</p>
+<p>windows + d回到桌面 windows + e 打开计算机 windows + l 锁屏</p>
+<p>windows + r 打开运行，输入cmd后回车就会启动dos窗口</p>
+<p>windows + tad 切换任务，alt+tab 切换任务</p>
+<p>ctrl + alt +delete 启动任务管理器</p>
+<p><strong>注释</strong></p>
+<ul>
+<li>注释用于进行代码说明，是给程序员看的文字描述，编译器会忽略注释</li>
+<li>基本分类</li>
+</ul>
+<p><code>// </code>单行注入，从//开始，到本行结束，都是注释</p>
+<p><code>/* */ </code>多行注释，从 /* 开始，到*/结束，中间所有都是注释</p>
+<p><code>/** */ </code>多行/文档注释，从/**开始，到 */结束是一种支持提取的注释</p>
+<ul>
+<li>多行注释不允许嵌套使用</li>
+</ul>
+<p><strong>环境变量的配置</strong></p>
+<ul>
+<li>基本概念</li>
+</ul>
+<p>通常情况下可执行文件只能在该文件所在的路径中使用，为了使得该可执行文件可以在任意路径中使用，则需要将该文件所在路径信息配置到环境变量path中</p>
+<ul>
+<li>注意事项</li>
+</ul>
+<p>切记Path变量原来的变量值不要删除，配置完毕后要记得<code>重启dos窗口</code></p>
+<p><strong>跨平台原理</strong></p>
+<ul>
+<li>Java字节码可以通过JVM翻译为具体平台能够执行的机器指令。由于Sun定义了JVM规范，而且不同的操作系统大多提供了JVM实现，才使得形同的一个字节码可以在不同的系统上运行，从而使Java赢得了“一次编译，到处使用的”</li>
+</ul>
+<p><img src="https://static.sechelper.com/img/2022/09/07/cbea0c1c1d16cadc0aff89023824230b.png" alt=""></p>
+<h3 id="JDK的下载与安装"><a class="header-anchor" href="#JDK的下载与安装">¶</a>JDK的下载与安装</h3>
+<p>(1) JDK下载，建议下载1.8版本</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://www.oracle.com/Java/technologies/Javase-downloads.html">https://www.oracle.com/Java/technologies/Javase-downloads.html</a></p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/cf8f518c76c0fd50a02ffe7c917d8a9b.png" alt=""></p>
+<p>下载后JDK的安装根据提示进行，还有安装JDK的时候也会安装JRE，一并安装就可以了。</p>
+<p>安装JDK，安装过程中可以自定义安装目录等信息，例如我们选择安装目录为 C:\Program Files (x86)\Java\jdk1.8.0_91。</p>
+<p>（2）环境变量配置</p>
+<p>Windows 10下配置环境变量</p>
+<p>1.安装完成后，右击&quot;我的电脑&quot;，点击&quot;属性&quot;，选择&quot;高级系统设置&quot;；</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/9b2fa621f1d578e4725f0a3cc439292c.png" alt=""></p>
+<p>2.选择&quot;高级&quot;选项卡，点击&quot;环境变量&quot;；</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/abc3988efbecd52dfc6ce6f3fee9705a.png" alt=""></p>
+<p>然后就会出现如下图所示的画面：</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/1a0e296ebd37e27d479729493eda104b.png" alt=""></p>
+<p>在 “系统变量” 中设置 3 项属性，Java_HOME、PATH、CLASSPATH(大小写无所谓),若已存在则点击&quot;编辑&quot;，不存在则点击&quot;新建&quot;。</p>
+<p>变量设置参数如下：</p>
+<p>变量名：Java_HOME</p>
+<p>变量值：C:\Program Files (x86)\Java\jdk1.8.0_91     // 要根据自己的实际路径配置</p>
+<p>变量名：CLASSPATH</p>
+<p>变量值：.;%Java_HOME%\lib\dt.jar;%Java_HOME%\lib\tools.jar;     //记得前面有个&quot;.&quot;</p>
+<p>变量名：Path</p>
+<p>变量值：%Java_HOME%\bin;%Java_HOME%\jre\bin;</p>
+<p>测试JDK是否安装成功</p>
+<p>1、“开始”-&gt;“运行”，键入&quot;cmd&quot;；</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/1e767fb528836c43b973cce18e693b4c.png" alt=""></p>
+<p>2、键入命令: java -version、Java、Javac 几个命令，出现以下信息，说明环境变量配置成功；</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/00f3ea7dadb8fa3ad30570518d8c7f6e.png" alt=""></p>
+<p>（3）安装IDE</p>
+<p>正所谓工欲善其事必先利其器，我们在开发Java语言过程中同样需要一款不错的开发工具，目前市场上的IDE很多，本文为大家推荐以下下几款Java开发工具：</p>
+<p>Eclipse（推荐）:另一个免费开源的Java IDE，下载地址： <a target="_blank" rel="noopener" href="http://www.eclipse.org/downloads/packages/">http://www.eclipse.org/downloads/packages/</a></p>
+<p>JetBrains 的 IDEA， 现在很多人开始使用了，功能很强大，下载地址：<a target="_blank" rel="noopener" href="https://www.jetbrains.com/idea/download/">https://www.jetbrains.com/idea/download/</a></p>
+<p>Notepad++ : Notepad++ 是在微软视窗环境之下的一个免费的代码编辑器，下载地址： <a target="_blank" rel="noopener" href="http://notepad-plus-plus.org/">http://notepad-plus-plus.org/</a></p>
+<p>（4）运行Java程序</p>
+<p>IDEA下运行Java程序,首先新建Project</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/d94e91b586889b90cac57f53c8fde74e.png" alt=""></p>
+<p>新建class</p>
+<p><img src="https://static.sechelper.com/img/2022/09/07/5d37f5d87de9aaa92d424d12ab3e21af.png" alt=""></p>
+<p>编写代码并运行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Demo</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/09/07/2c1a01e02fdb7fdc7499189385546ea9.png" alt=""></p>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a>总结</h2>
+<p>1、计算机的体系结构(常识)</p>
+<p>计算机的概念、硬件、如那件、结构图</p>
+<p>2、Java语言的概述（常识）</p>
+<p>计算机语言的发展呢，Java的发展，主要版本</p>
+<p>3、开发环境的搭建的使用（重点）</p>
+<p>jdk、jre、Javac.exe、java.exe概念 编写Java程序的流程、快捷键和注释、环境变量的配置、跨平台原理</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># 代码审计</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20220907/penetration-testing-guide/scan-range-address/" rel="prev" title="端口扫描工具终极用法">
+      <i class="fa fa-chevron-left"></i> 端口扫描工具终极用法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20220913/share/public/resource/" rel="next" title="公开资源共享">
+      公开资源共享 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="为什么要做c段探测，运营商分配给IDC机房地址时大部分都是连续IP地址，租给客户（渗透目标）时很大概率会分配同C段内IP地址（除非目标就一个IP地址），使用工具扫描可以探测出同段服务。 扫描工具UP主经常用的有三个：  Nmap Masscan zmap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="端口扫描工具终极用法">
+<meta property="og:url" content="https://blog.sechelper.com/20220907/penetration-testing-guide/scan-range-address/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="为什么要做c段探测，运营商分配给IDC机房地址时大部分都是连续IP地址，租给客户（渗透目标）时很大概率会分配同C段内IP地址（除非目标就一个IP地址），使用工具扫描可以探测出同段服务。 扫描工具UP主经常用的有三个：  Nmap Masscan zmap">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/05/4822f3c289c329e130f9cc1a74de0f63.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/05/37de7db6dde5920c54f671d8a1ce430e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/05/944c42d5d2771d03973ac857fc3bed28.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/05/f7808feb2354427ee5f8098f478f9bc2.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/05/48b959721a26e00b6989a27318a0894c.png">
+<meta property="article:published_time" content="2022-09-07T02:16:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.262Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="信息收集">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/09/05/4822f3c289c329e130f9cc1a74de0f63.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20220907/penetration-testing-guide/scan-range-address/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>端口扫描工具终极用法 | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20220907/penetration-testing-guide/scan-range-address/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          端口扫描工具终极用法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-07 10:16:00" itemprop="dateCreated datePublished" datetime="2022-09-07T10:16:00+08:00">2022-09-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>为什么要做c段探测，运营商分配给IDC机房地址时大部分都是<strong>连续</strong>IP地址，租给客户（渗透目标）时很大概率会分配同C段内IP地址（除非目标就一个IP地址），使用工具扫描可以探测出同段服务。</p>
+<p>扫描工具UP主经常用的有三个：</p>
+<ul>
+<li>Nmap</li>
+<li>Masscan</li>
+<li>zmap</li>
+</ul>
+<span id="more"></span>
+<h2 id="Nmap用法"><a class="header-anchor" href="#Nmap用法">¶</a>Nmap用法</h2>
+<iframe src="//player.bilibili.com/player.html?aid=260331014&bvid=BV1Ze411M7TW&cid=825409943&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="700px" height="472px">  </iframe>
+<p>Nmap（Network Mapper，网络映射器) 是一款开放源代码的网络探测和安全审核的工具。老规矩先放出我最常用的命令组合方式，想了解原理继续看，不想了解直接套用就可以。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -v -sS -p8000-9000 -Pn -T4 -A 124.*.8.254 --script http-methods --script-args http.useragent=<span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>-v 实时输出扫描详情</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ nmap -v 124.*.8.254</span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-05 04:01 UTC</span><br><span class="line">Initiating Ping Scan at 04:01</span><br><span class="line">Scanning 124.*.8.254 [2 ports]</span><br><span class="line">Completed Ping Scan at 04:01, 0.03s elapsed (1 total hosts)</span><br><span class="line">Initiating Parallel DNS resolution of 1 host. at 04:01</span><br><span class="line">Completed Parallel DNS resolution of 1 host. at 04:01, 0.01s elapsed</span><br><span class="line">Initiating Connect Scan at 04:01</span><br><span class="line">Scanning 124.*.8.254 [1000 ports]</span><br><span class="line">Discovered open port 443/tcp on 124.*.8.254</span><br><span class="line">Discovered open port 22/tcp on 124.*.8.254</span><br><span class="line">Discovered open port 80/tcp on 124.*.8.254</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>-A 全面扫描</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ nmap -A 124.*.8.254 <span class="comment">#　nmap -A 124.*.8.1/24 扫描C段存活端口</span></span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-04 12:09 UTC</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 124.*.8.254</span><br><span class="line">Host is up (0.037s latency).</span><br><span class="line">Not shown: 997 filtered ports</span><br><span class="line">PORT    STATE SERVICE    VERSION</span><br><span class="line">22/tcp  open  tcpwrapped</span><br><span class="line">|_ssh-hostkey: ERROR: Script execution failed (use -d to debug)</span><br><span class="line">80/tcp  open  tcpwrapped</span><br><span class="line">|_http-server-header: nginx/1.18.0 (Ubuntu)</span><br><span class="line">443/tcp open  tcpwrapped</span><br><span class="line">|_http-server-header: nginx/1.18.0 (Ubuntu)</span><br><span class="line">| ssl-cert: Subject: commonName=navi.sechelper.com</span><br><span class="line">| Subject Alternative Name: DNS:navi.sechelper.com</span><br><span class="line">| Not valid before: 2022-08-27T00:00:00</span><br><span class="line">|_Not valid after:  2023-08-27T23:59:59</span><br><span class="line">| tls-alpn: </span><br><span class="line">|_  http/1.1</span><br><span class="line">| tls-nextprotoneg: </span><br><span class="line">|_  http/1.1</span><br></pre></td></tr></table></figure>
+<p><strong>-Pn 禁ping扫描，扫描前不ping（不加这个参数Nmap会ping目标地址）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ nmap -Pn 124.*.8.254</span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-04 13:02 UTC</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 124.*.8.254</span><br><span class="line">Host is up (0.035s latency).</span><br><span class="line">Not shown: 997 filtered ports</span><br><span class="line">PORT    STATE SERVICE</span><br><span class="line">22/tcp  open  ssh</span><br><span class="line">80/tcp  open  http</span><br><span class="line">443/tcp open  https</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 25.80 seconds</span><br></pre></td></tr></table></figure>
+<p><strong>-p 指定端口</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ nmap -p22,21,8000-9000 124.*.8.254</span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-04 21:20 CST</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 124.*.8.254</span><br><span class="line">Host is up (0.0031s latency).</span><br><span class="line"></span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line">22/tcp open  ssh</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 0.34 seconds</span><br></pre></td></tr></table></figure>
+<p><strong>-sP  使用ping探测主机存活，不扫描端口</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ nmap -sP 192.168.111.1/24</span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-04 12:31 UTC</span><br><span class="line">Nmap scan report <span class="keyword">for</span> _gateway (192.168.111.2)</span><br><span class="line">Host is up (0.00032s latency).</span><br><span class="line">Nmap scan report <span class="keyword">for</span> sechelper (192.168.111.133)</span><br><span class="line">Host is up (0.000091s latency).</span><br></pre></td></tr></table></figure>
+<p><strong>-sS syn扫描/半开放扫描，准确率太低</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo nmap -sS 124.*.8.254</span><br><span class="line">...</span><br><span class="line">Not shown: 979 filtered ports</span><br><span class="line">PORT     STATE  SERVICE</span><br><span class="line">22/tcp   open   ssh</span><br><span class="line">80/tcp   open   http</span><br><span class="line">443/tcp  open   https</span><br><span class="line">8002/tcp closed teradataordbms</span><br><span class="line">8042/tcp closed fs-agent</span><br><span class="line">8088/tcp closed radan-http</span><br><span class="line">8090/tcp closed opsmessaging</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 867.60 seconds</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>-sT  连接扫描，准确率高</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ nmap -sT 124.*.8.254</span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-04 14:14 UTC</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 124.*.8.254</span><br><span class="line">Host is up (0.037s latency).</span><br><span class="line">Not shown: 997 filtered ports</span><br><span class="line">PORT    STATE SERVICE</span><br><span class="line">22/tcp  open  ssh</span><br><span class="line">80/tcp  open  http</span><br><span class="line">443/tcp open  https</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 14.17 seconds</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>open</td>
+<td>端口开着，正在被使用</td>
+</tr>
+<tr>
+<td>closed</td>
+<td>端口已关闭</td>
+</tr>
+<tr>
+<td>filtered</td>
+<td>扫描被阻拦， 无法确定端口是否开放</td>
+</tr>
+<tr>
+<td>unfiltered</td>
+<td>端口可被访问，但不能确定是开放还是关闭</td>
+</tr>
+</tbody>
+</table>
+<center><strong>表一 Nmap 端口状态表</strong></center>
+<p>-T <strong>提升扫描速度，0-5，数值越高速度越快</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ nmap -A -v -p80 -T4 124.*.8.254</span><br><span class="line">...</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">80/tcp open  http    nginx 1.18.0 (Ubuntu)</span><br><span class="line">| http-methods: </span><br><span class="line">|_  Supported Methods: GET HEAD POST</span><br><span class="line">|_http-server-header: nginx/1.18.0 (Ubuntu)</span><br><span class="line">|_http-title: 403 Forbidden</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>绕过防火墙/安全设备</strong></p>
+<p>Nmap使用默认User-Agent，流量和日志里一览无遗（秃子头上的虱子），不封你封谁。大部分工具默认指纹都已被提取规则，使用的时候注意看下源码或者测试一下。</p>
+<p><img src="https://static.sechelper.com/img/2022/09/05/4822f3c289c329e130f9cc1a74de0f63.png" alt="namp scan log"></p>
+<p>扫描时指定<code>User-Agent</code>，可以绕过部分安全检测</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -A -v -p80 124.*.8.254 --script http-methods --script-args http.useragent=<span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>结果写入文件</strong></p>
+<p>原始结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -A -v -p80 -T4 124.*.8.254 -o 4.txt</span><br></pre></td></tr></table></figure>
+<p>保存为XML格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -A -v -p80 -T4 124.*.8.254 -oX 4.xml</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li>
+<p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/ICMP/572452">PING/ICMP</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SYN%E6%89%AB%E6%8F%8F/17658294">SYN扫描/半开放扫描</a></p>
+</li>
+</ul>
+<h2 id="Masscan用法"><a class="header-anchor" href="#Masscan用法">¶</a>Masscan用法</h2>
+<iframe src="//player.bilibili.com/player.html?aid=772842361&bvid=BV1n14y1e7ej&cid=826414132&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<p>Masscan是一个互联网规模的端口扫描仪。它可以在5分钟内扫描整个互联网，从一台机器每秒传输1000万个数据包。这是我常用的端口扫描工具，老规矩先放我最常用参数组合，想了解原理继续看，不想了解直接套用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">masscan -p80,8000-9000 182.92.106.58 --rate=10000 --banners --source-port 61000 --http-user-agent &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot; -Pn</span><br></pre></td></tr></table></figure>
+<p><strong>编译安装</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ apt install make gcc git -y</span><br><span class="line">vulab@sechelper:~$ git clone https://github.com/robertdavidgraham/masscan.git</span><br><span class="line">vulab@sechelper:~$ cd masscan</span><br><span class="line">vulab@sechelper:~/masscan$ make &amp;&amp; make install</span><br><span class="line">...</span><br><span class="line">c -g -ggdb    -Wall -O2 -c src/stub-pfring.c -o tmp/stub-pfring.o</span><br><span class="line">cc -g -ggdb    -Wall -O2 -c src/syn-cookie.c -o tmp/syn-cookie.o</span><br><span class="line">...</span><br><span class="line">cc -g -ggdb    -Wall -O2 -o bin/masscan tmp/crypto-base64.o tmp/crypto-blackrock2.o tmp/event-timeout.o tmp/in-binary.o tmp/in-filter.o tmp/in-report.o tmp/logger.o tmp/main-conf.o tmp/main-dedup.o tmp/main-   </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ masscan -h <span class="comment"># 出现帮助信息表示安装成功</span></span><br><span class="line">usage:</span><br><span class="line">masscan -p80,8000-8100 10.0.0.0/8 --rate=10000</span><br><span class="line"> scan some web ports on 10.x.x.x at 10kpps</span><br><span class="line">masscan --nmap</span><br><span class="line"> list those options that are compatible with nmap</span><br><span class="line">masscan -p80 10.0.0.0/8 --banners -oB &lt;filename&gt;</span><br><span class="line"> save results of scan <span class="keyword">in</span> binary format to &lt;filename&gt;</span><br><span class="line">masscan --open --banners --readscan &lt;filename&gt; -oX &lt;savefile&gt;</span><br><span class="line"> <span class="built_in">read</span> binary scan results <span class="keyword">in</span> &lt;filename&gt; and save them as xml <span class="keyword">in</span> &lt;savefile&gt;</span><br><span class="line">vulab@sechelper:~/masscan$ masscan --<span class="built_in">help</span></span><br><span class="line">MASSCAN is a fast port scanner. The primary input parameters are the</span><br><span class="line">IP addresses/ranges you want to scan, and the port numbers. An example</span><br><span class="line">is the following, <span class="built_in">which</span> scans the 10.x.x.x network <span class="keyword">for</span> web servers:</span><br><span class="line"> masscan 10.0.0.0/8 -p80</span><br><span class="line">The program auto-detects network interface/adapter settings. If this</span><br><span class="line">fails, you<span class="string">&#x27;ll have to set these manually. The following is an</span></span><br><span class="line"><span class="string">example of all the parameters that are needed:</span></span><br><span class="line"><span class="string"> --adapter-ip 192.168.10.123</span></span><br><span class="line"><span class="string"> --adapter-mac 00-11-22-33-44-55</span></span><br><span class="line"><span class="string"> --router-mac 66-55-44-33-22-11</span></span><br><span class="line"><span class="string">Parameters can be set either via the command-line or config-file. The</span></span><br><span class="line"><span class="string">names are the same for both. Thus, the above adapter settings would</span></span><br><span class="line"><span class="string">appear as follows in a configuration file:</span></span><br><span class="line"><span class="string"> adapter-ip = 192.168.10.123</span></span><br><span class="line"><span class="string"> adapter-mac = 00-11-22-33-44-55</span></span><br><span class="line"><span class="string"> router-mac = 66-55-44-33-22-11</span></span><br><span class="line"><span class="string">All single-dash parameters have a spelled out double-dash equivalent,</span></span><br><span class="line"><span class="string">so &#x27;</span>-p80<span class="string">&#x27; is the same as &#x27;</span>--ports 80<span class="string">&#x27; (or &#x27;</span>ports = 80<span class="string">&#x27; in config file).</span></span><br><span class="line"><span class="string">To use the config file, type:</span></span><br><span class="line"><span class="string"> masscan -c &lt;filename&gt;</span></span><br><span class="line"><span class="string">To generate a config-file from the current settings, use the --echo</span></span><br><span class="line"><span class="string">option. This stops the program from actually running, and just echoes</span></span><br><span class="line"><span class="string">the current configuration instead. This is a useful way to generate</span></span><br><span class="line"><span class="string">your first config file, or see a list of parameters you didn&#x27;</span>t know</span><br><span class="line">about. I suggest you try it now:</span><br><span class="line"> masscan -p1234 --<span class="built_in">echo</span></span><br></pre></td></tr></table></figure>
+<p><strong>-p 指定端口</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ sudo masscan -p 80 124.*.8.1/24</span><br><span class="line">Starting masscan 1.3.2 (http://bit.ly/14GZzcT) at 2022-09-05 02:12:22 GMT</span><br><span class="line">Initiating SYN Stealth Scan</span><br><span class="line">Scanning 256 hosts [1 port/host]</span><br><span class="line">Discovered open port 80/tcp on 124.*.8.177                                   </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.39                                    </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.7                                     </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.186                                   </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.13                                    </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.77                                    </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.163                                   </span><br><span class="line">Discovered open port 80/tcp on 124.*.8.133</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>–rate=10000 发包频率，数值越大扫描越快，根据自己网络设置，频率太高误报越高</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ sudo masscan -p 80 124.*.8.1/24 --rate=10000</span><br></pre></td></tr></table></figure>
+<p>**–banners 指纹信息，配合 --source-port 61000 一起使用 **</p>
+<p>Tcp协议连接目标端口时会在系统内分配一个端口与目标通讯，因为有时候从目标返回数据包会被防火墙过滤丢弃，导致masscan无法获取banner信息，所以需要设置一个固定的源端口，方便在防火墙配置白名单不丢弃/拦截此端口数据。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ sudo iptables -A INPUT -p tcp --dport 61000 -j DROP</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/09/05/37de7db6dde5920c54f671d8a1ce430e.png" alt="TCP通讯端口分配"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ sudo masscan -p 80 124.*.8.254 --banners --source-port 61000 --rate=10000</span><br><span class="line">Starting masscan 1.3.2 (http://bit.ly/14GZzcT) at 2022-09-05 03:06:20 GMT</span><br><span class="line">Initiating SYN Stealth Scan</span><br><span class="line">Scanning 1 hosts [1 port/host]</span><br><span class="line">Discovered open port 80/tcp on 124.*.8.254                                   </span><br><span class="line">Banner on port 80/tcp on 124.*.8.254: [http.server] nginx/1.18.0 (Ubuntu)    </span><br><span class="line">Banner on port 80/tcp on 124.*.8.254: [title] 403 Forbidden                  </span><br><span class="line">Banner on port 80/tcp on 124.*.8.254: [http] HTTP/1.1 403 Forbidden\x0d\x0aServer: nginx/1.18.0 (Ubuntu)\x0d\x0aDate: Mon, 05 Sep 2022 03:06:22 GMT\x0d\x0aContent-Type: text/html\x0d\x0aContent-Length: 162\x0d\x0aConnection: close\x0d\x0a\x0d</span><br></pre></td></tr></table></figure>
+<p><strong>绕过安全检测</strong></p>
+<p>在源码<code>masscan/src/proto-http.c</code>中预定义的<code>User-Agent</code>各大厂商肯定已经提取指纹规则，还在使用默认<code>User-Agent</code>不封你封谁，大部分工具默认指纹都已被提取规则，使用的时候注意看下源码或者测试一下。</p>
+<p><img src="https://static.sechelper.com/img/2022/09/05/944c42d5d2771d03973ac857fc3bed28.png" alt="zmap source code proto-http"></p>
+<p>服务器日志里看的清清楚楚，溯源一抓一个准。</p>
+<p><img src="https://static.sechelper.com/img/2022/09/05/f7808feb2354427ee5f8098f478f9bc2.png" alt="masscan scan log"></p>
+<p>扫描时指定<code>User-Agent</code>，可以绕过部分安全检测</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ sudo masscan -p 80 124.*.8.254 --banners --source-port 61000 --rate=10000 --http-user-agent <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span></span><br><span class="line">Starting masscan 1.3.2 (http://bit.ly/14GZzcT) at 2022-09-05 03:15:14 GMT</span><br><span class="line">Initiating SYN Stealth Scan</span><br><span class="line">Scanning 1 hosts [1 port/host]</span><br><span class="line">Discovered open port 80/tcp on 124.*.8.254                                   </span><br><span class="line">Banner on port 80/tcp on 124.*.8.254: [http.server] nginx/1.18.0 (Ubuntu)    </span><br><span class="line">Banner on port 80/tcp on 124.*.8.254: [title] 403 Forbidden                  </span><br><span class="line">Banner on port 80/tcp on 124.*.8.254: [http] HTTP/1.1 403 Forbidden\x0d\x0aServer: nginx/1.18.0 (Ubuntu)\x0d\x0aDate: Mon, 05 Sep 2022 03:15:16 GMT\x0d\x0aContent-Type: text/html\x0d\x0aContent-Length: 162\x0d\x0aConnection: close\x0d\x0a\x0d</span><br></pre></td></tr></table></figure>
+<p><strong>-Pn 扫描前不PING，直接开扫</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/masscan$ sudo masscan -p 80 124.*.8.254 --banners --source-port 61000 --rate=10000 --http-user-agent <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span> -Pn</span><br></pre></td></tr></table></figure>
+<p><strong>结果写入文件</strong></p>
+<p>-oJ 保存为Json格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo masscan -p 80 124.*.8.254 --banners --source-port 61000 --rate=10000 --http-user-agent <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span> -oJ 22090501.json </span><br></pre></td></tr></table></figure>
+<p>-oX 保存为XML格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo masscan -p 80 124.*.8.254 --banners --source-port 61000 --rate=10000 --http-user-agent <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span> -oJ 22090501.xml </span><br></pre></td></tr></table></figure>
+<p>重定向输出，保存为原始格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo masscan -p 80 124.*.8.254 --banners --source-port 61000 --rate=10000 --http-user-agent <span class="string">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0&quot;</span> &gt; 22090501.txt</span><br></pre></td></tr></table></figure>
+<h2 id="Zmap"><a class="header-anchor" href="#Zmap">¶</a>Zmap</h2>
+<iframe src="//player.bilibili.com/player.html?aid=730270477&bvid=BV1pD4y1z7Kw&cid=827181325&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px">  </iframe>
+<p>ZMap是一种快速的单包网络扫描仪，专为互联网范围内的网络调查而设计。在具有千兆以太网连接的典型台式计算机上，ZMap能够在45分钟内扫描整个公共IPv4地址空间。</p>
+<p><strong>编译安装</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential cmake libgmp3-dev gengetopt libpcap-dev flex byacc libjson-c-dev pkg-config libunistring-dev git -y</span><br><span class="line">git clone https://github.com/zmap/zmap.git</span><br><span class="line">cmake .</span><br><span class="line">make -j4</span><br></pre></td></tr></table></figure>
+<p>老规矩先放我最常用参数组合，想了解原理继续看，不想了解直接套用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo zmap -B 1M -p80 --source-port=61000 124.*.8.1/24 -o 22090501.txt</span><br></pre></td></tr></table></figure>
+<p><strong>参数解释</strong></p>
+<p>-B 扫描速率最大带宽</p>
+<p>-p 端口号，单一</p>
+<p>-o 输出到文件</p>
+<h3 id="zgrab"><a class="header-anchor" href="#zgrab">¶</a>zgrab</h3>
+<p>ZGrab是一种快速、模块化的应用层网络扫描仪，用于完成大型互联网范围的调查。ZGrab配合ZMap一起使用。</p>
+<p>老规矩先放我最常用参数组合，想了解原理继续看，不想了解直接套用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./zgrab2 http -p 80 -f 22090501.txt -o 22090502.json --user-agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36&quot;</span><br></pre></td></tr></table></figure>
+<p><code>zmap</code>和<code>zgrab2</code>联合使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo zmap -B 1M -p80 --source-port=61000 124.*.8.1/24|ztee 22090503.csv| ./zgrab2 http -p80 --user-agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36&quot; -o 22090504.json</span><br></pre></td></tr></table></figure>
+<p><strong>编译安装</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install golang-go</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/zmap/zgrab2.git</span><br><span class="line"><span class="built_in">cd</span> zgrab2</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>使用刚才<code>ZMap</code>扫描结果，探测<code>http</code>服务的<code>Banner</code>信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./zgrab2 http -f 22090501.txt -o 22090502.json</span><br></pre></td></tr></table></figure>
+<p><code>http</code>端口默认是80，可以自行指定非默认端口的<code>http</code>服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./zgrab2 http -p 8080 -f 22090501.txt -o 22090502.json</span><br></pre></td></tr></table></figure>
+<p>查看<code>模块</code>的帮助信息，例如查看<code>http</code>这个模块有哪些可设置参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/zgrab2$ ./zgrab2 http -h</span><br><span class="line">Usage:</span><br><span class="line">  zgrab2 [OPTIONS] http [http-OPTIONS]</span><br><span class="line">...</span><br><span class="line">[http command options]</span><br><span class="line">      -p, --port=                                             Specify port to grab on (default: 80)</span><br><span class="line">...</span><br><span class="line">          --user-agent=                                       Set a custom user agent (default: Mozilla/5.0 zgrab/0.x)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>绕过安全检测</strong></p>
+<p>查看服务器日志<code>User-Agent</code>一眼看出是<code>zgrab</code>在探测，默认的<code>User-Agent</code>是<code>Mozilla/5.0 zgrab/0.x</code></p>
+<p><img src="https://static.sechelper.com/img/2022/09/05/48b959721a26e00b6989a27318a0894c.png" alt="zgrab scan log"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/zgrab2$ ./zgrab2 http -p80 --user-agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36&quot; -f 22090501.txt</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 渗透测试</a>
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" rel="tag"># 信息收集</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20220906/penetration-testing-guide/information-gathering/" rel="prev" title="信息收集">
+      <i class="fa fa-chevron-left"></i> 信息收集
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20220907/code-review/deployment-configuration-java/" rel="next" title="初识Java语言配置环境">
+      初识Java语言配置环境 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

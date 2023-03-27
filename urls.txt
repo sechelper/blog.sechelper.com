@@ -1,0 +1,3 @@
+https://blog.sechelper.com/20230327/penetration-testing-guide/sub-domains/
+https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/
+https://blog.sechelper.com/20230327/code-review/java-deserialization2/

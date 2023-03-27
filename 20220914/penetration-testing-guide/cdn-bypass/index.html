@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CDN（Content Delivery Network） 内容分发网络。使用户就近获取所需内容，降低网络拥塞，提高响应速度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="绕过CDN获取服务器真实IP地址">
+<meta property="og:url" content="https://blog.sechelper.com/20220914/penetration-testing-guide/cdn-bypass/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="CDN（Content Delivery Network） 内容分发网络。使用户就近获取所需内容，降低网络拥塞，提高响应速度。">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/13/5579aa208abc27060d2e6cdfd488e5bd.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/14/dc55f4965726032f4d78bb6dd6685e5c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/14/5cb88e730181281bcc58a9afa1d6ef3d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/14/fe8abe77387e7d2e4992bd48a800c0dc.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/09/14/24846cd72f2989f09fa5cee3f6bd2ad3.png">
+<meta property="article:published_time" content="2022-09-14T13:40:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="信息收集">
+<meta property="article:tag" content="CND绕过">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/09/13/5579aa208abc27060d2e6cdfd488e5bd.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20220914/penetration-testing-guide/cdn-bypass/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>绕过CDN获取服务器真实IP地址 | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20220914/penetration-testing-guide/cdn-bypass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          绕过CDN获取服务器真实IP地址
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-14 21:40:00" itemprop="dateCreated datePublished" datetime="2022-09-14T21:40:00+08:00">2022-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" itemprop="url" rel="index"><span itemprop="name">信息收集</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <iframe src="//player.bilibili.com/player.html?aid=473035090&bvid=BV1rT411M72T&cid=831943522&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="720px" height="480px">  </iframe>
+<p><strong>CDN（Content Delivery Network）</strong> 内容分发网络。使用户就近获取所需内容，降低网络拥塞，提高响应速度。</p>
+<span id="more"></span>
+<h2 id="网络空间搜索引擎"><a class="header-anchor" href="#网络空间搜索引擎">¶</a>网络空间搜索引擎</h2>
+<p>分析下网站关键元素信息</p>
+<ul>
+<li>域名</li>
+<li>ip</li>
+<li>title</li>
+<li>icp</li>
+<li>logo</li>
+<li>body</li>
+</ul>
+<p>以佛法为例子，其它引擎用法看文章后面</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&quot;sechelper.com&quot;</span><br><span class="line">domain=&quot;sechelper.com&quot;</span><br><span class="line">cert=&quot;*.sechelper.com&quot;</span><br><span class="line">icon_hash=&quot;-614101761&quot;</span><br><span class="line">title=&quot;至察助安&quot;</span><br><span class="line">icp=&quot;津ICP备2022002336号&quot;</span><br><span class="line">js_md5=&quot;82ac3f14327a8b7ba49baa208d4eaa15&quot;</span><br><span class="line">body=&quot;至察助安&quot;</span><br></pre></td></tr></table></figure>
+<p>使用以上搜索语法可以收集到更多域名和IP信息。还可以结合公司地理位置、云厂商、IDC机房等多种因素精准搜索，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">asn=&quot;37963&quot; &amp;&amp; title=&quot;至察助安&quot;</span><br><span class="line">city=&quot;Beijing&quot; &amp;&amp; domain=&quot;sechelper.com&quot;</span><br><span class="line">asn=&quot;37963&quot; &amp;&amp; body=&quot;至察助安&quot;</span><br></pre></td></tr></table></figure>
+<p><strong>参考：</strong><br>
+<a target="_blank" rel="noopener" href="https://www.cloudflare.com/zh-cn/learning/network-layer/what-is-an-autonomous-system/">什么是 ASN？</a></p>
+<h3 id="Shodan"><a class="header-anchor" href="#Shodan">¶</a>Shodan</h3>
+<p>Shodan是世界上第一个互联网连接设备搜索引擎。了解互联网智能如何帮助您做出更好的决策。</p>
+<table>
+<thead>
+<tr>
+<th>示例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP Strict-Transport-Security</td>
+<td>需要HTTPS连接的网站</td>
+</tr>
+<tr>
+<td>product:Apache</td>
+<td>Apache web服务器</td>
+</tr>
+<tr>
+<td>http.html:Apache</td>
+<td>在HTML中包含“Apache”一词的网站</td>
+</tr>
+<tr>
+<td>Apache</td>
+<td>标题中有“Apache”一词的服务</td>
+</tr>
+<tr>
+<td>hostname:google.com,<a target="_blank" rel="noopener" href="http://facebook.com">facebook.com</a></td>
+<td>主机名包含“<a target="_blank" rel="noopener" href="http://google.com">google.com</a>”或“<a target="_blank" rel="noopener" href="http://facebook.com">facebook.com</a>”的服务</td>
+</tr>
+<tr>
+<td>http.component:bootstrap</td>
+<td>使用Bootstrap CSS框架的网站</td>
+</tr>
+<tr>
+<td>ssl.version:tlsv1.3 HTTP</td>
+<td>支持TLS 1.3的网站</td>
+</tr>
+<tr>
+<td>ssl.alpn:h2</td>
+<td>支持HTTP/2的网站</td>
+</tr>
+<tr>
+<td>ssl.version:sslv2 -ssl.version:tlsv1,tlsv1.2,tlsv1.3</td>
+<td>支持SSLv2但不支持TLS的服务</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://ssl.cert.subject.cn">ssl.cert.subject.cn</a>:google.com</td>
+<td>为*.google.com颁发证书的SSL服务（HTTPS、SMTPS、POP3等）</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://ssl.cert.subject.cn">ssl.cert.subject.cn</a>:google.com -HTTP</td>
+<td>为*.google.com颁发证书的非HTTPS SSL服务</td>
+</tr>
+<tr>
+<td>ssh port:22,3333</td>
+<td>端口22或3333上的SSH</td>
+</tr>
+<tr>
+<td>ssh -port:2222</td>
+<td>非标准端口上的SSH</td>
+</tr>
+<tr>
+<td>has_screenshot:true rfb disabled port:80,443</td>
+<td>隐藏在公共web端口后面的公共VNC服务</td>
+</tr>
+<tr>
+<td>has_screenshot:true encrypted attention</td>
+<td>搜索远程桌面中的OCR，以查看是否被勒索软件破坏</td>
+</tr>
+<tr>
+<td>screenshot.label:ics</td>
+<td>基于机器学习的工业控制系统辨识</td>
+</tr>
+<tr>
+<td>tag:ics</td>
+<td>运行工业协议的工业控制系统（即无网络服务器）</td>
+</tr>
+<tr>
+<td>vuln:CVE-2014-0160</td>
+<td>易受心脏出血影响的服务</td>
+</tr>
+<tr>
+<td>vuln:CVE-2019-19781 country:DE,CH,FR</td>
+<td>德国、瑞士或法国可能存在CVE-2019-19781漏洞的服务器</td>
+</tr>
+</tbody>
+</table>
+<p><strong>更多实例：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.shodan.io/search/filters">https://www.shodan.io/search/filters</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.shodan.io/search/examples">https://www.shodan.io/search/examples</a></p>
+<h3 id="FOFA"><a class="header-anchor" href="#FOFA">¶</a>FOFA</h3>
+<p>FOFA 是白帽汇推出的一款网络空间搜索引擎，它通过进行网络空间测绘，能够帮助研究人员或者企业迅速进行网络资产匹配，例如进行漏洞影响范围分析、应用分布统计、应用流行度排名统计等。</p>
+<table>
+<thead>
+<tr>
+<th>逻辑连接符</th>
+<th>具体含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>匹配，=&quot;&quot;时，可查询不存在字段或者值为空的情况</td>
+</tr>
+<tr>
+<td>==</td>
+<td>完全匹配，==&quot;&quot;时，可查询存在且值为空的情况</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>与</td>
+</tr>
+<tr>
+<td>||</td>
+<td>或者</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>不匹配，!=&quot;&quot;时，可查询值为空的情况</td>
+</tr>
+<tr>
+<td>～=</td>
+<td>正则语法匹配专用</td>
+</tr>
+<tr>
+<td>()</td>
+<td>确认查询优先级，括号内容优先级最高</td>
+</tr>
+</tbody>
+</table>
+<p><strong>搜索实例</strong></p>
+<table>
+<thead>
+<tr>
+<th>例子</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title=“beijing”</td>
+<td>从标题中搜索“beijing”</td>
+</tr>
+<tr>
+<td>header=“elastic”</td>
+<td>从http头中搜索“elastic”</td>
+</tr>
+<tr>
+<td>body=“商城”</td>
+<td>从html正文中搜索“商城”</td>
+</tr>
+<tr>
+<td>fid=“sSXXGNUO2FefBTcCLIT/2Q==”</td>
+<td>查找相同的网站指纹</td>
+</tr>
+<tr>
+<td>domain=“<a target="_blank" rel="noopener" href="http://qq.com">qq.com</a>”</td>
+<td>搜索根域名带有qq.com的网站。</td>
+</tr>
+<tr>
+<td>icp=“京ICP证030173号”</td>
+<td>查找备案号为“京ICP证030173号”的网站</td>
+</tr>
+<tr>
+<td>js_name=“js/jquery.js”</td>
+<td>查找网站正文中包含js/jquery.js的资产</td>
+</tr>
+<tr>
+<td>js_md5=“82ac3f14327a8b7ba49baa208d4eaa15”</td>
+<td>查找js源码与之匹配的资产</td>
+</tr>
+<tr>
+<td>cname=“<a target="_blank" rel="noopener" href="http://ap21.inst.siteforce.com">ap21.inst.siteforce.com</a>”</td>
+<td>查找cname为&quot;<a target="_blank" rel="noopener" href="http://ap21.inst.siteforce.com">ap21.inst.siteforce.com</a>&quot;的网站</td>
+</tr>
+<tr>
+<td>cname_domain=“<a target="_blank" rel="noopener" href="http://siteforce.com">siteforce.com</a>”</td>
+<td>查找cname包含“<a target="_blank" rel="noopener" href="http://siteforce.com">siteforce.com</a>”的网站</td>
+</tr>
+<tr>
+<td>icon_hash=“-614101761”</td>
+<td>搜索使用此 icon 的资产</td>
+</tr>
+<tr>
+<td>host=“.gov.cn”</td>
+<td>从url中搜索”.gov.cn”</td>
+</tr>
+<tr>
+<td>port=“6379”</td>
+<td>查找对应“6379”端口的资产</td>
+</tr>
+<tr>
+<td>ip=“1.1.1.1”</td>
+<td>从ip中搜索包含“1.1.1.1”的网站</td>
+</tr>
+<tr>
+<td>ip=“220.181.111.1/24”</td>
+<td>查询IP为“220.181.111.1”的C网段资产</td>
+</tr>
+<tr>
+<td>status_code=“402”</td>
+<td>查询服务器状态为“402”的资产</td>
+</tr>
+<tr>
+<td>protocol=“quic”</td>
+<td>查询quic协议资产</td>
+</tr>
+<tr>
+<td>country=“CN”</td>
+<td>搜索指定国家(编码)的资产。</td>
+</tr>
+<tr>
+<td>city=“Beijing”</td>
+<td>搜索指定城市的资产。</td>
+</tr>
+<tr>
+<td>cert=“baidu”</td>
+<td>搜索证书(https或者imaps等)中带有baidu的资产。</td>
+</tr>
+<tr>
+<td>cert.subject=“Oracle Corporation”</td>
+<td>搜索证书持有者是Oracle Corporation的资产</td>
+</tr>
+<tr>
+<td>cert.issuer=“DigiCert”</td>
+<td>搜索证书颁发者为DigiCert Inc的资产</td>
+</tr>
+<tr>
+<td>cert.is_valid=true</td>
+<td>验证证书是否有效，true有效，false无效</td>
+</tr>
+<tr>
+<td>jarm=“2ad…83e81”</td>
+<td>搜索JARM指纹</td>
+</tr>
+<tr>
+<td>banner=“users” &amp;&amp; protocol=“ftp”</td>
+<td>搜索FTP协议中带有users文本的资产。</td>
+</tr>
+<tr>
+<td>asn=“19551”</td>
+<td>搜索指定asn的资产。</td>
+</tr>
+<tr>
+<td>after=“2017” &amp;&amp; before=“2017-10-01”</td>
+<td>时间范围段搜索</td>
+</tr>
+<tr>
+<td>app=“Microsoft-Exchange”</td>
+<td>搜索Microsoft-Exchange设备</td>
+</tr>
+<tr>
+<td>server==“Microsoft-IIS/10”</td>
+<td>搜索IIS 10服务器。</td>
+</tr>
+<tr>
+<td>os=“centos”</td>
+<td>搜索CentOS资产。</td>
+</tr>
+<tr>
+<td>type=“service”</td>
+<td>搜索所有协议资产，支持subdomain和service两种</td>
+</tr>
+</tbody>
+</table>
+<h3 id="钟馗之眼"><a class="header-anchor" href="#钟馗之眼">¶</a>钟馗之眼</h3>
+<p>ZoomEye 支持对公网开放的 IPv4、IPv6 及域名地址库进行多个端口服务或协议的探测，并整理收集相关返回 banner 数据提供搜索匹配。</p>
+<p>ZoomEye 线上采用“覆盖式”更新模式：比如第一次扫描 IP 8.8.8.8 开放了 80 端口，第二次扫描 8.8.8.8 的 80 端口时，如果端口还存活，那么会用第二次扫描的结果覆盖更新第一次的扫描结果；如果第二次扫描时候 80  端口已经关闭，服务不存在，那么第一次扫描的结果不会被更新，时间节点也不会被更新。</p>
+<p><strong>搜索</strong></p>
+<p>用户在搜索输入框里输入对应关键字符串、语法词(也称为“过滤器”)及相关运算符进行检索。用户输入的关键字符串不区分大小写，在做全词匹配比如字符串里存在空格等字符时请使用引号闭合词组。 输入的字符串通过 ZoomEye 搜索引擎分词系统进行分词匹配，分词规则可使用搜索结果页面里“分词”功能帮助测试理解。输入语法词(也称为“过滤器”)后，搜索框提供了智能搜索提示：比如输入<code>“思科”</code>或者<code>“Cisco”</code>在搜索框下拉栏里会显示相关的 app 语法，选中后按“回车”即可进行检索。对于更多的组件指纹可以访问顶栏里的<a target="_blank" rel="noopener" href="https://www.zoomeye.org/component">&quot;导航&quot;</a>页面获取。</p>
+<p><strong>逻辑运算</strong></p>
+<table>
+<thead>
+<tr>
+<th>逻辑词</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空格</td>
+<td>在搜索框中输入“空格”则表示“或”的运算逻辑</td>
+<td>[service:“ssh” service:“http”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=service%3A%22ssh%22">https://www.zoomeye.org/searchResult?q=service%3A&quot;ssh&quot;</a> service%3A&quot;http&quot;) 搜索ssh或http协议的数据</td>
+</tr>
+<tr>
+<td>+</td>
+<td>在搜索框中输入“+”则表示“且”的运算逻辑</td>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=device%3A%22router%22%2Bafter%3A%222020-01-01%22">device:“router”+after:“2020-01-01”</a> 搜索2020-01-01后路由器的数据</td>
+</tr>
+<tr>
+<td>-</td>
+<td>在搜索框中输入“-”则表示“非”的运算逻辑</td>
+<td>[country:“CN”-subdivisions:“beijing”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=country%3A%22CN%22">https://www.zoomeye.org/searchResult?q=country%3A&quot;CN&quot;</a> -subdivisions%3A&quot;beijing&quot;) 搜索中国地区内除北京的数据</td>
+</tr>
+<tr>
+<td>()</td>
+<td>在搜索框中输入“()”则表示“优先处理”的运算逻辑</td>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=(port%3A%2280%22%2Bsubdivisions%3A%22%E5%8A%A0%E5%88%A9%E7%A6%8F%E5%B0%BC%E4%BA%9A%E5%B7%9E%22)%2Bbefore%3A%222020-01-01%22">(port:“80”+subdivisions:“加利福尼亚州”)+before:“2020-01-01”</a> 搜索2020-01-01前在加利福尼亚州开放的80端口数据</td>
+</tr>
+</tbody>
+</table>
+<p><strong>地理位置</strong></p>
+<p>(注：中国地区资产只对中国IP及手机号码认证用户开放)</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=country%3A%22CN%22">country:“CN”</a></td>
+<td>搜索国家地区资产</td>
+<td>可以使用国家缩写，也可以使用中/英文全称如<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=country%3A%22%E4%B8%AD%E5%9B%BD%22">country:“中国”</a> <a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=country%3A%22china%22">country:“china”</a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=subdivisions%3A%22beijing%22">subdivisions:“beijing”</a></td>
+<td>搜索相关指定行政区的资产</td>
+<td>中国省会支持中文及英文描述搜索 <a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=subdivisions%3A%22%E5%8C%97%E4%BA%AC%22">subdivisions:“北京”</a></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=city%3A%22changsha%22">city:“changsha”</a></td>
+<td>搜索相关城市资产</td>
+<td>中国城市支持中文及英文描述搜索如 <a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=city%3A%E9%95%BF%E6%B2%99">city:长沙</a></td>
+</tr>
+</tbody>
+</table>
+<p>** 证书搜索**</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=ssl%3A%22google%22">ssl:“google”</a></td>
+<td>搜索ssl证书存在&quot;google&quot;字符串的资产</td>
+<td>常常用来提取产品名及公司名搜索对应目标</td>
+</tr>
+</tbody>
+</table>
+<p>** IP及域名信息相关搜索**</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=ip%3A%228.8.8.8%22">ip:“8.8.8.8”</a></td>
+<td>搜索指定IPv4地址相关资产</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=ip%3A%222600%3A3c00%3A%3Af03c%3A91ff%3Afefc%3A574a%22">ip:“2600:3c00::f03c:91ff:fefc:574a”</a></td>
+<td>搜索指定IPv6地址相关资产</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=cidr%3A52.2.254.36%2F24">cidr:52.2.254.36/24</a></td>
+<td>搜索IP的C段资产</td>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=cidr%3A52.2.254.36%2F16">cidr:52.2.254.36/16</a> 为IP的B段资产，<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=cidr%3A52.2.254.36%2F8">cidr:52.2.254.36/8</a> 为IP的A段资产</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=org%3A%22%E5%8C%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%22">org:“北京大学”</a> 或者 <a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=organization%3A%22%E5%8C%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%22">organization:“北京大学”</a></td>
+<td>搜索相关组织(Organization)的资产</td>
+<td>常常用来定位大学、结构、大型互联网公司对应IP资产</td>
+</tr>
+<tr>
+<td>[isp:“China Mobile”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=isp%3A">https://www.zoomeye.org/searchResult?q=isp%3A</a>&quot;China Mobile&quot;)</td>
+<td>搜索相关网络服务提供商的资产</td>
+<td>可结合org数据相互补充</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=asn%3A42893">asn:42893</a></td>
+<td>搜索对应ASN（Autonomous system number）自治系统编号相关IP资产</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=port%3A80">port:80</a></td>
+<td>搜索相关端口资产</td>
+<td>目前不支持同时进行多端口目标搜索</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=hostname%3Agoogle.com">hostname:google.com</a></td>
+<td>搜索相关IP&quot;主机名&quot;的资产</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=site%3Abaidu.com&amp;t=web">site:baidu.com</a></td>
+<td>搜索域名相关的资产</td>
+<td>搜索域名相关的资产</td>
+</tr>
+</tbody>
+</table>
+<p><strong>指纹相关搜索</strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[app:“Cisco ASA SSL VPN”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=app%3A">https://www.zoomeye.org/searchResult?q=app%3A</a>&quot;Cisco ASA SSL VPN&quot;)</td>
+<td>搜索思科ASA-SSL-VPN的设备</td>
+<td>更多的app规则请参考<a target="_blank" rel="noopener" href="https://www.zoomeye.org/component">“导航”</a>，在搜索框输入&quot;思科&quot;等关键词会有相关app提示</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=service%3A%22ssh%22">service:“ssh”</a></td>
+<td>搜索对应服务协议的资产</td>
+<td>常见服务协议包括：http、ftp、ssh、telnet等等(其他服务可参考搜索结果域名侧栏聚合展示)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=device%3A%22router%22">device:“router”</a></td>
+<td>搜索路由器相关的设备类型</td>
+<td>常见类型包括router(路由器)、switch(交换机)、storage-misc(存储设备)等等(其他类型可参考搜索结果域名侧栏聚合展示)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=os%3A%22RouterOS%22">os:“RouterOS”</a></td>
+<td>搜索相关操作系统</td>
+<td>常见系统包括Linux、Windows、RouterOS、IOS、JUNOS等等(其他系统可参考搜索结果域名侧栏聚合展示)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=title%3A%22Cisco%22">title:“Cisco”</a></td>
+<td>搜索html内容里标题中存在&quot;Cisco&quot;的数据</td>
+<td></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=industry:%22%E6%94%BF%E5%BA%9C%22">industry:“政府”</a></td>
+<td>搜索行业类型相关的资产</td>
+<td>常见的行业类型包括科技、能源、金融制造业等等（其他类型可结合org数据相互补充）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>时间节点区间搜索</strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[after:“2020-01-01” +port:“50050”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=after%3A%222020-01-01%22">https://www.zoomeye.org/searchResult?q=after%3A&quot;2020-01-01&quot;</a> +port%3A&quot;50050&quot;)</td>
+<td>搜索更新时间为&quot;2020-01-01&quot;端口为&quot;50050&quot;以后的资产</td>
+<td>时间过滤器需组合其他过滤器使用</td>
+</tr>
+<tr>
+<td>[before:“2020-01-01” +port:“50050”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=before%3A%222020-01-01%22">https://www.zoomeye.org/searchResult?q=before%3A&quot;2020-01-01&quot;</a> +port%3A&quot;50050&quot;)</td>
+<td>搜索更新时间在&quot;2020-01-01&quot;端口为&quot;50050&quot;以前的资产</td>
+<td>时间过滤器需组合其他过滤器使用</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Jarm</strong></p>
+<p>Jarm是一个活动的传输层安全性（TLS）服务器指纹识别工具， 详情参考：<a target="_blank" rel="noopener" href="https://github.com/salesforce/jarm">https://github.com/salesforce/jarm</a></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=jarm%3A" title="29d29d15d29d29d00029d29d29d29dea0f89a2e5fb09e4d8e099befed92cfa">jarm: “29d29d15d29d29d00029d29d29d29dea0f89a2e5fb09e4d8e099befed92cfa”</a></td>
+<td>搜索相关jarm内容的资产</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dig</strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[dig:“<a target="_blank" rel="noopener" href="http://baidu.com">baidu.com</a> 220.181.38.148”](<a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=dig%3A">https://www.zoomeye.org/searchResult?q=dig%3A</a>&quot;<a target="_blank" rel="noopener" href="http://baidu.com">baidu.com</a> 220.181.38.148&quot;)</td>
+<td>搜索相关dig内容的资产</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Iconhash</strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=iconhash%3A%22f3418a443e7d841097c714d69ec4bcb8%22">iconhash:“f3418a443e7d841097c714d69ec4bcb8”</a></td>
+<td>通过 md5 方式对目标数据进行解析，根据图标搜索相关内容的资产</td>
+<td>搜索包含“google”图标的相关资产</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=iconhash%3A%221941681276%22">iconhash:“1941681276”</a></td>
+<td>通过 mmh3 方式对目标数据进行解析，根据图标搜索相关内容的资产</td>
+<td>搜索包含“amazon”图标的相关资产</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Filehash</strong></p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://www.zoomeye.org/searchResult?q=filehash%3A%220b5ce08db7fb8fffe4e14d05588d49d9%22">filehash:“0b5ce08db7fb8fffe4e14d05588d49d9”</a></td>
+<td>通过上传方式进行查询，根据解析的文件数据搜索相关内容的资产</td>
+<td>搜索包含“Gitlab”解析的相关资产</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Censys"><a class="header-anchor" href="#Censys">¶</a>Censys</h3>
+<p>Censys帮助组织、个人和研究人员发现并监控互联网上的每台服务器，以减少暴露并提高安全性。</p>
+<p><img src="https://static.sechelper.com/img/2022/09/13/5579aa208abc27060d2e6cdfd488e5bd.png" alt="censys"></p>
+<p><strong>更多实例：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://search.censys.io/search/examples?resource=hosts">https://search.censys.io/search/examples?resource=hosts</a></p>
+<iframe src="//player.bilibili.com/player.html?aid=985529538&bvid=BV1Zt4y1L7jD&cid=832996059&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="720px" height="480px">  </iframe>
+<h2 id="异地PING"><a class="header-anchor" href="#异地PING">¶</a>异地PING</h2>
+<p><a target="_blank" rel="noopener" href="https://ping.chinaz.com/">站长之家 - 站长工具</a></p>
+<p><img src="https://static.sechelper.com/img/2022/09/14/dc55f4965726032f4d78bb6dd6685e5c.png" alt="站长之家"></p>
+<p><a target="_blank" rel="noopener" href="https://check-host.net/check-ping">国外 - check-host</a></p>
+<p><img src="https://static.sechelper.com/img/2022/09/14/5cb88e730181281bcc58a9afa1d6ef3d.png" alt="check-host"></p>
+<h2 id="邮件头"><a class="header-anchor" href="#邮件头">¶</a>邮件头</h2>
+<p>大型公司邮件服务可能是自建的，从服务器内发出的邮件头会带着IP，这个极有可能是目标真实IP地址。foxmail导出邮件使用编辑器打开，可以看到一下内容。</p>
+<p><img src="https://static.sechelper.com/img/2022/09/14/fe8abe77387e7d2e4992bd48a800c0dc.png" alt="邮件头"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Received: from wfbtxcdk.outbound-mail.sendgrid.net (unknown [159.183.172.209])</span><br><span class="line">	by mail-m121165.qiye.163.com (HMail) with ESMTP id BF0061E95EC</span><br><span class="line">	for &lt;cookun@sechelper.com&gt;; Thu,  8 Sep 2022 08:41:53 +0800 (CST)</span><br><span class="line">DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=censys.io;</span><br><span class="line">	h=content-type:mime-version:subject:from:to:cc;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>邮箱头查看真实IP，确定不是使用的第三方邮箱再看，否则就是浪费时间，使用<code>nslookup</code>查询<code>mx</code>记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup </span><br><span class="line">&gt; set q=mx</span><br><span class="line">&gt; sechelper.com</span><br><span class="line">Server:		127.0.0.53</span><br><span class="line">Address:	127.0.0.53#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">sechelper.com	mail exchanger = 10 mx.ym.163.com.</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="域传送漏洞"><a class="header-anchor" href="#域传送漏洞">¶</a>域传送漏洞</h2>
+<p>DNS协议支持使用axfr类型的记录进行区域传送，用来解决<strong>主从同步</strong>的问题。如果管理员在配置DNS服务器的时候没有限制允许获取记录的来源，将会导致DNS域传送漏洞。</p>
+<p>*注意：*DNS配置错误才会出现域传送漏洞，打点时可以使用脚本批量探测。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ nmap --script dns-zone-transfer.nse --script-args <span class="string">&quot;dns-zone-transfer.domain=vulhub.org&quot;</span> -Pn -p 53 192.168.111.133</span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-14 03:45 UTC</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 192.168.111.133</span><br><span class="line">Host is up (0.00044s latency).</span><br><span class="line"></span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line">53/tcp open  domain</span><br><span class="line">| dns-zone-transfer: </span><br><span class="line">| vulhub.org.         SOA    ns.vulhub.org. sa.vulhub.org.</span><br><span class="line">| vulhub.org.         NS     ns1.vulhub.org.</span><br><span class="line">| vulhub.org.         NS     ns2.vulhub.org.</span><br><span class="line">| admin.vulhub.org.   A      10.1.1.4</span><br><span class="line">| cdn.vulhub.org.     A      10.1.1.3</span><br><span class="line">| git.vulhub.org.     A      10.1.1.4</span><br><span class="line">| ns1.vulhub.org.     A      10.0.0.1</span><br><span class="line">| ns2.vulhub.org.     A      10.0.0.2</span><br><span class="line">| sa.vulhub.org.      A      10.1.1.2</span><br><span class="line">| static.vulhub.org.  CNAME  www.vulhub.org.</span><br><span class="line">| wap.vulhub.org.     CNAME  www.vulhub.org.</span><br><span class="line">| www.vulhub.org.     A      10.1.1.1</span><br><span class="line">|_vulhub.org.         SOA    ns.vulhub.org. sa.vulhub.org.</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 17.17 seconds</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/275451.html">域传送漏洞浅析</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/tree/master/dns/dns-zone-transfer">vulhub</a></li>
+</ul>
+<h2 id="域名解析历史记录"><a class="header-anchor" href="#域名解析历史记录">¶</a>域名解析历史记录</h2>
+<p>域名历史解析记录，可以继续使用查出的IP地址反查域名，能够获取更多信息。</p>
+<p><a target="_blank" rel="noopener" href="https://viewdns.info/iphistory">viewdns</a></p>
+<p><img src="https://static.sechelper.com/img/2022/09/14/24846cd72f2989f09fa5cee3f6bd2ad3.png" alt="viewdns"></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://dnsdb.io/zh-cn/">dnsdb</a></li>
+<li><a target="_blank" rel="noopener" href="https://securitytrails.com/domain/aliyun.com/dns">securitytrails</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.virustotal.com/gui/home/search">virustotal</a></li>
+<li><a target="_blank" rel="noopener" href="https://searchdns.netcraft.com/?host=aliyun.com">netcraft</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 渗透测试</a>
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" rel="tag"># 信息收集</a>
+              <a href="/tags/CND%E7%BB%95%E8%BF%87/" rel="tag"># CND绕过</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20220913/share/public/resource/" rel="prev" title="公开资源共享">
+      <i class="fa fa-chevron-left"></i> 公开资源共享
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20220919/code-review/docker-maven-install-guid/" rel="next" title="安装配置docker&maven环境">
+      安装配置docker&maven环境 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

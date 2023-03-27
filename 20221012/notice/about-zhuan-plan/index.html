@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="¶【关于助安】 助安社区本着开放原则建立，如今培训满天飞自学空间被挤压微乎其微，我们希望能够建立一个自学空间，让大家能自由自在的学习。在网安圈一直存在几个鄙视链：实战鄙视写报告的，写工具的鄙视脚本小子，自学鄙视培训，各行各业都普遍存在鄙视链（PHP就是最好的语言，不支持反驳，手动滑稽）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于助安社区现在和未来">
+<meta property="og:url" content="https://blog.sechelper.com/20221012/notice/about-zhuan-plan/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="¶【关于助安】 助安社区本着开放原则建立，如今培训满天飞自学空间被挤压微乎其微，我们希望能够建立一个自学空间，让大家能自由自在的学习。在网安圈一直存在几个鄙视链：实战鄙视写报告的，写工具的鄙视脚本小子，自学鄙视培训，各行各业都普遍存在鄙视链（PHP就是最好的语言，不支持反驳，手动滑稽）。">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/qrcode/zsxq.jpg">
+<meta property="article:published_time" content="2022-10-12T07:34:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="助安社区,渗透测试,信息安全,网络安全,安全入门,代码审计,应急响应,web安全,系统安全,漏洞">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/qrcode/zsxq.jpg">
+
+<link rel="canonical" href="https://blog.sechelper.com/20221012/notice/about-zhuan-plan/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>关于助安社区现在和未来 | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221012/notice/about-zhuan-plan/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于助安社区现在和未来
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-10-12 15:34:00" itemprop="dateCreated datePublished" datetime="2022-10-12T15:34:00+08:00">2022-10-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="【关于助安】"><a class="header-anchor" href="#【关于助安】">¶</a>【关于助安】</h2>
+<p>助安社区本着开放原则建立，如今培训满天飞自学空间被挤压微乎其微，我们希望能够建立一个自学空间，让大家能自由自在的学习。在网安圈一直存在几个鄙视链：实战鄙视写报告的，写工具的鄙视脚本小子，自学鄙视培训，各行各业都普遍存在鄙视链（PHP就是最好的语言，不支持反驳，手动滑稽）。</p>
+<span id="more"></span>
+<h2 id="【助安在做什么】"><a class="header-anchor" href="#【助安在做什么】">¶</a>【助安在做什么】</h2>
+<p>安全是很泛的技术，不像学编程语言学一门语言，安全的核心是思维不是单一技能或者技术。网上资源一大堆但大家为什么都要报班去学习呢？我们分析出大致两个原因第一是没方向，第二是+没方向省事（懒得自己学）。说下从业这么多年的一些观点，体系化学习方式本身没错，但忽略了过程不注重自我处理问题能力。</p>
+<p>助安要做的就是引导大家在正确的方向上学习，补充大家短板，自学本身就是锻炼能力，工作后你的水平会远超从培训出来的。安全学习重要的是思维，培训模板里是学不到的，千篇一律的视频很难让你得到干货。<strong>这就是助安一直在坚持做的事，正确道路上引导大家前进，教你学习方法，授人以鱼不如授人以渔，独立思考才能做好渗透的本身。</strong></p>
+<h2 id="【你们能学到什么】"><a class="header-anchor" href="#【你们能学到什么】">¶</a>【你们能学到什么】</h2>
+<p>公开免费的学习资源与资料，内部圈子分享学习框架与思维。活跃的社区环境，社区能否健康运转还是要靠大家，个人力量是无法支撑社区运转的，社区内出现一滩死水状况还有什么意义呢？</p>
+<table>
+<thead>
+<tr>
+<th>资源</th>
+<th style="text-align:center">开放社区</th>
+<th>内部社区（收费）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>公开课</td>
+<td style="text-align:center">直播，每周1-2节，讲解新知识、解答问题</td>
+<td>直播，每周1-2节，录像和资料内部分享，讲解新知识、解答问题</td>
+</tr>
+<tr>
+<td>博客</td>
+<td style="text-align:center">每个B站视频对应一篇原创文章</td>
+<td>每个B站视频对应一篇原创文章</td>
+</tr>
+<tr>
+<td>vulab靶场</td>
+<td style="text-align:center">几十个靶场免费使用</td>
+<td>靶场永久免费，内部演练指导</td>
+</tr>
+<tr>
+<td>安全导航</td>
+<td style="text-align:center">免费</td>
+<td>免费</td>
+</tr>
+<tr>
+<td>圈子</td>
+<td style="text-align:center">x</td>
+<td>内部圈子分享，多元化看待安全行业，深入你了解安全圈</td>
+</tr>
+<tr>
+<td>星球</td>
+<td style="text-align:center">x</td>
+<td>打卡、写作业、分享内部资源（0基础学习全套教程、原创教学视频、直播回放）</td>
+</tr>
+<tr>
+<td>线上沙龙</td>
+<td style="text-align:center">x</td>
+<td>每月1-2场沙龙，线上直播</td>
+</tr>
+<tr>
+<td>线下交流</td>
+<td style="text-align:center">x</td>
+<td>北京聚餐，已经聚过一次</td>
+</tr>
+<tr>
+<td>经验</td>
+<td style="text-align:center">x</td>
+<td>这是社区核心，站在高处望的远，工作不只是技术</td>
+</tr>
+</tbody>
+</table>
+<h2 id="【助安未来计划】"><a class="header-anchor" href="#【助安未来计划】">¶</a>【助安未来计划】</h2>
+<p>助安崇尚的是双赢，帮助大家找工作、实现目标是助安的核心价值。未来会有以下几个规划：</p>
+<ul>
+<li>从甲方公司接项目让大家实践，接近工作状态并且能从中赚到外快。</li>
+<li>专项课程，将知识点分解成不同模块，专注学习不会的技术点，而不是打包到一起，卖所谓体系化大部分无意义的课。</li>
+</ul>
+<p><img src="https://static.sechelper.com/img/qrcode/zsxq.jpg" alt="助安宇宙"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20221011/penetration-testing-guide/git-leak/" rel="prev" title=".git信息泄露，提取源码">
+      <i class="fa fa-chevron-left"></i> .git信息泄露，提取源码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20221012/penetration-testing-guide/ingress-nginx-multiple-hosts/" rel="next" title="host碰撞">
+      host碰撞 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

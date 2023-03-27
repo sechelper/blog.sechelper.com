@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：凉拌_@助安社区 ¶题目：MY PICTURE  打开发现是一个没后缀的文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UNCTF-misc 大学生竞赛解析（二）">
+<meta property="og:url" content="https://blog.sechelper.com/20221122/ctf/unctf-misc/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="作者：凉拌_@助安社区 ¶题目：MY PICTURE  打开发现是一个没后缀的文件">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/9936ecb5269b17c676dcedce91a3815e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/73476aad79e582a2cc8f155a1099adfe.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/232bf9bb3f7092cc1bc8c45b79b8e79d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/11c2d52a51b969cd08f132acb6a51c3d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/bb801bf09fdf62c58d6257665c54ea95.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/b613bd9552982ca0abc3480a8c1fb0e0.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/6c4a37a39bd7de19956c351d10495740.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/aa98fea70b6bd9ffffbc38a34871147a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/f5b40b675ced3bf8480095b4694d244e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/ce5458953012df3467a17bf1ebeca06e.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/3c180b00abc5ac3ec2eead97460c7f83.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/4cd23b203bd87d0f34cb314041894f5d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/0371124ec47cdd50e92619ada29f042c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/bf7c1e7748f4c9120318df6600756246.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/dc7f4836d5a509cfd144ccc85a9e204c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/effd8143c36cbb27a5145725572c6e3d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/4a769e542b45315f6799fe5e88f45622.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/f3e3c32ea42161a855022951258adf5b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/a71be0a5137196c5d0c83055f4a25224.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/384d6a406b3235e258fca94a8997e6d6.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/f1181b165ab055aa644e864b62cf7723.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/03268c5d9a2e607d81ca641b00a83487.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/1b3b4ba009b629e24e3636e64b72ca47.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/1e5ea245723c954086e414135d6b52a1.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/5aa955dcb4dba179477162cee9b126fc.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/604b763a0964d843bb53d645fa5efed9.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/acf017b92cf4ec8b4b0ce83f36200117.png">
+<meta property="og:image" content="f:%5CTemp%5Cmic%5Cclip_image180-166873648798090.gif">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/e8682baac53bc5b72a673c8ca47fe77a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/6955c99a2c4ed4d4979a09ef33b33471.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/2d1623092849d951ace8c34443f4fc9c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/5dba90ccf0d0366df9e251902818961b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/332267415fc0c0c230cf24ed134adb41.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/452e481d3baa1522f10b9ee6d90a8ab4.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/65eacea9d9ec924c8b088a634c7e00d9.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/6da8da63c99e28e26841ece1b6299570.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/32b5ea147266abede2a26aa70e8bcb42.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/e1543bbf25ecbeab9805d55abe5d0112.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/af605017222830c6e359c803bee15191.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/037841b9ecf9f8b9705e995f4ed28231.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/f6cd89f7dd6d7e9a80f50bcf65bc5012.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/2b5311c7ba431c18675194d0cf565029.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/c65e2625b1e7d88024581aa1fe828f70.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/d3dd849320bd6a325272f106df67e167.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/a0aac0c4ba1136eea5e4e99fb6ed6c88.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/88a5cc9d149d57a5cbd6908b81f9295b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/ef43a6c5ca6c84d5fcb501eab1ff3e04.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/c4557f1b9a699586458d1e571f3a17c6.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/c94d9af3e7c741b9c3479111ff1d1c1f.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/6802d25f66d0fe349522a40dd1fabbe3.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/23d406ba07b143b7f373a24fb91849d7.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/47914bba7d852657c1426d44cb47dc88.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/b86051e60d4ce0d191d4a3c20cf8d3c1.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/e852dba8961cecb74c8f15390f5820e1.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/1b44a8c65ca4d183a8d515b2ea88a7ff.png">
+<meta property="og:image" content="f:%5CTemp%5Cmic%5Cclip_image238-1668736487980119.gif">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/9ab82ac26aa8d41e20ceda41d5dd2285.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/6618cf74312d2da46ba57373ec22fd1a.png">
+<meta property="og:image" content="f:%5CTemp%5Cmic%5Cclip_image244-1668736487981122.gif">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/81d2ae6d322a10944e5fd261db4f448c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/7f412ae27a6aa618b5a08af98eb06c99.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/381123065a247a8f075dc3fb90c7a596.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/80fd773984ad9258ddac440e8b2eaf5c.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/79e88c6d75407cd3290c63270b91d97a.png">
+<meta property="og:image" content="f:%5CTemp%5Cmic%5Cclip_image256-1668736487981128.gif">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/cb19c6fbf82c394f86137278cbb69cbc.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/561029932f067399e4cfbb5b17e3de74.png">
+<meta property="article:published_time" content="2022-11-22T06:06:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="大学生竞赛">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/22/9936ecb5269b17c676dcedce91a3815e.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20221122/ctf/unctf-misc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>UNCTF-misc 大学生竞赛解析（二） | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221122/ctf/unctf-misc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UNCTF-misc 大学生竞赛解析（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-22 14:06:00" itemprop="dateCreated datePublished" datetime="2022-11-22T14:06:00+08:00">2022-11-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>作者：凉拌_@助安社区</strong></p>
+<h2 id="题目：MY-PICTURE"><a class="header-anchor" href="#题目：MY-PICTURE">¶</a>题目：MY PICTURE</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/9936ecb5269b17c676dcedce91a3815e.png" alt="img"></p>
+<p>打开发现是一个没后缀的文件</p>
+<span id="more"></span>
+<p><img src="https://static.sechelper.com/img/2022/11/22/73476aad79e582a2cc8f155a1099adfe.png" alt="img"></p>
+<p>010打开发现pk头判断应该为zip压缩包文</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/232bf9bb3f7092cc1bc8c45b79b8e79d.png" alt="img"></p>
+<p>解压后发现是一个不知名文件和一个乱的png图片</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/11c2d52a51b969cd08f132acb6a51c3d.png" alt="img"></p>
+<p>一般这种是高度或者宽度被修改，可以跑脚本修复，但还又一个文件先010打开看一下</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/bb801bf09fdf62c58d6257665c54ea95.png" alt="img"></p>
+<p>是一个乱码文件但有经验的可以发现有很多8E数据这可能是被8e异或过的文件</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/b613bd9552982ca0abc3480a8c1fb0e0.png" alt="img"></p>
+<p>我们需要异或还原，使用010工具</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/6c4a37a39bd7de19956c351d10495740.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/aa98fea70b6bd9ffffbc38a34871147a.png" alt="img"></p>
+<p>异或后发现是一个压缩包</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/f5b40b675ced3bf8480095b4694d244e.png" alt="img"></p>
+<p>改后缀解压后是一个py脚本，看功能应该就是恢复flag.png图片的脚本，尝试运行修复</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/ce5458953012df3467a17bf1ebeca06e.png" alt="img"></p>
+<p>发现报错找不到flag.jpg,脚本导入图片为jpg后缀，但我们的flag是png后缀的</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/3c180b00abc5ac3ec2eead97460c7f83.png" alt="img"></p>
+<p>修改一下脚本改flag.jpg为flag.png</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/4cd23b203bd87d0f34cb314041894f5d.png" alt="img"></p>
+<p>再次运行发现报错在13行显示索引超出范围</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/0371124ec47cdd50e92619ada29f042c.png" alt="img"></p>
+<p>有787和1200数字，和图片相关的2种这样的数据判断应该是长宽，查看一下图片像素</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/bf7c1e7748f4c9120318df6600756246.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/dc7f4836d5a509cfd144ccc85a9e204c.png" alt="img"></p>
+<p>分辨率果然是787 x 1200 ,报索超出范围，可能就是它长和宽数据调换了，长的数据被替换成宽的数据在调用长的数据时超出宽的范围就报错了，把787和1200的数据调换一下</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/effd8143c36cbb27a5145725572c6e3d.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/4a769e542b45315f6799fe5e88f45622.png" alt="img"></p>
+<p>运行没有报错，图片被修复，查看flag</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/f3e3c32ea42161a855022951258adf5b.png" alt="img"></p>
+<h2 id="题目：magic-word"><a class="header-anchor" href="#题目：magic-word">¶</a>题目：magic_word</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/a71be0a5137196c5d0c83055f4a25224.png" alt="img"></p>
+<p>题目有提示为乱码和零宽隐写</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/384d6a406b3235e258fca94a8997e6d6.png" alt="img"></p>
+<p>那该怎么分辨呢。。</p>
+<p>使用sublime，记事本，查看长度的时候异常，到空白处突然多了很多字符</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/f1181b165ab055aa644e864b62cf7723.png" alt="img"></p>
+<p>或者使用vim打开有有显示，使用sublime打开也有显示</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/03268c5d9a2e607d81ca641b00a83487.png" alt="img"></p>
+<p>解密网站：<a target="_blank" rel="noopener" href="https://330k.github.io/misc_tools/unicode_steganography.html">https://330k.github.io/misc_tools/unicode_steganography.html</a></p>
+<p>把文件的内容复制进去一键解码</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/1b3b4ba009b629e24e3636e64b72ca47.png" alt="img"></p>
+<p>扩展一些：如果看着是零宽隐写但解密不了可以看一下这个网站下面的选项</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/1e5ea245723c954086e414135d6b52a1.png" alt="img"></p>
+<p>观察使用那些可以显示出符号的文本打开器，观察符号都是些什么，再勾选上解密</p>
+<p>比如<img src="https://static.sechelper.com/img/2022/11/22/5aa955dcb4dba179477162cee9b126fc.png" alt="img"></p>
+<p>要选上U+200C 和 U+ FEFF选项,要是有&lt;0x202a&gt;那么要选上U+202A</p>
+<h2 id="题目：找得到我吗"><a class="header-anchor" href="#题目：找得到我吗">¶</a>题目：找得到我吗</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/604b763a0964d843bb53d645fa5efed9.png" alt="img"></p>
+<p>打开后显示是一个空的word文档</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/acf017b92cf4ec8b4b0ce83f36200117.png" alt="img"></p>
+<p><img src="F:%5CTemp%5Cmic%5Cclip_image180-166873648798090.gif" alt="img"><img src="https://static.sechelper.com/img/2022/11/22/e8682baac53bc5b72a673c8ca47fe77a.png" alt="img"></p>
+<p>把隐藏文字选项打开后ctrl + a 全选字体加颜色发现有猫腻</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/6955c99a2c4ed4d4979a09ef33b33471.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/2d1623092849d951ace8c34443f4fc9c.png" alt="img"><br>
+大概看一遍发现没有什么flag相关的东西，去别处看看。</p>
+<p>word文件其实也是一种特殊的zip压缩文件，所以我们可以改后缀为.zip解压文件，在里面搜索一下</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/5dba90ccf0d0366df9e251902818961b.png" alt="img"><img src="https://static.sechelper.com/img/2022/11/22/332267415fc0c0c230cf24ed134adb41.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/452e481d3baa1522f10b9ee6d90a8ab4.png" alt="img"></p>
+<p>在document.xml文件里搜索到了</p>
+<p>常见的搜索信息关键字有：flag , pass , password , key , f l a g , name , hint , secret</p>
+<h2 id="题目：syslog"><a class="header-anchor" href="#题目：syslog">¶</a>题目：syslog</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/65eacea9d9ec924c8b088a634c7e00d9.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/6da8da63c99e28e26841ece1b6299570.png" alt="img"></p>
+<p>打开压缩包需要密码，备注提示好好看压缩包，推断应该是压缩包文件里藏东西了，用binwalk分离下</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/32b5ea147266abede2a26aa70e8bcb42.png" alt="img"></p>
+<p>分离出了一个syslog文件结合题目名字sylog推断应该就是关键文件，打开记录了一些日志</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/e1543bbf25ecbeab9805d55abe5d0112.png" alt="img"></p>
+<p>搜索flag发现是个假的，但搜索password发现一串编码，最后有==号一般base64会有这个特征</p>
+<p>常用的搜索信息关键字有：flag , pass , password , key , f l a g , name , hint , secret</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/af605017222830c6e359c803bee15191.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/037841b9ecf9f8b9705e995f4ed28231.png" alt="img"></p>
+<p>经过测试发现是压缩包密码，成功解压后发现flag</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/f6cd89f7dd6d7e9a80f50bcf65bc5012.png" alt="img"></p>
+<h2 id="题目：社什么社"><a class="header-anchor" href="#题目：社什么社">¶</a>题目：社什么社</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/2b5311c7ba431c18675194d0cf565029.png" alt="img"></p>
+<p>打开文件发现是奇奇怪怪的符号组合，搜索一边有类似的明文或者编码，发现没有可能是没遇到过的编码但这是新生赛应该没这么难，要换一种思路</p>
+<p>(后面我会把遇到的所有密文和编码的特征图片都整合了)</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/c65e2625b1e7d88024581aa1fe828f70.png" alt="img"></p>
+<p>既然是社工题，还让找到地点，那说明应该会有图片，这会不会是一张特殊的图片，想起了看过的那种像素点跳舞的视频，我们把字体缩小，有些发现，一开始以为是布达拉宫，但不对，关键在于下方的这一块白色的很像水中月亮的倒影，按照这个思路来下方是水右上方一层一层的房子类似于古建筑，而且是一整排建筑都依靠在水的旁边，这是什么特征的建筑，我想到的是江南水乡。</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/d3dd849320bd6a325272f106df67e167.png" alt="img"></p>
+<p>!<img src="https://static.sechelper.com/img/2022/11/22/a0aac0c4ba1136eea5e4e99fb6ed6c88.png" alt="img"><img src="https://static.sechelper.com/img/2022/11/22/88a5cc9d149d57a5cbd6908b81f9295b.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/ef43a6c5ca6c84d5fcb501eab1ff3e04.png" alt="img"></p>
+<p>ok已经大体明确了，那么就要找了，但是水乡建筑群虽然不多但也不少一个个试很麻烦，还需要一个提示来缩小范围，但文件里找了半天确实没有任何提示，这时候我们再来审一遍题目</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/c4557f1b9a699586458d1e571f3a17c6.png" alt="img"></p>
+<p>出题人是湖南的，这是一个关键，我们去搜索湖南旅游景点发现有一座非常出名的古城</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/c94d9af3e7c741b9c3479111ff1d1c1f.png" alt="img"></p>
+<p>凤凰古城转md5大写后成功提交</p>
+<h2 id="题目：清和fan"><a class="header-anchor" href="#题目：清和fan">¶</a>题目：清和fan</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/6802d25f66d0fe349522a40dd1fabbe3.png" alt="img"></p>
+<p>解压压缩包后发现一个txt文件和一个压缩包</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/23d406ba07b143b7f373a24fb91849d7.png" alt="img"></p>
+<p>打开压缩包发现备注有信息告诉我们压缩包密码获取</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/47914bba7d852657c1426d44cb47dc88.png" alt="img"></p>
+<p>在b站搜索清和点击用户，发现第一个up粉丝最高，同时也是cos二次元up应该就是她了</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/b86051e60d4ce0d191d4a3c20cf8d3c1.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/e852dba8961cecb74c8f15390f5820e1.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/1b44a8c65ca4d183a8d515b2ea88a7ff.png" alt="img"></p>
+<p>获取时间和个人UID拼接压缩包密码 ： 836885_2022/05/20</p>
+<p><img src="F:%5CTemp%5Cmic%5Cclip_image238-1668736487980119.gif" alt="img"></p>
+<p>获取到一个图片和压缩包，应该就是通过图片找到密码解压，这里010打开和分离文件找不到密码，要用到zsteg工具</p>
+<p>zsteg可以检测PNG和BMP图片里的隐写数据，非常好用</p>
+<p>GitHub地址：<a target="_blank" rel="noopener" href="https://github.com/zed-0xff/zsteg">https://github.com/zed-0xff/zsteg</a></p>
+<p>一键使用方法：</p>
+<p>在linux中：zsteg MKM.png --all</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/9ab82ac26aa8d41e20ceda41d5dd2285.png" alt="img"></p>
+<p>密码直接就出来了，解压后给了一个音频和flag压缩包，应该是在音频中找到压缩包密码</p>
+<p>听一下音频，发现是不间断有高低起伏规律的声音，可以排查掉很多比如手机按键密码，摩斯密码，敲击码，英语听力等，关于音频隐藏就那几种，感觉以前听过是根据声音画图的那种。</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/6618cf74312d2da46ba57373ec22fd1a.png" alt="img"></p>
+<p>是叫sstv慢扫描电视传输</p>
+<p><img src="F:%5CTemp%5Cmic%5Cclip_image244-1668736487981122.gif" alt="img"></p>
+<p>这里推荐一个工具，是github上一位师傅写的</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/colaclanth/sstv.git">https://github.com/colaclanth/sstv.git</a></p>
+<p>百度链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1zTGzMXMBzRiV-Cc0Gbsvvw?pwd=8888">https://pan.baidu.com/s/1zTGzMXMBzRiV-Cc0Gbsvvw?pwd=8888</a></p>
+<p>用法：</p>
+<p>先在下载文件的根目录下python <a target="_blank" rel="noopener" href="http://setup.py">setup.py</a> install</p>
+<p>在使用sstv -d 神秘电报.wav -o flag.png</p>
+<p>获取密码<img src="https://static.sechelper.com/img/2022/11/22/81d2ae6d322a10944e5fd261db4f448c.png" alt="img">V@mpi</p>
+<p>解压后文件打开发现是零宽字符，网站解密出flag</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/7f412ae27a6aa618b5a08af98eb06c99.png" alt="img"></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/381123065a247a8f075dc3fb90c7a596.png" alt="img"></p>
+<h2 id="题目：芝麻开门"><a class="header-anchor" href="#题目：芝麻开门">¶</a>题目：芝麻开门</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/80fd773984ad9258ddac440e8b2eaf5c.png" alt="img"></p>
+<p>2个文件，其中key给出了密码</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/79e88c6d75407cd3290c63270b91d97a.png" alt="img"></p>
+<p><img src="F:%5CTemp%5Cmic%5Cclip_image256-1668736487981128.gif" alt="img"></p>
+<p>base64解码后是key1 这个密码应该会和flag.png文件有关，而需要密码的图片隐写有一个lsb隐写工具</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/cb19c6fbf82c394f86137278cbb69cbc.png" alt="img"></p>
+<p><a target="_blank" rel="noopener" href="http://lsb.py">lsb.py</a> extract &lt;stego_file&gt; &lt;out_file&gt; <password></p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/561029932f067399e4cfbb5b17e3de74.png" alt="img"></p>
+<p>工具链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1cjsy8og-ue358zpjpILX-Q?pwd=8888">https://pan.baidu.com/s/1cjsy8og-ue358zpjpILX-Q?pwd=8888</a></p>
+<h2 id="题目：base64隐写"><a class="header-anchor" href="#题目：base64隐写">¶</a>题目：base64隐写</h2>
+<p>最后再说一下贝斯家族的侵略里面明文攻击获取的几千行base64密文其实是base隐写而不是base加密。base64其实是可以隐写的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: gbk -*-</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"> <span class="keyword">def</span> <span class="title function_">int2Bin</span>(<span class="params">digit</span>):</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">bin</span>(digit)[<span class="number">2</span>:] <span class="comment">#将索引转成二进制，去掉&#x27;0b&#x27;;</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">def</span> <span class="title function_">binAsc</span>(<span class="params">string</span>):    <span class="comment">#二进制转成ASCII码</span></span><br><span class="line">  temp = <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">int</span>(<span class="built_in">len</span>(string) / <span class="number">8</span>)):</span><br><span class="line">    temp += <span class="built_in">chr</span>(<span class="built_in">int</span>(string[i * <span class="number">8</span> : i* <span class="number">8</span> + <span class="number">8</span>] , <span class="number">2</span>))</span><br><span class="line">  <span class="keyword">return</span> temp</span><br><span class="line"></span><br><span class="line"> <span class="keyword">def</span> <span class="title function_">readBase64FromFile</span>(<span class="params">filename</span>):</span><br><span class="line">  Base64Char = <span class="string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;</span>   <span class="comment">#Base64字符集 已按照规范排列</span></span><br><span class="line">  result = <span class="string">&#x27;&#x27;</span></span><br><span class="line">  <span class="keyword">with</span> <span class="built_in">open</span>(filename ,<span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> data <span class="keyword">in</span> f.readlines():</span><br><span class="line">     <span class="keyword">if</span> data.find(<span class="string">&#x27;==&#x27;</span>) &gt; <span class="number">0</span>:</span><br><span class="line">       result += int2Bin(Base64Char.index(data[-<span class="number">4</span>]))[-<span class="number">4</span>:]  <span class="comment">#根据隐写原理，‘==’情况取等号前最后一个字符转换后取后4位</span></span><br><span class="line">     <span class="keyword">elif</span> data.find(<span class="string">&#x27;=&#x27;</span>) &gt; <span class="number">0</span>:</span><br><span class="line">       result += int2Bin(Base64Char.index(data[-<span class="number">3</span>]))[-<span class="number">2</span>:]  <span class="comment">#根据隐写原理，‘=’情况取等号前最后一个字符转换后取后2位</span></span><br><span class="line">  <span class="built_in">print</span>(binAsc(result))</span><br><span class="line"></span><br><span class="line"> readBase64FromFile(<span class="string">&#x27;flag.txt&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%AB%9E%E8%B5%9B/" rel="tag"># 大学生竞赛</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20221118/ctf/unctf-web/" rel="prev" title="UNCTF-web 大学生竞赛解析（一）">
+      <i class="fa fa-chevron-left"></i> UNCTF-web 大学生竞赛解析（一）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20221123/vulnerability-researching/ghostcat-CVE-2020-1938/" rel="next" title="幽灵猫（CVE-2020-1938）- 任意文件读取漏洞">
+      幽灵猫（CVE-2020-1938）- 任意文件读取漏洞 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

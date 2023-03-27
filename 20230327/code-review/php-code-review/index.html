@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="¶前言 官方文档：php.net  php官方文档是非常详情，好用的，在遇到不清楚作用的函数时可以进行查询 白盒测试做代码审计最主要的知识是要去了解一个漏洞应该有哪些防御方式，因为大部分的漏洞都是因为修复没有做的全面，或者修复没有考虑到一些情况导致漏洞。 MVC： C：分发处理请求网站的逻辑 M：处理和数据库相关的操作 V：显示给用户的内容 ¶代码审计流程 ¶正向查找流程 a. 从入口点函数出发（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:url" content="https://blog.sechelper.com/20230327/code-review/php-code-review/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="¶前言 官方文档：php.net  php官方文档是非常详情，好用的，在遇到不清楚作用的函数时可以进行查询 白盒测试做代码审计最主要的知识是要去了解一个漏洞应该有哪些防御方式，因为大部分的漏洞都是因为修复没有做的全面，或者修复没有考虑到一些情况导致漏洞。 MVC： C：分发处理请求网站的逻辑 M：处理和数据库相关的操作 V：显示给用户的内容 ¶代码审计流程 ¶正向查找流程 a. 从入口点函数出发（">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/4c5b04593d276630d656b309748c2635.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/773b4680008c6372db041770fbff4669.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/cdf2b976d9deec5d9c5791dfd06f48d6.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/b6a38ff07e2f9a91202ee886c2df5626.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/c3a20d6a06a18a4ad0488d2749c563eb.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/e57dff2a97d29c0cf63a015c235bb290.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/6a221b9e530f29b079434bbe99ce2c5f.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/073b8cd2a93569b53610374f79059c11.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/27054eb67d00b559733392f270fc24bb.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/d716b2887e0cb09b6259a9b6af9a124d.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/b797eff7c8bd77aa6be901b48c39a22a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/c526c0a9d94a32dbe28b4af6e96b7cec.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/505e89bd78b1cc95e8ed884b7dc431de.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/5fdc083edaa3c242f56ddd8fe4e6a339.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/80e6832e66d84abbcf48c8a2c7945742.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/4c56a4854a0ee3300f100eeaf3ecf066.png">
+<meta property="article:published_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="助安社区,渗透测试,信息安全,网络安全,安全入门,代码审计,应急响应,web安全,系统安全,漏洞">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/22/4c5b04593d276630d656b309748c2635.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20230327/code-review/php-code-review/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title> | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/code-review/php-code-review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>官方文档：<a target="_blank" rel="noopener" href="http://php.net">php.net</a><br>
+<img src="https://static.sechelper.com/img/2022/11/22/4c5b04593d276630d656b309748c2635.png" alt="image.png"><br>
+php官方文档是非常详情，好用的，在遇到不清楚作用的函数时可以进行查询</p>
+<p>白盒测试做代码审计最主要的知识是要去了解一个漏洞应该有哪些防御方式，因为大部分的漏洞都是因为修复没有做的全面，或者修复没有考虑到一些情况导致漏洞。<br>
+MVC：<br>
+C：分发处理请求网站的逻辑<br>
+M：处理和数据库相关的操作<br>
+V：显示给用户的内容</p>
+<h2 id="代码审计流程"><a class="header-anchor" href="#代码审计流程">¶</a>代码审计流程</h2>
+<h3 id="正向查找流程"><a class="header-anchor" href="#正向查找流程">¶</a>正向查找流程</h3>
+<p>a. 从入口点函数出发（如index.php）<br>
+b. 找到控制器，理解URL派发规则（URL具体映射到哪个具体的代码里）<br>
+c. 跟踪控制器调用，以理解代码为目标进行源代码阅读<br>
+d. 最终在阅读代码的过程和尝试中，可能发现漏洞</p>
+<p>本质：程序员疏忽或逻辑问题导致漏洞</p>
+<p>特点：</p>
+<ol>
+<li>复杂：需要极其了解目标源码的功能与框架</li>
+<li>跳跃性大：涉及M/V/C/Service/Dao等多个层面</li>
+<li>漏洞的组合：通常是多个漏洞的组合，很可能存在逻辑相关的漏洞</li>
+</ol>
+<h3 id="反向查找流程"><a class="header-anchor" href="#反向查找流程">¶</a>反向查找流程</h3>
+<p>a. 通过危险函数，回溯可能存在的漏洞<br>
+1. 查找可控变量<br>
+2. 传递的过程中触发漏洞</p>
+<p>特点：</p>
+<ol>
+<li>与上下文无关</li>
+<li>危险函数，调用即漏洞</li>
+</ol>
+<p>代码审计工具功能大多就是这个原理</p>
+<h3 id="双向查找流程（手动审计主要方式）"><a class="header-anchor" href="#双向查找流程（手动审计主要方式）">¶</a>双向查找流程（手动审计主要方式）</h3>
+<ol>
+<li>略读代码，了解框架（正向流程，如：网站都有哪些功能，什么样的架构如mvc：它的m在哪v,c在哪，用了什么模板引擎，是否用了orm（如果使用了ORM那么sql注入就很少了，如果没用是手工写的sql语句，可以关注是否存在sql漏洞）等…)</li>
+<li>是否有全局过滤机制
+<ol>
+<li>有：是否可以绕过
+<ol>
+<li>可以：寻找漏洞触发点（反向查找流程，找危险函数）</li>
+<li>不可以：寻找没有过滤的变量</li>
+</ol>
+</li>
+<li>没有：那么就看它具体是如何处理的,具体代码具体分析
+<ol>
+<li>有处理：寻找遗漏的处理点（如忘记处理的地方或者处理不太正确的地方）</li>
+<li>完全没有处理：可以挖成筛子（很少）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>3.找到了漏洞点，漏洞利用是否有坑</p>
+<p>根源：理解程序执行过程，找寻危险逻辑<br>
+特点：<br>
+高效：如挖隧道，双向开工，时间减半（不需要去完全理解网站内部原理和函数作用)<br>
+知识面广：需要同时掌握正向，反向挖掘技巧，并进行结合<br>
+以及所有正向，反向的优点</p>
+<h2 id="SQL注入漏洞挖掘技巧"><a class="header-anchor" href="#SQL注入漏洞挖掘技巧">¶</a>SQL注入漏洞挖掘技巧</h2>
+<p>PHP+mysql链接方式有：<br>
+mysql（废弃，但老的仍然有）<br>
+mysqli<br>
+PDO</p>
+<h3 id="sql注入常见过滤方法："><a class="header-anchor" href="#sql注入常见过滤方法：">¶</a>sql注入常见过滤方法：</h3>
+<p><strong>intval：</strong>							把用户输入的数字后面的所有不是数字的都过滤掉<br>
+<strong>addslashes：</strong>				  把 ’ 前加\转义掉<br>
+<strong>mysql_real_escape：</strong>	和第二个类似，但会考虑用户输入和mysql的编码，避免像宽字节注入问题</p>
+<p><strong>mysqli_escape_string</strong> / <strong>mysqli_real_escape_string</strong> / <strong>mysqli::escape_string</strong>  （和mysqli搭配使用，和前面的功能类似）和他们的差别是会主动加引号包裹</p>
+<p><strong>PDO:</strong>	quote</p>
+<p><strong>参数化查询</strong></p>
+<h3 id="常见注入过滤绕过方法："><a class="header-anchor" href="#常见注入过滤绕过方法：">¶</a>常见注入过滤绕过方法：</h3>
+<p>intval：不知道<br>
+addslashes  /  mysql_real_escape<br>
+1.宽字节注入<br>
+2.数字型sql语句<br>
+3.寻找字符串转换函数（传入编码好的字符绕过过滤，在后面被转换成sql语句）<br>
+urldecode<br>
+base64_decode<br>
+iconv<br>
+json_decode<br>
+stripshasles<br>
+simple_xml_loadstring<br>
+例如：传入id被过滤但后面有一处代码是解码base64，所以我们可以传入 ’ 的base64编码绕过</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$id</span> = <span class="title function_ invoke__">addslashes</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>]);</span><br><span class="line">....</span><br><span class="line"><span class="variable">$id</span> = <span class="title function_ invoke__">base64_decode</span>(<span class="variable">$id</span>);</span><br><span class="line">....</span><br><span class="line"><span class="variable">$sql</span> = <span class="string">&quot;select * from flag where id = &#x27;<span class="subst">$id</span>&#x27;&quot;</span>;   </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>mysqli::escape_string  //  PDO::quote<br>
+1.宽字节注入<br>
+参数化查询<br>
+1.寻找非sql值的位置</p>
+<h3 id="开发者容易遗漏得输入点"><a class="header-anchor" href="#开发者容易遗漏得输入点">¶</a>开发者容易遗漏得输入点</h3>
+<ol>
+<li>
+<p>HTTP头</p>
+<p>a. X-Forwarded-For</p>
+<p>b. User-Agent</p>
+<p>c. Referer</p>
+</li>
+<li>
+<p>PHP_SELF（访问的页面url名，但用户可控）</p>
+</li>
+<li>
+<p>REQUEST_URI（用户请求得完整路径）</p>
+</li>
+<li>
+<p>文件名 $_FILES[][name]</p>
+</li>
+<li>
+<p>php://input   (post穿进去得内容)</p>
+</li>
+</ol>
+<p>引入单引号(转义符)的方法（‘号被过滤，看后面有没有可以引入的地方）<br>
+stripslashes<br>
+base64_decode<br>
+urldecode<br>
+substr<br>
+iconv<br>
+str_replace(‘0’,’',$sql)<br>
+xml<br>
+json_encode</p>
+<h2 id="任意文件操作"><a class="header-anchor" href="#任意文件操作">¶</a>任意文件操作</h2>
+<p>PHP上传的文件会被保存在$_FILES下</p>
+<p>PHP文件操作函数汇总</p>
+<ol>
+<li>文件包含
+<ol>
+<li>include/require/include_once/require_once/spl_autoload</li>
+</ol>
+</li>
+<li>文件读取
+<ol>
+<li>file_get_contents/fread/readfile/file/ highlight_file/show_source</li>
+</ol>
+</li>
+<li>文件写入
+<ol>
+<li>file_put_contents/fwrite/mkdir/fputs</li>
+</ol>
+</li>
+<li>文件删除
+<ol>
+<li>unlink/rmdir</li>
+</ol>
+</li>
+<li>文件上传
+<ol>
+<li>move_uploaded_file/copy/rename</li>
+</ol>
+</li>
+</ol>
+<h3 id="文件上传漏洞"><a class="header-anchor" href="#文件上传漏洞">¶</a>文件上传漏洞</h3>
+<p>文件上传流程：</p>
+<ol>
+<li>
+<p>检查文件大小，后缀，类型</p>
+</li>
+<li>
+<p>检查文件内容（如文件头，尾等）</p>
+</li>
+<li>
+<p>提取文件后缀</p>
+</li>
+<li>
+<p>生成新文件名</p>
+</li>
+<li>
+<p>将上传临时文件拷贝到新文件名位置</p>
+</li>
+</ol>
+<p>文件上传逻辑常见错误</p>
+<ol>
+<li>只检查文件类型不检查文件后缀</li>
+<li>文件后缀黑名单有遗漏</li>
+<li>使用原始文件名，导致\0截断（一般没有了）</li>
+<li>前端检验</li>
+</ol>
+<h3 id="文件包含漏洞"><a class="header-anchor" href="#文件包含漏洞">¶</a>文件包含漏洞</h3>
+<p>首先明确一点，文件包含漏洞不等于文件读取漏洞</p>
+<p>危害：文件读取  /  代码执行<br>
+常见位置：模板文件名（切换模板）<br>
+语言文件名（切换语言）<br>
+常见利用：<br>
+要寻找可被包含利用的文件：上传文件，临时文件，Session文件，日志文件<br>
+后缀无法控制的情况：\0截断，协议利用<br>
+PHP5.3.4+ 对包含\0的文件操作函数进行了限制，基本上没有了</p>
+<h4 id="案例："><a class="header-anchor" href="#案例：">¶</a>案例：</h4>
+<p>Metinfo 5.3.10版本Getshell漏洞<br>
+可控制的部分：include $file . ‘.php’;<br>
+http协议利用：<a target="_blank" rel="noopener" href="http://xxxx.com/1.php">http://xxxx.com/1.php</a> (远程文件包含，一般不开设置不能用)<br>
+PHP协议利用：zip/phar<br>
+制作2.php的压缩包 -&gt; 2.zip -&gt; 改后缀为 -&gt; 2.jpg<br>
+在服务器中上传2.jpg文件<br>
+再利用：zip://var/www/upload/head/2.jpg#2.php （#意思是访问zip内部的子文件-&gt;2.php）</p>
+<h3 id="文件删除漏洞"><a class="header-anchor" href="#文件删除漏洞">¶</a>文件删除漏洞</h3>
+<p>危害：<br>
+删除服务器任意文件，DOS服务器<br>
+删除安装锁文件，导致目标环境可被重新安装<br>
+重新安装  -》任意重置管理员密码</p>
+<h4 id="案例"><a class="header-anchor" href="#案例">¶</a>案例</h4>
+<p>上传新头像会把老头像自动删除，但可以把删除老图像的地址换成别的造成任意文件删除</p>
+<h2 id="命令执行"><a class="header-anchor" href="#命令执行">¶</a>命令执行</h2>
+<p>命令执行指的是执行系统命令 （ls）<br>
+可以在这个网站查询复制命令的意思<br>
+代码执行指的是PHP的代码执行<br>
+本质：用户输入无过滤，拼接到了系统命令中<br>
+PHP命令执行函数：</p>
+<ol>
+<li>system</li>
+<li>passthru</li>
+<li>exec</li>
+<li>shell_exec</li>
+<li>popen  (常见的就是上面这5种)</li>
+<li>proc_open</li>
+<li>pcntl_exec</li>
+<li>dl</li>
+</ol>
+<p>要像命令执行很难，要先学会如何正确防御命令注入，才能分辨出哪些没有正确处理</p>
+<p>防御PHP命令注入漏洞：<br>
+PHP中只能使用escapeshellcmd和escapeshellatg进行命令参数的过滤</p>
+<ol>
+<li>先区分这2个函数：</li>
+</ol>
+<p>​		<strong>escapeshellcmd</strong><br>
+​		<strong>escapeshellatg</strong><br>
+​				escapeshellatg没问题但escapeshellatg是只能限制逃逸不出单引号’但有些命令的不常用参数是可以任意命令执行</p>
+<ol start="2">
+<li>要把用户的输入放在值里</li>
+</ol>
+<p>​	如果把输入直接是键值对可能会造成漏洞</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &#123;$query&#125;</span><br></pre></td></tr></table></figure>
+<p>有一些命令的不常用参数可能会导致一些意外比。直接使用 | 等命令跳出前面的命令实现命令执行<br>
+​	修复：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep -i &#123;$query&#125;</span><br><span class="line">grep -- &#123;$query&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="XML实体注入漏洞"><a class="header-anchor" href="#XML实体注入漏洞">¶</a>XML实体注入漏洞</h2>
+<p>PHP XML解析函数<br>
+simplexml_load_file<br>
+simplexml_load_string<br>
+SimpleXMLElement<br>
+DOMDocument<br>
+xml_parse<br>
+如果发现有这几个函数的地方，基本上可以确定百分之80有xml实体注入</p>
+<p>libxml_disable_entity_loader(true)来禁用掉外部实体的加载，就不存在xml实体注入</p>
+<p>PHP中XXE漏洞逐渐减少，到现在的版本里几乎已经绝迹了，因为PHP XML操作依赖libxml库<br>
+但在libxml2.9.0+默认是关闭了xml外部实体解析开关的，可以顺势挖一下也比较简单</p>
+<p>方法：暴力搜索就行，查看有没有xml解析函数，再看禁没禁止外部加载</p>
+<p>无输出点的xxe漏洞：有时候可能存在xxe漏洞但并不会在页面中显示，要利用到blind-xxe<br>
+Blind XXE原理：<br>
+利用XML外部实体功能读取文件<br>
+利用XML外部实体功能发送HTTP请求<br>
+利用HTTP协议传递文件内容</p>
+<h2 id="前端漏洞："><a class="header-anchor" href="#前端漏洞：">¶</a>前端漏洞：</h2>
+<p>建议代码审计不去主要找这种漏洞，进行黑盒测试就能挖到的漏洞，在代码审计过程中没必要太注重</p>
+<p>百盒测试中可以关注前端漏洞类型：<br>
+XSS漏洞<br>
+CSRF漏洞<br>
+Jsonp劫持漏洞（前面三个关注多）<br>
+URL跳转漏洞（不多）<br>
+点击劫持漏洞（不多）</p>
+<h3 id="xss"><a class="header-anchor" href="#xss">¶</a>xss</h3>
+<p>在白盒测试中寻找XSS漏洞：<br>
+常见防护方法：<br>
+htmlspecialchars()把用户输入转义成html实体字符（这时候是绝对没有xss的）<br>
+strip_tags()	从字符中去除HTML和PHP标记</p>
+<p>自动化FUZZ -》寻找输出函数（危险函数）<br>
+富文本XSS挖掘<br>
+什么是富文本：本质就是html，网站给你一个有很多功能的输入框</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/773b4680008c6372db041770fbff4669.png" alt="image.png"><br>
+为什么出现富文本xss：<br>
+前面2种防护方法要么就是转义掉要么就是直接去除掉，但在一些写文章，或者发帖的需要提交html富文本，如果使用前面的方法那么提交的就不是富文本了，会影响业务。<br>
+常见富文本过滤方法：<br>
+会使用富文本的xss过滤器：把用户输入的恶意标签，属性去掉<br>
+黑名单（很难过滤掉该过滤的标签属性)<br>
+白名单</p>
+<h3 id="CSRF"><a class="header-anchor" href="#CSRF">¶</a>CSRF</h3>
+<p>在白盒测试中寻找CSRF漏洞：<br>
+检查Referer（来自于当前域名，可信域名，才会执行）<br>
+（可以看正则匹配全面吗，比如正则匹配xxx.nte后缀的域名，那么可以注册个cxxx.nte域名绕过）<br>
+检查Token<br>
+（寻找跨域漏洞，要去跨域请求某一个网站内容的时候需要先去请求这个网站有没有crossdomain.xml，<br>
+要根据这里面配置的信息来认证是否允许用户去发送一个跨站的请求）<br>
+Flash<br>
+Jsonp<br>
+CORS   黑盒测试就可以找到这三个</p>
+<h3 id="Jsonp劫持漏洞"><a class="header-anchor" href="#Jsonp劫持漏洞">¶</a>Jsonp劫持漏洞</h3>
+<p>在白盒测试中寻找Jsonp劫持漏洞：<br>
+Jsonp介绍：Jsonp是 json 的一种&quot;使用模式&quot;   可以让网页从别的域名（网站）那获取资料，即跨域读取数据；<br>
+它利用的是script标签的 src 属性不受同源策略影响的特性，使网页可以得到从其他来源动态产生的 json 数据，因此可以用来实现跨域读取数据。<br>
+更通俗的说法：JSONP 就是利用 <script> 标签的跨域能力实现跨域数据的访问，请求动态生成的 JavaScript 脚本同时带一个 callback 函数名作为参数。服务端收到请求后，动态生成脚本产生数据，并在代码中以产生的数据为参数调用 callback 函数。</p>
+<p>原理：当网站通过 JSONP 方式传递用户敏感信息时，攻击者可以伪造 JSONP 调用页面，诱导被攻击者访问来	达到窃取用户信息的目的；jsonp 数据劫持就是攻击者获取了本应该传给网站其他接口的数据。<br>
+和 CSRF 类似，都需要用户交互，而 CSRF 主要是以用户的账户进行增删改的操作，jsonp 则主要用来劫持数据。</p>
+<p>Jsonp借此漏洞常见位置：<br>
+web框架默认支持ajax + jsonp方式请求<br>
+程序员主动开发需要支持jsonp的应用<br>
+Jsonp劫持防御：</p>
+<ol>
+<li>Referer检查</li>
+<li>Toke</li>
+</ol>
+<h2 id="反序列化漏洞"><a class="header-anchor" href="#反序列化漏洞">¶</a>反序列化漏洞</h2>
+<p>几乎所有语言都有序列化功能，java，php，python都有相关漏洞<br>
+反序列化分类：<br>
+反序列化触发执行任意代码 -》python<br>
+(python的反序列化其实是一门真正的语言，是可以直接进行执行代码的)<br>
+反序列化后，通过已有代码利用链，间接执行任意代码 -》 PHP/java</p>
+<p>PHP反序列化注意函数：<br>
+serialize（序列化函数）<br>
+unserialize（反序列化函数）<br>
+PHP反序列化特点：<br>
+引入除资源型外任意类型变量<br>
+无法引入函数 -》不能直接执行代码<br>
+迂回战术<br>
+寻找程序中可能存在的漏洞的类<br>
+实例化类对象 -》 触发漏洞</p>
+<p>漏洞挖掘过程：<br>
+寻找调用反序列化函数的位置<br>
+寻找包含危险方法的类<br>
+反序列化上下文是否包含该类<br>
+包含：直接生成该类，触发漏洞<br>
+不包含：寻找引用链<br>
+怎么利用链，怎么构造利用语句，还有phar反序列化等有很多后面再写<br>
+如果只是要找反序列化漏洞，那么找unserialize就够了</p>
+<h2 id="小技巧篇"><a class="header-anchor" href="#小技巧篇">¶</a>小技巧篇</h2>
+<p>代码审计明白了原理，明白了各种漏洞的修复方式，之后想要提高就要仰仗自己积累的一些小技巧<br>
+因为你会发现遇到的大部分有漏洞的代码前面都存在一些过滤，检查；<br>
+如果你知道一些技巧后会发现很多过滤，检查都是可以绕过的</p>
+<h3 id="现代web开发框架下的php漏洞"><a class="header-anchor" href="#现代web开发框架下的php漏洞">¶</a>现代web开发框架下的php漏洞</h3>
+<p>Laravel<br>
+symfony<br>
+slimphp<br>
+Yii2<br>
+特点：<br>
+所需PHP版本较高，\0截断等老漏洞绝迹<br>
+提供功能强大的ORM（即使想写出一个sql漏洞都难）<br>
+提供自动处理输出的模板引擎（想写出前端漏洞都难了，因为自带一些转义，实体化功能）<br>
+开发者可以通过composer找到任何需要的功能类，避免因为自己造轮子产生的漏洞<br>
+现代web开发框架安全思想<br>
+Secure by default 原则<br>
+文档中，会详细叙述可能出现的安全问题<br>
+挖掘思路<br>
+寻找框架本身的安全漏洞<br>
+寻找不规范的开发方式<br>
+寻找错误的配置（debug模式，日志记录等）<br>
+异常的利用（如果开启了debug或者会输出异常，可以构造异常抛出敏感信息，新的框架特有的漏洞老的几乎没有）<br>
+第三方服务利用<br>
+spl_autoload的利用</p>
+<h3 id="压缩炸弹："><a class="header-anchor" href="#压缩炸弹：">¶</a>压缩炸弹：</h3>
+<p>web应用执行了解压缩操作<br>
+黑客利用压缩包的一些特性，构造&quot;畸形&quot;压缩包<br>
+解压缩时将造成漏洞</p>
+<p>压缩炸弹惯用的方式<br>
+绕过文件检查失败后的删除操作<br>
+阻止压缩时的文件检查<br>
+绕过压缩时的文件检查<br>
+链接文件的利用<br>
+绕过文件检查失败后的删除操作：<br>
+案例：上传压缩包后，后端处理只能删除文件无法删除目录，导致shell</p>
+<p>阻止压缩时的文件检查<br>
+案例：压缩包解压失败，程序抛出错误并停止运行 -》 webshell保留<br>
+压缩包三个文件，一个正常图片，一个webshell，第三个文件压缩存在错误<br>
+绕过压缩时的文件检查<br>
+案例：使用…/解压到上层目录，；构造一个文件名为：…/…/webshell.php，会让后端解压到上层目录<br>
+而删除文件一般是在当前目录递归删除非法文件，不可能在根目录递归<br>
+链接文件的利用<br>
+后端解压后未判断文件类型，导致可以上传软链接文件，该软连接导致任意文件读取<br>
+压缩包是允许压缩软连接文件，也运行解压软连接文件；但文件上传传不了</p>
+<h3 id="条件竞争漏洞"><a class="header-anchor" href="#条件竞争漏洞">¶</a>条件竞争漏洞</h3>
+<p>条件竞争：web服务器都是多线程的，同时运行多人访问网站，理论是互相不影响的，但是php，Apache，Nginx只能保证php是不互相影响的，不能保证文件或者数据库链接是不互相影响的</p>
+<p>条件竞争漏洞挖掘方向：<br>
+上传后删除的利用<br>
+忘记上锁的数据库<br>
+鸡肋文件包含的妙用<br>
+上传后删除的利用：<br>
+上传压缩包后解压递归删除非法文件，但在这个过程中开启多个线程去访问解压出来的webshell，并在上层目录写入新的webshell；打一个时间差，在还没删除时利用，把webshell解压出来后面还有其他文件<br>
+发现一个文件上传的逻辑是在上传了后再删除，基本上就确定存在条件竞争漏洞</p>
+<h3 id="没上锁的数据库"><a class="header-anchor" href="#没上锁的数据库">¶</a>没上锁的数据库</h3>
+<p>案例：商场漏洞：<br>
+1.查询用户余额<br>
+2.查询购买商品的价格<br>
+3.判断用户余额&gt;商品价格<br>
+4.用户余额=用户余额 - 价格<br>
+如果第三步和第四步是单独的步骤，如果用多个线程去请求同时走到了第三步，判断都可以购买<br>
+购买完后同时走到第四步后同时减去价格，就会导致余额变负 -》成功购买多个商品</p>
+<p>鸡肋文件包含利用<br>
+文件包含漏洞需要找到一个能够包含的恶意文件，但网站没有能够上传文件的地方，也没有找到任何可以控制的文件</p>
+<p>​	寻找临时文件泄露点，文件上传的时候，用户会发送一个数据包给服务器，服务器会将数据包里的文件保存到当前的临时目录下，变成	临时文件，文件名随机，内容可以控制，phpinfo可以获取文件名<br>
+​	我们可以上传一个非常大的文件，需要10秒上传完成，临时文件上传完成后是会被删除的，再开多个线程去包含该文件，生成一个新的webshell</p>
+<h1>一些容易犯错的点</h1>
+<p>header(‘404’) 会给用户返回一个页面，但并不会阻止php解释器继续往下运行</p>
+<p>正则：应该要写判断只有的，错误写成包含有，那么就有漏洞</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!preg_match(<span class="string">&#x27;/liang|ban/i&#x27;</span>, $cmd))&#123;</span><br><span class="line">	exit(<span class="string">&quot;错误&quot;</span>)；</span><br><span class="line">&#125;</span><br><span class="line">cmd = union select <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> <span class="comment"># liang</span></span><br><span class="line">cmd = ls / | ban</span><br></pre></td></tr></table></figure>
+<p>它会查询传入的语句其实有DESC就绕过了但和DESC一块的有我们的其他命令</p>
+<h1>尝试审计代码</h1>
+<p>admin 后台管理目录<br>
+install 网站的安装目录<br>
+api 接口文件目录<br>
+data 系统处理数据相关目录<br>
+include 用来包含的全局文件<br>
+template 模板<br>
+css CSS样式表目录<br>
+images 系统图片存放目录<br>
+system  管理目录<br>
+函数集文件: 这类文件通常命名中包含functions或者common等关键字，这些文件里面是一些公共的函数，提供给其他文件统一调用，所以大多数文件都会在文件头部包含到它们，寻找这些文件一个非常好用的技巧就是去打开index.php或者一些功能性文件，在头部一般都能找到。<br>
+配置文件：这类文件通常命名里面包括config这个关键字，配置文件包括Web程序运行必须的功能性配置选项以及数据库等配置信息，从这个文件里面可以了解程序的小部分功能，另外看这个文件的时候注意观察配置文件中参数值是用单引号还是用的双引号包起来，如果是双引号，则很大可能会存在代码执行漏洞。<br>
+<a target="_blank" rel="noopener" href="https://github.com/source-trace/bluecms">https://github.com/source-trace/bluecms</a><br>
+<img src="https://static.sechelper.com/img/2022/11/22/cdf2b976d9deec5d9c5791dfd06f48d6.png" alt="image.png"><br>
+根据流程填完信息后又空白了，但没问题已经安装好了，访问index.php页面就好<br>
+<img src="https://static.sechelper.com/img/2022/11/22/b6a38ff07e2f9a91202ee886c2df5626.png" alt="image.png"><br>
+<img src="https://static.sechelper.com/img/2022/11/22/c3a20d6a06a18a4ad0488d2749c563eb.png" alt="image.png"><br>
+使用Seay工具自动扫描一下<br>
+<img src="https://static.sechelper.com/img/2022/11/22/e57dff2a97d29c0cf63a015c235bb290.png" alt="image.png"><br>
+先看第一个试试<br>
+<img src="https://static.sechelper.com/img/2022/11/22/6a221b9e530f29b079434bbe99ce2c5f.png" alt="image.png"><br>
+可以看到先是包含了一个common.inc.php的文件，其次如果有ad_id参数那么会经过trim函数的处理<br>
+再sql语句拼接时是没有单引号包裹的，可能存在问题<br>
+去看看包含的php文件。粗略的观察一下发现有对于$_GET进行处理<br>
+<img src="https://static.sechelper.com/img/2022/11/22/073b8cd2a93569b53610374f79059c11.png" alt="image.png"><br>
+if(!get_magic_quotes_gpc())，查看下函数意思<br>
+<img src="https://static.sechelper.com/img/2022/11/22/27054eb67d00b559733392f270fc24bb.png" alt="image.png"><br>
+就是一直是true，都会经过这个if语句里的处理；if语句的处理追踪一下deep_addslashes看看<br>
+<img src="https://static.sechelper.com/img/2022/11/22/d716b2887e0cb09b6259a9b6af9a124d.png" alt="image.png"><br>
+就是经过了addslashes的处理，再前面学习过这个函数就是对于单引号双引号反斜线和nul进行转义，但我们sql语句并没有被’'单引号包裹，这个过滤对于要审计的sql语句没有用；希望+1<br>
+看完包含的函数后在看一下trim函数有没有问题基本上就确定有没有sql注入了<br>
+么有定位到这个函数，查下官方手册发现是用来去除字符串首尾处的空白字符（或者其他字符）\t \n \r \0 \x0B<br>
+但只是去除首位的，语句中间的并不会，所以没影响；好理论确定存在注入了，实践开始<br>
+没有过滤扫描sql语句或者字母数字什么的，所以直接使用order查看下字段数<br>
+<img src="https://static.sechelper.com/img/2022/11/22/b797eff7c8bd77aa6be901b48c39a22a.png" alt="image.png"><br>
+可以看到查到8时报错并有返回说明确实存在注入，使用联合注入试下<br>
+<img src="https://static.sechelper.com/img/2022/11/22/c526c0a9d94a32dbe28b4af6e96b7cec.png" alt="image.png"><br>
+它是无回显的，可能要使用到时间盲注了，但在查看到网页源代码时发现<img src="https://static.sechelper.com/img/2022/11/22/505e89bd78b1cc95e8ed884b7dc431de.png" alt="image.png">不确定在试试<img src="https://static.sechelper.com/img/2022/11/22/5fdc083edaa3c242f56ddd8fe4e6a339.png" alt="image.png"><br>
+发现是有回显的，位数在7，在尝试查下表，嗯看来什么都可以查到<br>
+<img src="https://static.sechelper.com/img/2022/11/22/80e6832e66d84abbcf48c8a2c7945742.png" alt="image.png"><br>
+没有单引号，尝试下xss注入；也是存在的<br>
+<img src="https://static.sechelper.com/img/2022/11/22/4c56a4854a0ee3300f100eeaf3ecf066.png" alt="image.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20230327/ctf/volatility%E5%8F%96%E8%AF%81/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20230327/code-review/java-deserialization2/" rel="next" title="">
+       <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
