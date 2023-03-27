@@ -21,12 +21,12 @@
     var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="java安全 反序列化(二) ¶前言 寻找反序列化链(Gadget)   在项目里找漏洞 readObject里的漏洞一般比较少   寻找项目的依赖库类中的Gadget 一些依赖也会有反序列化的操作，如果jar包中的某些类在进行反序列化时有可控的点，就可以利用jar包中存在的漏洞来构造调用链   ¶ysoserial工具 ysoserial工具可以帮助我们在依赖库里面找到利用链。 1git clo">
+  <meta name="description" content="¶前言 寻找反序列化链(Gadget)   在项目里找漏洞 readObject里的漏洞一般比较少   寻找项目的依赖库类中的Gadget 一些依赖也会有反序列化的操作，如果jar包中的某些类在进行反序列化时有可控的点，就可以利用jar包中存在的漏洞来构造调用链   ¶ysoserial工具 ysoserial工具可以帮助我们在依赖库里面找到利用链。 1git clone https:&#x2F;&#x2F;gith">
 <meta property="og:type" content="article">
-<meta property="og:title" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:title" content="Java安全 反序列化(二)">
 <meta property="og:url" content="https://blog.sechelper.com/20230327/code-review/java-deserialization2/index.html">
 <meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
-<meta property="og:description" content="java安全 反序列化(二) ¶前言 寻找反序列化链(Gadget)   在项目里找漏洞 readObject里的漏洞一般比较少   寻找项目的依赖库类中的Gadget 一些依赖也会有反序列化的操作，如果jar包中的某些类在进行反序列化时有可控的点，就可以利用jar包中存在的漏洞来构造调用链   ¶ysoserial工具 ysoserial工具可以帮助我们在依赖库里面找到利用链。 1git clo">
+<meta property="og:description" content="¶前言 寻找反序列化链(Gadget)   在项目里找漏洞 readObject里的漏洞一般比较少   寻找项目的依赖库类中的Gadget 一些依赖也会有反序列化的操作，如果jar包中的某些类在进行反序列化时有可控的点，就可以利用jar包中存在的漏洞来构造调用链   ¶ysoserial工具 ysoserial工具可以帮助我们在依赖库里面找到利用链。 1git clone https:&#x2F;&#x2F;gith">
 <meta property="og:locale">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/ace03ab928792a8918ed428060700e51.png">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/d586a438e2cecae4d372a693d6c9e453.png">
@@ -34,10 +34,10 @@
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/0a370e8e9eba1c2a4529b7578d77d6f0.png">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/57872890ea984240bce96a69a9a0217a.png">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/b34a2b07c66d2e11c1a01deaa730237b.png">
-<meta property="article:published_time" content="2023-03-27T01:44:43.258Z">
-<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:published_time" content="2023-03-27T02:16:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T02:05:45.758Z">
 <meta property="article:author" content="狗头君师">
-<meta property="article:tag" content="助安社区,渗透测试,信息安全,网络安全,安全入门,代码审计,应急响应,web安全,系统安全,漏洞">
+<meta property="article:tag" content="渗透测试">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/30/ace03ab928792a8918ed428060700e51.png">
 
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title> | 助安社区 - 极度开放的网络安全自学社区</title>
+  <title>Java安全 反序列化(二) | 助安社区 - 极度开放的网络安全自学社区</title>
   
 
 
@@ -219,7 +219,7 @@ document.getElementById("qrcode-nav").hidden=true
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          Java安全 反序列化(二)
         </h1>
 
         <div class="post-meta">
@@ -228,8 +228,22 @@ document.getElementById("qrcode-nav").hidden=true
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              <time title="Created: 2023-03-27 10:16:00 / Modified: 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T10:16:00+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">反序列化</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a>
+                </span>
             </span>
 
           
@@ -250,8 +264,7 @@ document.getElementById("qrcode-nav").hidden=true
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1>java安全 反序列化(二)</h1>
-<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+        <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
 <p>寻找反序列化链(Gadget)</p>
 <ol>
 <li>
@@ -380,6 +393,9 @@ document.getElementById("qrcode-nav").hidden=true
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 渗透测试</a>
+          </div>
 
         
 
@@ -387,13 +403,10 @@ document.getElementById("qrcode-nav").hidden=true
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/20230327/code-review/php-code-review/" rel="prev" title="">
-      <i class="fa fa-chevron-left"></i> 
+    <a href="/20230327/code-review/php-code-review/" rel="prev" title="PHP代码审计">
+      <i class="fa fa-chevron-left"></i> PHP代码审计
     </a></div>
-      <div class="post-nav-item">
-    <a href="/20230327/penetration-testing-guide/xss-bypass/" rel="next" title="">
-       <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     

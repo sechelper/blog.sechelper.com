@@ -23,7 +23,7 @@
 
   <meta name="description" content="¶前言 官方文档：php.net  php官方文档是非常详情，好用的，在遇到不清楚作用的函数时可以进行查询 白盒测试做代码审计最主要的知识是要去了解一个漏洞应该有哪些防御方式，因为大部分的漏洞都是因为修复没有做的全面，或者修复没有考虑到一些情况导致漏洞。 MVC： C：分发处理请求网站的逻辑 M：处理和数据库相关的操作 V：显示给用户的内容 ¶代码审计流程 ¶正向查找流程 a. 从入口点函数出发（">
 <meta property="og:type" content="article">
-<meta property="og:title" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:title" content="PHP代码审计">
 <meta property="og:url" content="https://blog.sechelper.com/20230327/code-review/php-code-review/index.html">
 <meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
 <meta property="og:description" content="¶前言 官方文档：php.net  php官方文档是非常详情，好用的，在遇到不清楚作用的函数时可以进行查询 白盒测试做代码审计最主要的知识是要去了解一个漏洞应该有哪些防御方式，因为大部分的漏洞都是因为修复没有做的全面，或者修复没有考虑到一些情况导致漏洞。 MVC： C：分发处理请求网站的逻辑 M：处理和数据库相关的操作 V：显示给用户的内容 ¶代码审计流程 ¶正向查找流程 a. 从入口点函数出发（">
@@ -44,10 +44,10 @@
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/5fdc083edaa3c242f56ddd8fe4e6a339.png">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/80e6832e66d84abbcf48c8a2c7945742.png">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/4c56a4854a0ee3300f100eeaf3ecf066.png">
-<meta property="article:published_time" content="2023-03-27T01:44:43.258Z">
-<meta property="article:modified_time" content="2023-03-27T01:44:43.258Z">
+<meta property="article:published_time" content="2023-03-27T02:16:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T02:05:45.758Z">
 <meta property="article:author" content="狗头君师">
-<meta property="article:tag" content="助安社区,渗透测试,信息安全,网络安全,安全入门,代码审计,应急响应,web安全,系统安全,漏洞">
+<meta property="article:tag" content="代码审计">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/22/4c5b04593d276630d656b309748c2635.png">
 
@@ -64,7 +64,7 @@
   };
 </script>
 
-  <title> | 助安社区 - 极度开放的网络安全自学社区</title>
+  <title>PHP代码审计 | 助安社区 - 极度开放的网络安全自学社区</title>
   
 
 
@@ -229,7 +229,7 @@ document.getElementById("qrcode-nav").hidden=true
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          PHP代码审计
         </h1>
 
         <div class="post-meta">
@@ -238,8 +238,18 @@ document.getElementById("qrcode-nav").hidden=true
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              <time title="Created: 2023-03-27 10:16:00 / Modified: 10:05:45" itemprop="dateCreated datePublished" datetime="2023-03-27T10:16:00+08:00">2023-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PHP/" itemprop="url" rel="index"><span itemprop="name">PHP</span></a>
+                </span>
             </span>
 
           
@@ -699,6 +709,9 @@ if(!get_magic_quotes_gpc())，查看下函数意思<br>
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># 代码审计</a>
+          </div>
 
         
 
@@ -706,12 +719,12 @@ if(!get_magic_quotes_gpc())，查看下函数意思<br>
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/20230327/ctf/volatility%E5%8F%96%E8%AF%81/" rel="prev" title="">
+    <a href="/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA/" rel="prev" title="">
       <i class="fa fa-chevron-left"></i> 
     </a></div>
       <div class="post-nav-item">
-    <a href="/20230327/code-review/java-deserialization2/" rel="next" title="">
-       <i class="fa fa-chevron-right"></i>
+    <a href="/20230327/code-review/java-deserialization2/" rel="next" title="Java安全 反序列化(二)">
+      Java安全 反序列化(二) <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

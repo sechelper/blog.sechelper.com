@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://blog.sechelper.com/20220907/penetration-testing-guide/scan-range-address/</loc>
+    <loc>https://blog.sechelper.com/20230327/code-review/java-deserialization2/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
-    <loc>https://blog.sechelper.com/20230327/penetration-testing-guide/sub-domains/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.sechelper.com/20221101/penetration-testing-guide/watering-hole-attack/</loc>
+    <loc>https://blog.sechelper.com/20230327/code-review/php-code-review/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
     <loc>https://blog.sechelper.com/20230327/penetration-testing-guide/xss-bypass/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20230327/penetration-testing-guide/sql-inject-principle/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20220907/penetration-testing-guide/scan-range-address/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20221101/penetration-testing-guide/watering-hole-attack/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
@@ -37,14 +49,6 @@
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
-    <loc>https://blog.sechelper.com/20230327/code-review/java-deserialization2/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.sechelper.com/20230327/code-review/php-code-review/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
     <loc>https://blog.sechelper.com/20221122/ctf/unctf-misc/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
@@ -65,15 +69,7 @@
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
-    <loc>https://blog.sechelper.com/20230327/emergency-response/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%89%8B%E5%86%8C@%E5%8A%A9%E5%AE%89%E7%A4%BE%E5%8C%BA-v1.0.3/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
     <loc>https://blog.sechelper.com/20221012/notice/about-zhuan-plan/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.sechelper.com/20230327/penetration-testing-guide/SQL%E6%B3%A8%E5%85%A5%E7%9A%84%E6%9C%AC%E8%B4%A8/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
