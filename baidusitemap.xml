@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.sechelper.com/20230326/penetration-testing-guide/http-security-policy/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20230326/ctf/volatility/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20230325/penetration-testing-guide/burpsuite-plugin-autorize/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20221001/penetration-testing-guide/chatgpt-penetration-testing/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20230325/penetration-testing-guide/cnvd-2022-10270/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20230325/penetration-testing-guide/cve-2023-23752/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.sechelper.com/20220327/security-programming/golang-cross-build/</loc>
+    <lastmod>2023-03-27</lastmod>
+  </url>
+  <url>
     <loc>https://blog.sechelper.com/20230327/code-review/java-deserialization2/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
@@ -33,10 +61,6 @@
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
-    <loc>https://blog.sechelper.com/20220913/share/public/resource/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
     <loc>https://blog.sechelper.com/20220907/code-review/deployment-configuration-java/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
@@ -50,10 +74,6 @@
   </url>
   <url>
     <loc>https://blog.sechelper.com/20221118/ctf/unctf-web/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.sechelper.com/20230327/ctf/volatility%E5%8F%96%E8%AF%81/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>
@@ -86,10 +106,6 @@
   </url>
   <url>
     <loc>https://blog.sechelper.com/20221011/penetration-testing-guide/git-leak/</loc>
-    <lastmod>2023-03-27</lastmod>
-  </url>
-  <url>
-    <loc>https://blog.sechelper.com/20230327/penetration-testing-guide/http-security-policy/</loc>
     <lastmod>2023-03-27</lastmod>
   </url>
   <url>

@@ -566,7 +566,7 @@ V：显示给用户的内容</p>
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/ctf/volatility%E5%8F%96%E8%AF%81/">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230326/penetration-testing-guide/http-security-policy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -580,7 +580,7 @@ V：显示给用户的内容</p>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/20230327/ctf/volatility%E5%8F%96%E8%AF%81/" class="post-title-link" itemprop="url">Untitled</a>
+            <a href="/20230326/penetration-testing-guide/http-security-policy/" class="post-title-link" itemprop="url">浏览器安全策略</a>
         </h2>
 
         <div class="post-meta">
@@ -590,167 +590,27 @@ V：显示给用户的内容</p>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              <time title="Created: 2023-03-26 11:26:00" itemprop="dateCreated datePublished" datetime="2023-03-26T11:26:00+08:00">2023-03-26</time>
             </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h3>
-<p>volatility是一款开源的内存取证分析工具，由python编写，支持各种操作系统，能够对导出的windows,linux,mac osx,android等系统内存镜像进行分析。可以通过插件来拓展功能。</p>
-<p>下载地址：<a target="_blank" rel="noopener" href="https://www.volatilityfoundation.org/26">https://www.volatilityfoundation.org/26</a></p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/6e1ebf92f4d996e4310ae735b9f39b9d.png" alt="image-20221126092212037"></p>
-<p>官方的可执行文件，根据自己需要下载。</p>
-<h3 id="常见命令"><a class="header-anchor" href="#常见命令">¶</a>常见命令</h3>
-<p>命令格式：</p>
-<p>volatility -f [镜像文件] --profile=[操作系统] [插件参数]</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">volatility -f 文件名 imageinfo  		     	 得到镜像的基本信息。</span><br><span class="line">volatility -f 文件名 --profile=系统 pslist		查看进程信息</span><br><span class="line">volatility -f 文件名 --profile=系统 pstree	    查看进程树</span><br><span class="line">volatility -f 文件名 --profile=系统 hashdump		查看用户名密码信息</span><br><span class="line">volatility -f 文件名 --profile=系统 john			爆破密码</span><br><span class="line">volatility -f 文件名 --profile=系统 lsadump		查看用户强密码</span><br><span class="line">volatility -f 文件名 --profile=系统 svcscan		查看服务</span><br><span class="line">volatility -f 文件名 --profile=系统 iehistory	查看IE浏览器历史记录</span><br><span class="line">volatility -f 文件名 --profile=系统 netscan		查看网络连接</span><br><span class="line">volatility -f 文件名 --profile=系统 cmdscan		cmd历史命令</span><br><span class="line">volatility -f 文件名 --profile=系统 consoles		命令历史记录</span><br><span class="line">volatility -f 文件名 --profile=系统 cmdline		查看cmd输出， 获取命令行下运行的程序   </span><br><span class="line">volatility -f 文件名 --profile=系统 envars 		查看环境变量，一般很多配合grep筛选，可也是使用-p指定pid</span><br><span class="line">volatility -f 文件名 --profile=系统 filescan		查看文件</span><br><span class="line">volatility -f 文件名 --profile=系统 notepad		查看当前展示的notepad内容</span><br><span class="line">volatility -f 文件名 --profile=系统 hivelist		查看注册表配置单元</span><br><span class="line">volatility -f 文件名 --profile=系统 userassist	查看运行程序相关的记录，比如最后一次更新时间，运行过的次数等。</span><br><span class="line">volatility -f 文件名 --profile=系统 clipboard  	查看剪贴板的信息</span><br><span class="line">volatility -f 文件名 --profile=系统 timeliner	最大程序提取信息</span><br><span class="line">volatility -f 文件名 --profile=系统 Dumpregistry	提取日志文件</span><br><span class="line">volatility -f 文件名 --profile=系统 dlllist		进程相关的dll文件列表 </span><br><span class="line">volatility -f 文件名 --profile=系统 memdump -p xxx --dump-dir=./ 	提取进程</span><br><span class="line">volatility -f 文件名 --profile=系统 dumpfiles -Q 0xxxxxxxx -D ./ 	提取文件</span><br><span class="line">volatility -f 文件名 --profile=系统 procdump -p pid -D ./			转存可执行程序  </span><br><span class="line">volatility -f 文件名 --profile=系统 screenshot --dump-dir=./			屏幕截图</span><br><span class="line">volatility -f 文件名 --profile=系统 hivedump -o 0xfffff8a001032410 查看注册表键名</span><br><span class="line">volatility -f 文件名 --profile=系统 printkey -K &quot;xxxxxxx&quot;			查看注册表键值</span><br></pre></td></tr></table></figure>
-<h3 id="OtterCTF取证11题"><a class="header-anchor" href="#OtterCTF取证11题">¶</a>OtterCTF取证11题</h3>
-<p>在分析之前，都需先查看当前镜像的信息，获取是哪个操作系统，使用imageinfo命令查看</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/7ed786d52f16b44d8d7d03b03c5ed059.png" alt="image-20221126101043895"></p>
-<p>然后使用volatility各类工具进行分析即可</p>
-<h4 id="获取密码"><a class="header-anchor" href="#获取密码">¶</a>获取密码</h4>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 hashdump	查看用户名密码信息</p>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 lsadump		查看用户强密码</p>
-<p>使用john爆破密码不出密码尝试lsadump查看用户强密码</p>
-<p>lsadump：从注册表中提取LSA密钥信息,显示加密以后的数据用户密码</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/3b9f336be6bdcbbec4f185f817ec61d6.png" alt="img"></p>
-<h4 id="pc的名称"><a class="header-anchor" href="#pc的名称">¶</a>pc的名称</h4>
-<p>查看主机名</p>
-<p>hivelist查看注册表信息，查看到system</p>
-<p>所有用户信息都会存储到注册表，SYSTEM系统信息</p>
-<p>hivelist查看注册表第一级信息</p>
-<p>第一级只是目录，路径代表文件名</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/1211edbbb2e9c0c93508b068720437b9.png" alt="img"></p>
-<p>如果东西不多可以 hivedump  下来查看，如果很多可以用printkey一步步查看</p>
-<p>所以文件的位置使用偏移量来表示，0x开头，使用 printkey打印出来，参数-o，然后根据得到的偏移量，找到系统注册表包含的值</p>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 printkey -o 0xfffff8a000024010</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/3dfcbd23e4bd80ba6e2bf5a6703b954a.png" alt="img"></p>
-<p>继续寻找直到找到ComputerName关键词，后面的路径要使用 -K 参数使用一步步来，深入路径</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/bebe61de8a6cfbef30883ee6e01ef107.png" alt="img"></p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/994d55a1f564b7408070cadca5a9e47f.png" alt="img"></p>
-<p>含有目录两层\ComputerName\ComputerName，增加混淆</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/251760b82eca60fe8bb5928a2da2ec83.png" alt="img"></p>
-<h4 id="内存正在运行什么游戏，游戏连接哪个服务器"><a class="header-anchor" href="#内存正在运行什么游戏，游戏连接哪个服务器">¶</a>内存正在运行什么游戏，游戏连接哪个服务器</h4>
-<p>游戏应该会连接服务器，所以查看网络</p>
-<p>寻找可疑进程，连接外部网络的进程</p>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 netscan		 对所有网络连接进程扫描</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/e9bf84cfd16d1454cb8c632a37c7d8a6.png" alt="img"></p>
-<h4 id="账户登录过Lunar-3频道，账户名是什么"><a class="header-anchor" href="#账户登录过Lunar-3频道，账户名是什么">¶</a>账户登录过Lunar-3频道，账户名是什么</h4>
-<p>寻找登录游戏频道的游戏账户名。</p>
-<p>需要在游戏进程中查看，用户登录到进程中的话，那么内存应该有登录用户名</p>
-<p>使用strings过滤可打印字符串，grep过滤含有关键字Lunar-3频道字符串</p>
-<p>strings OtterCTF.vmem | grep Lunar-3 -A 5 -B 5</p>
-<p>（-A 查看关键词前几行，-B查看关键词后几行，也可以使用-C查看前后几行）</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/845cf869a69a701c895eac0d6f106259.png" alt="img"></p>
-<p>都尝试一下发现是0tt3r8r33z3</p>
-<p>strings命令在对象文件或二进制文件中查找可打印的字符串。</p>
-<h4 id="寻找登录名在0x64-0x-6-8-0x40-0x06-0x-18-0x5a-0x0c-0x00-2-后的游戏名"><a class="header-anchor" href="#寻找登录名在0x64-0x-6-8-0x40-0x06-0x-18-0x5a-0x0c-0x00-2-后的游戏名">¶</a>寻找登录名在0x64 0x??{6-8} 0x40 0x06 0x??{18} 0x5a 0x0c 0x00{2} 后的游戏名</h4>
-<p>意思是用户名总在这个签名之后：0x64 0x??{6-8} 0x40 0x06 0x??{18} 0x5a 0x0c 0x00{2}</p>
-<p>先将LunarMS.exe进程转存出来；-p pid号</p>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 memdump -p 708 -D ./ 	提取进程</p>
-<p>可以使用010查看 5A 0C 00 片段</p>
-<p>也可以使用：hexdump -C 708.dmp |grep “5a 0c 00” -C 3</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/94dc5b0825e463bda0be815713d6aa19.png" alt="img"></p>
-<p>寻找5a 0c 00 片段眼都快找花了，太多了</p>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 yarascan -Y “/\x64(.{6,8})\x40\x06(.{18})\x5a\x0c\x00\x00/i” -p 708</p>
-<p>这个需要安装yarascan插件是最好找的</p>
-<h4 id="寻找经常复制粘贴的账号密码"><a class="header-anchor" href="#寻找经常复制粘贴的账号密码">¶</a>寻找经常复制粘贴的账号密码</h4>
-<p>volatility -f OtterCTF.vmem --profile=Win7SP1x64 clipboard</p>
-<p>clipboard  查看剪贴板的信息</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/3a1ab76ef529e9013644365d926302c0.png" alt="img"></p>
-<h4 id="寻找恶意软件名"><a class="header-anchor" href="#寻找恶意软件名">¶</a>寻找恶意软件名</h4>
-<p>一般是使用pslist来查看进程寻找可疑进程名，但也有可能进程名进行了混淆分辨不出来或者被合法进程隐藏了</p>
-<p>使用 pstree 命令可以查看进程树，可以查看所有进程和依赖关系</p>
-<p>pstree代表查看带树结构的进程列表。</p>
-<p>寻找可疑进程：通过寻找PPID大于PID的进程，或查看进程依赖寻找可疑的</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/93a6362ce9e0dec32027bbacd84bd259.png" alt="img"></p>
-<p>这里mvware-tray.exe是ppid大于pid的并且很奇怪的是Rick And Morty的子进程</p>
-<p>dlllist代表查看使用的动态链接库是否合法， 查看一下进程相关的dll文件列表  。-p指定pid号</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/ec78290c5074210669031794f30d469f.png" alt="img"></p>
-<p>发现是在temp目录下进行的，一看就不是正经程序， 因为temp这是一个临时目录</p>
-<h4 id="恶意软件是如何进入电脑的"><a class="header-anchor" href="#恶意软件是如何进入电脑的">¶</a>恶意软件是如何进入电脑的</h4>
-<p>可以查看和恶意软件相关的文件</p>
-<p>volatility -f 1.vmem --profile=Win7SP1x64 filescan	查看文件</p>
-<p>直接查看文件太多，要加过滤，恶意进程的父进程是Rick And Morty</p>
-<p>volatility -f 1.vmem --profile=Win7SP1x64 filescan | grep ‘Rick And Morty’</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/d2f7b04b65dd34757f92ad111b7ffb2f.png" alt="img"></p>
-<p>三个种子文件和三个exe文件；寻找来源要关注种子文件，里面可能含有地址信息</p>
-<p>volatility -f 1.vmem --profile=Win7SP1x64 dumpfiles -Q 0xxxxxxxx -D ./ 	查看文件内容</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/d8b05d8be57e03af0af939db9cf79db7.png" alt="img"></p>
-<p>在这个文件里发现 website可疑，后面就是flag</p>
-<h4 id="恶意软件种子从哪来"><a class="header-anchor" href="#恶意软件种子从哪来">¶</a>恶意软件种子从哪来</h4>
-<p>查看进程可以发现有很多chrome浏览器进程，种子可能是在浏览器中下载的</p>
-<p>先把所有chrome进程转存下来</p>
-<p>memdump -n chrome(指定所有chrome进程) -D ./</p>
-<p>再查找 download.exe.torrent</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/fe8bb6a4b356293d7c158d25b15caa33.png" alt="img"></p>
-<h4 id="通过恶意软件寻找攻击者的比特币地址"><a class="header-anchor" href="#通过恶意软件寻找攻击者的比特币地址">¶</a>通过恶意软件寻找攻击者的比特币地址</h4>
-<p>题目描述说攻击者在恶意勒索软件中留下了比特币地址，是多少呢？</p>
-<p>首先可以把恶意进程转存到一个可执行文件，使用IDA查看寻找比特币，钱包，支付等关键词，定位地点</p>
-<p>也可以使用dnSpy进行逆向分析</p>
-<p>也可以把转出的文件使用strings -e l 进行搜索</p>
-<p>strings -e l 3720.dmp | grep -i -A 5 “ransomware”</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/4374ac24d51e7ddd6445b4ad226345c1.png" alt="img"></p>
-<h4 id="恶意软件的图像的隐藏信息"><a class="header-anchor" href="#恶意软件的图像的隐藏信息">¶</a>恶意软件的图像的隐藏信息</h4>
-<p>procdump  命令代表转存可执行程序</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/62728d4cafc7610252ef0066464dbcea.png" alt="img"></p>
-<p>使用foremost分离图片</p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/1f46b9ec8a15824590ee3818866b13ec.png" alt="img"></p>
-<p><img src="https://static.sechelper.com/img/2022/11/26/19ff35dbd3b090b2b8895bafe35629cc.png" alt="img"></p>
-<p>或者使用反编译查看图片</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230327/penetration-testing-guide/http-security-policy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20230327/penetration-testing-guide/http-security-policy/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 10:57:12" itemprop="dateModified" datetime="2023-03-27T10:57:12+08:00">2023-03-27</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
+                <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-03-27 09:44:43" itemprop="dateCreated datePublished" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5/" itemprop="url" rel="index"><span itemprop="name">安全策略</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5/HTTP%E5%8D%8F%E8%AE%AE%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">HTTP协议安全</span></a>
+                </span>
             </span>
 
           
@@ -803,32 +663,368 @@ V：显示给用户的内容</p>
 </tr>
 </tbody>
 </table>
-<p><strong>同源策略在以下3种行为起到作用：</strong></p>
-<ul>
-<li>
-<p>Cookie、LocalStorage 和 IndexDB 无法读取。</p>
-</li>
-<li>
-<p>DOM 无法获得</p>
-</li>
-<li>
-<p>AJAX 请求不能发送</p>
-</li>
-</ul>
-<h3 id="CORS"><a class="header-anchor" href="#CORS">¶</a>CORS</h3>
-<p>**实验：**<a target="_blank" rel="noopener" href="http://edu.vulab.io/policy/cors.html">http://edu.vulab.io/policy/cors.html</a></p>
-<p><em>CORS</em>（Cross-Origin Resource Sharing，跨域资源共享）是一种基于 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Glossary/HTTP">HTTP</a> 头的机制，该机制通过允许服务器标示除了它自己以外的其它 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Glossary/Origin">origin</a>（域，协议和端口），使得浏览器允许这些 origin  访问加载自己的资源。跨源资源共享还通过一种机制来检查服务器是否会允许要发送的真实请求，该机制通过浏览器发起一个到服务器托管的跨源资源的&quot;OPTIONS（预检）&quot;请求。</p>
-<h3 id="CSP"><a class="header-anchor" href="#CSP">¶</a>CSP</h3>
-<p>**实验：**<a target="_blank" rel="noopener" href="http://edu.vulab.io/policy/csp.html">http://edu.vulab.io/policy/csp.html</a></p>
-<p>CSP（Content-Security-Policy，内容安全策略）是一个额外的安全机制，用于检测并削弱某些特定类型的攻击，包括跨站脚本 (<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting">XSS (en-US)</a>) 和数据注入攻击等，本质就是限制资源的可访问性，设置颗粒度更细的资源管理。</p>
-<h3 id="httpOnly"><a class="header-anchor" href="#httpOnly">¶</a>httpOnly</h3>
-<p>**实验：**<a target="_blank" rel="noopener" href="http://edu.vulab.io/policy/cookie.html">http://edu.vulab.io/policy/cookie.html</a></p>
-<p>Javascript无法访问带有 <code>HttpOnly</code> 属性的 cookie，此 Cookie 仅能通过服务器修改。</p>
-<h3 id="Secure"><a class="header-anchor" href="#Secure">¶</a>Secure</h3>
-<p>标记为 <code>Secure</code> 的 Cookie 只应通过被 HTTPS 协议加密过的请求发送给服务端，可以预防中间人攻击。</p>
-<h3 id="HSTS"><a class="header-anchor" href="#HSTS">¶</a>HSTS</h3>
-<p><strong><code>HTTP Strict Transport Security</code></strong>（通常简称为<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Glossary/HSTS">HSTS</a>）是一个安全功能，它告诉浏览器只能通过 HTTPS 访问当前资源，不能使用HTTP。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230326/penetration-testing-guide/http-security-policy/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
 
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230326/ctf/volatility/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230326/ctf/volatility/" class="post-title-link" itemprop="url">UNCTF-web 大学生竞赛解析（一）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-26 11:06:00" itemprop="dateCreated datePublished" datetime="2023-03-26T11:06:00+08:00">2023-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 10:57:12" itemprop="dateModified" datetime="2023-03-27T10:57:12+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%AB%9E%E8%B5%9B/" itemprop="url" rel="index"><span itemprop="name">大学生竞赛</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%AB%9E%E8%B5%9B/%E5%8F%96%E8%AF%81/" itemprop="url" rel="index"><span itemprop="name">取证</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h3>
+<p>volatility是一款开源的内存取证分析工具，由python编写，支持各种操作系统，能够对导出的windows,linux,mac osx,android等系统内存镜像进行分析。可以通过插件来拓展功能。</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://www.volatilityfoundation.org/26">https://www.volatilityfoundation.org/26</a></p>
+<p><img src="https://static.sechelper.com/img/2022/11/26/6e1ebf92f4d996e4310ae735b9f39b9d.png" alt="image-20221126092212037"></p>
+<p>官方的可执行文件，根据自己需要下载。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230326/ctf/volatility/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230325/penetration-testing-guide/cnvd-2022-10270/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230325/penetration-testing-guide/cnvd-2022-10270/" class="post-title-link" itemprop="url">向日葵RCE复现 | CNVD-2022-10270 CNVD-2022-03672</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-25 15:24:00" itemprop="dateCreated datePublished" datetime="2023-03-25T15:24:00+08:00">2023-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 10:57:12" itemprop="dateModified" datetime="2023-03-27T10:57:12+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CNVD-2022-03672/" itemprop="url" rel="index"><span itemprop="name">CNVD-2022-03672</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CNVD-2022-03672/CNVD-2022-10270/" itemprop="url" rel="index"><span itemprop="name">CNVD-2022-10270</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CNVD-2022-03672/CNVD-2022-10270/%E5%90%91%E6%97%A5%E8%91%B5RCE/" itemprop="url" rel="index"><span itemprop="name">向日葵RCE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>向日葵是一款免费的集远程控制电脑手机、远程桌面连接、远程开机、远程管理、支持内网穿透的一体化远程控制管理工具软件。</p>
+<p>于2022年2月5日和2022年2月15日，CNVD公开上海贝锐信息科技股份有限公司的向日葵远控软件存在远程代码执行漏洞（CNVD-2022-10270/CNVD-2022-03672），影响Windows系统使用的个人版和简约版，攻击者可利用该漏洞获取服务器控制权。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230325/penetration-testing-guide/cnvd-2022-10270/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230325/penetration-testing-guide/cve-2023-23752/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230325/penetration-testing-guide/cve-2023-23752/" class="post-title-link" itemprop="url">Joomla漏洞复现 | CVE-2023-23752</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-25 15:24:00" itemprop="dateCreated datePublished" datetime="2023-03-25T15:24:00+08:00">2023-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 10:57:12" itemprop="dateModified" datetime="2023-03-27T10:57:12+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CVE-2023-23752/" itemprop="url" rel="index"><span itemprop="name">CVE-2023-23752</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>Joomla是一套全球知名的内容管理系统（CMS），其使用PHP语言加上MySQL数据库所开发，可以在Linux、Windows、MacOSX等各种不同的平台上运行。</p>
+<p>2月16日，Joomla官方发布安全公告，修复了Joomla! CMS中的一个未授权访问漏洞（CVE-2023-23752），目前该漏洞的细节及PoC/EXP已公开。</p>
+<p>Joomla! CMS 版本4.0.0 - 4.2.7中由于对web 服务端点访问限制不当，可能导致未授权访问Rest API，造成敏感信息泄露（如数据库账号密码等）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230325/penetration-testing-guide/cve-2023-23752/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230325/penetration-testing-guide/burpsuite-plugin-autorize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/20230325/penetration-testing-guide/burpsuite-plugin-autorize/" class="post-title-link" itemprop="url">越权检测 burpsuite插件autorize 使用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-25 12:34:00" itemprop="dateCreated datePublished" datetime="2023-03-25T12:34:00+08:00">2023-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 10:57:12" itemprop="dateModified" datetime="2023-03-27T10:57:12+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/burpsuite/" itemprop="url" rel="index"><span itemprop="name">burpsuite</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/burpsuite/autorize/" itemprop="url" rel="index"><span itemprop="name">autorize</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1>Autorize 官方描述</h1>
+<p>Autorize 是 Burp Suite 的自动授权强制检测扩展。它是由应用程序安全专家 Barak Tawily 用 Python 编写的。Autorize 旨在通过执行自动授权测试来帮助安全测试人员。在最新版本中，Autorize 还可以执行自动身份验证测试。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20230325/penetration-testing-guide/burpsuite-plugin-autorize/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -934,268 +1130,10 @@ V：显示给用户的内容</p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221123/vulnerability-researching/ghostcat-CVE-2020-1938/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20221123/vulnerability-researching/ghostcat-CVE-2020-1938/" class="post-title-link" itemprop="url">幽灵猫（CVE-2020-1938）- 任意文件读取漏洞</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-11-23 09:00:00" itemprop="dateCreated datePublished" datetime="2022-11-23T09:00:00+08:00">2022-11-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/%E6%BC%8F%E6%B4%9E%E9%9D%B6%E5%9C%BA/" itemprop="url" rel="index"><span itemprop="name">漏洞靶场</span></a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/%E6%BC%8F%E6%B4%9E%E9%9D%B6%E5%9C%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">漏洞分析</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>作者：凉拌_@助安社区</strong></p>
-<p><code>Java</code>是目前Web开发中最主流的编程语言，而 <code>Tomcat</code> 是当前最流行的 <code>Java</code> 中间件服务器之一，从初版发布到现在已经有二十多年历史，在世界范围内广泛使用。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/20221123/vulnerability-researching/ghostcat-CVE-2020-1938/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221122/ctf/unctf-misc/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20221122/ctf/unctf-misc/" class="post-title-link" itemprop="url">UNCTF-misc 大学生竞赛解析（二）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-11-22 14:06:00" itemprop="dateCreated datePublished" datetime="2022-11-22T14:06:00+08:00">2022-11-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>作者：凉拌_@助安社区</strong></p>
-<h2 id="题目：MY-PICTURE"><a class="header-anchor" href="#题目：MY-PICTURE">¶</a>题目：MY PICTURE</h2>
-<p><img src="https://static.sechelper.com/img/2022/11/22/9936ecb5269b17c676dcedce91a3815e.png" alt="img"></p>
-<p>打开发现是一个没后缀的文件</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/20221122/ctf/unctf-misc/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20221118/ctf/unctf-web/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/20221118/ctf/unctf-web/" class="post-title-link" itemprop="url">UNCTF-web 大学生竞赛解析（一）</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-11-18 11:06:00" itemprop="dateCreated datePublished" datetime="2022-11-18T11:06:00+08:00">2022-11-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-03-27 09:44:43" itemprop="dateModified" datetime="2023-03-27T09:44:43+08:00">2023-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>作者：凉拌_@助安社区</strong></p>
-<h2 id="题目：ezunseri"><a class="header-anchor" href="#题目：ezunseri">¶</a>题目：ezunseri</h2>
-<p><img src="https://static.sechelper.com/img/2022/11/18/7ad121851d9dc133a327ddab76be2424.png" alt="image-20221118102448053"></p>
-<p>题目提示是反序列化类型的题，进入后直接给出了题目源代码</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/20221118/ctf/unctf-web/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 

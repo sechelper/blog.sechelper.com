@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/favicon-32x32.ico" color="#222">
+  <meta name="baidu-site-verification" content="http://data.zz.baidu.com/urls?site=https://blog.sechelper.com&token=CxiR0obbVQeqayMP">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.sechelper.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"remove","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Autorize 官方描述 Autorize 是 Burp Suite 的自动授权强制检测扩展。它是由应用程序安全专家 Barak Tawily 用 Python 编写的。Autorize 旨在通过执行自动授权测试来帮助安全测试人员。在最新版本中，Autorize 还可以执行自动身份验证测试。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="越权检测 burpsuite插件autorize 使用">
+<meta property="og:url" content="https://blog.sechelper.com/20230325/penetration-testing-guide/burpsuite-plugin-autorize/index.html">
+<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:description" content="Autorize 官方描述 Autorize 是 Burp Suite 的自动授权强制检测扩展。它是由应用程序安全专家 Barak Tawily 用 Python 编写的。Autorize 旨在通过执行自动授权测试来帮助安全测试人员。在最新版本中，Autorize 还可以执行自动身份验证测试。">
+<meta property="og:locale">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/79554f2a31b7bace51a75abfea0951c6.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/e9d6caf2da3409208c95626468ccee5b.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/ad808618f4a5648214d6d57d01e19c2a.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/1351ba5bdd6f0e022b0162cc58d062d3.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/9060f47daef2861841febf17f04ab5ab.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/a7974676194aeaaea08bcf277cc004e7.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/21e275d6f0e9400a204efdf35da6cdb4.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/6e208f599c098d0d9277f76bf31ea629.png">
+<meta property="og:image" content="https://static.sechelper.com/img/2023/01/16/887aab2acb15a6f325e8f3cf8c334250.png">
+<meta property="article:published_time" content="2023-03-25T04:34:00.000Z">
+<meta property="article:modified_time" content="2023-03-27T02:57:12.713Z">
+<meta property="article:author" content="狗头君师">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static.sechelper.com/img/2023/01/16/79554f2a31b7bace51a75abfea0951c6.png">
+
+<link rel="canonical" href="https://blog.sechelper.com/20230325/penetration-testing-guide/burpsuite-plugin-autorize/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>越权检测 burpsuite插件autorize 使用 | 助安社区 - 极度开放的网络安全自学社区</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-主页">
+
+    <a href="/" rel="section">主页</a>
+
+  </li>
+        <li class="menu-item menu-item-加入社区">
+
+    <a href="/join-us/" rel="section">加入社区</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section">关于</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section">标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section">分类</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section">归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+   <style type="text/css">
+  .qrcode-nav {
+	bottom: 40%;
+	box-sizing: border-box;
+	color: #000;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 6px;
+	position: fixed;
+	transition-property: bottom;
+	z-index: 1300;
+	width: initial;
+	margin-left: 80%;
+	high: 200;
+	width: 200px;
+}  
+   </style>
+  <div id="qrcode-nav" class="qrcode-nav">
+  <center><img src="https://static.sechelper.com/img/qrcode/blog-kun.png"><span><strong>加入社区</strong></span></center>
+  </div>
+<script>
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+document.getElementById("qrcode-nav").hidden=true
+}
+</script>
+
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="https://blog.sechelper.com/20230325/penetration-testing-guide/burpsuite-plugin-autorize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="狗头君师">
+      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          越权检测 burpsuite插件autorize 使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-03-25 12:34:00" itemprop="dateCreated datePublished" datetime="2023-03-25T12:34:00+08:00">2023-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-03-27 10:57:12" itemprop="dateModified" datetime="2023-03-27T10:57:12+08:00">2023-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/burpsuite/" itemprop="url" rel="index"><span itemprop="name">burpsuite</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/burpsuite/autorize/" itemprop="url" rel="index"><span itemprop="name">autorize</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1>Autorize 官方描述</h1>
+<p>Autorize 是 Burp Suite 的自动授权强制检测扩展。它是由应用程序安全专家 Barak Tawily 用 Python 编写的。Autorize 旨在通过执行自动授权测试来帮助安全测试人员。在最新版本中，Autorize 还可以执行自动身份验证测试。</p>
+<span id="more"></span>
+<p><img src="https://static.sechelper.com/img/2023/01/16/79554f2a31b7bace51a75abfea0951c6.png" alt="image-20230116170937804"></p>
+<p>Autorize 是一个旨在帮助渗透测试人员检测授权漏洞的扩展，这是 Web 应用程序渗透测试中比较耗时的任务之一。</p>
+<p>将低权限用户的 cookie 提供给扩展程序并使用高权限用户浏览网站就足够了。该扩展会自动重复每个请求与低权限用户的会话并检测授权漏洞。</p>
+<p>除了授权漏洞之外，还可以在没有任何 cookie 的情况下重复每个请求，以检测身份验证漏洞。</p>
+<p>该插件无需任何配置即可工作，但也是高度可定制的，允许配置授权执行条件的粒度以及插件必须测试哪些请求，哪些不需要。可以保存插件的状态并以 HTML 或 CSV 格式导出授权测试报告。</p>
+<p>报告的执行状态如下：</p>
+<p>绕过！- 红色<br>
+强制执行！- 绿色<br>
+强制执行？？？（请配置强制检测器） - 黄色</p>
+<h1>安装</h1>
+<ol>
+<li>下载 Burp Suite（显然）： http: <a target="_blank" rel="noopener" href="http://portswigger.net/burp/download.html">//portswigger.net/burp/download.html</a></li>
+<li>下载 Jython 独立 JAR：<a target="_blank" rel="noopener" href="http://www.jython.org/download.html">http 😕/www.jython.org/download.html</a></li>
+<li>打开 burp -&gt; Extender -&gt; Options -&gt; Python Environment -&gt; Select File -&gt; 选择 Jython standalone JAR</li>
+<li>从 BApp Store 安装 Autorize 或按照以下步骤操作：</li>
+<li>下载 <a target="_blank" rel="noopener" href="http://Autorize.py">Autorize.py</a> 文件。</li>
+<li>打开 Burp -&gt; Extender -&gt; Extensions -&gt; Add -&gt; 选择 <a target="_blank" rel="noopener" href="http://Autorize.py">Autorize.py</a> 文件。</li>
+<li>查看 Autorize 选项卡并享受自动授权检测:)</li>
+</ol>
+<p>jython环境</p>
+<p>首先下载</p>
+<p>官网下载： Jython Standalone  <a target="_blank" rel="noopener" href="https://www.jython.org/download">Downloads | Jython</a></p>
+<p>配置如下</p>
+<p><img src="https://static.sechelper.com/img/2023/01/16/e9d6caf2da3409208c95626468ccee5b.png" alt="image-20230116171124510"></p>
+<p>官网下载： Jython Standalone  Downloads | Jython</p>
+<ol start="2">
+<li>
+<p>BApp Store 安装</p>
+<p><img src="https://static.sechelper.com/img/2023/01/16/ad808618f4a5648214d6d57d01e19c2a.png" alt="image-20230116171230221"></p>
+</li>
+</ol>
+<h1>用户指南 - 如何使用？</h1>
+<ol>
+<li>安装后，Autorize 选项卡将添加到 Burp。</li>
+<li>打开配置选项卡（Autorize -&gt; Configuration）。</li>
+<li>获取您的低权限用户授权令牌标头（Cookie/授权）并将其复制到包含文本“在此处插入注入标头”的文本框中。 <strong>注意</strong>：此处插入的标题将被替换（如果存在）或添加（如果不存在）。</li>
+<li>如果不需要身份验证测试，请取消选中“Check unauthenticated”（不带任何 cookie 的请求，除了使用低权限用户的 cookie 执行授权之外，还要检查身份验证执行情况）</li>
+<li>选中“Intercept requests from Repeater”以拦截通过 Repeater 发送的请求。</li>
+<li>单击“拦截已关闭”开始拦截流量，以便 Autorize 检查授权执行情况。</li>
+<li>打开浏览器并配置代理设置，以便将流量传递给 Burp。</li>
+<li>浏览到您要使用高特权用户测试的应用程序。</li>
+<li>Autorize 表将向您显示请求的 URL 和执行状态。</li>
+<li>可以单击特定 URL 并查看原始/修改/未经身份验证的请求/响应以调查差异。</li>
+</ol>
+<h1>使用</h1>
+<h3 id="1-获取低权限cookie"><a class="header-anchor" href="#1-获取低权限cookie">¶</a>1 获取低权限cookie</h3>
+<p>这里可以将获取低权限cookie复制到此处</p>
+<p><img src="https://static.sechelper.com/img/2023/01/16/1351ba5bdd6f0e022b0162cc58d062d3.png" alt="image-20230116171422957"></p>
+<p>或者点击 fetch cookies header，会从最近一次请求历史中提取cookie</p>
+<p><img src="https://static.sechelper.com/img/2023/01/16/9060f47daef2861841febf17f04ab5ab.png" alt="image-20230116171827910"></p>
+<h3 id="2-开启插件"><a class="header-anchor" href="#2-开启插件">¶</a>2 开启插件</h3>
+<p><img src="https://static.sechelper.com/img/2023/01/16/a7974676194aeaaea08bcf277cc004e7.png" alt="image-20230116171857093"></p>
+<h3 id="3-在burp的代理浏览器，以高权限用户访问页面，此时插件左边会获取到请求"><a class="header-anchor" href="#3-在burp的代理浏览器，以高权限用户访问页面，此时插件左边会获取到请求">¶</a>3 在burp的代理浏览器，以高权限用户访问页面，此时插件左边会获取到请求</h3>
+<p><img src="https://static.sechelper.com/img/2023/01/16/21e275d6f0e9400a204efdf35da6cdb4.png" alt="image-20230116171939278"></p>
+<h3 id="4-当你在代理浏览器浏览时，该插件会记录三个请求与响应："><a class="header-anchor" href="#4-当你在代理浏览器浏览时，该插件会记录三个请求与响应：">¶</a>4 当你在代理浏览器浏览时，该插件会记录三个请求与响应：</h3>
+<p>原始cookie的请求</p>
+<p>修改后cookie的请求（就是之前复制进去的那个低权限cookie）</p>
+<p>无cookie请求</p>
+<p><img src="https://static.sechelper.com/img/2023/01/16/6e208f599c098d0d9277f76bf31ea629.png" alt="image-20230116172035229"></p>
+<p>首先看颜色 红色存在越权，黄色代表不确定，绿色代表ok</p>
+<p>左边一列 红色代表存在越权可能；</p>
+<p>右边一列 红色代表存在未授权访问可能；</p>
+<p>接着点击 三个代表响应长度的数字，在右侧查看具体响应。</p>
+<p>如果是 响应中 包含敏感数据，或者一些增删改的post请求，就可以报bug了</p>
+<p><img src="https://static.sechelper.com/img/2023/01/16/887aab2acb15a6f325e8f3cf8c334250.png" alt="image-20230116172122154"></p>
+<h1>授权执行状态</h1>
+<p>有 3 种执行状态：</p>
+<ol>
+<li>绕过！- 红色</li>
+<li>强制执行！- 绿色</li>
+<li>强制执行？？？（请配置执法检测器）-黄色</li>
+</ol>
+<p>前2个状态很清楚，我就不多说了。</p>
+<p>第三种状态意味着 Autorize 无法确定是否强制执行授权，因此 Autorize 将要求您在强制检测器选项卡中配置过滤器。有两种不同的强制检测器选项卡，一种用于检测低特权请求的强制执行，另一种用于检测未授权请求的强制执行。</p>
+<p>执行检测器过滤器将允许 Autorize 通过消息正文、标头或完整请求中的内容长度或字符串（文字字符串或正则表达式）来检测服务器响应中的身份验证和授权执行。</p>
+<p>例如，如果有一个请求执行状态被检测为“授权执行？？？（请配置执行检测器）”，则可以调查修改后的/原始的/未验证的响应，并看到修改后的响应主体包含字符串“您无权执行操作”，因此您可以添加指纹值为“您无权执行操作”的过滤器，因此 Autorize 将查找此指纹并自动检测是否已强制执行授权。可以通过在标头中定义内容长度过滤器或指纹来执行相同的操作。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag"># 渗透测试</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/20221126/emergency-response/volatility-obtain-evidence/" rel="prev" title="volatility取证">
+      <i class="fa fa-chevron-left"></i> volatility取证
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/20230325/penetration-testing-guide/cve-2023-23752/" rel="next" title="Joomla漏洞复现 | CVE-2023-23752">
+      Joomla漏洞复现 | CVE-2023-23752 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">助安社区 <a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备2022030632号-1 </a>  all right reserved</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://blog.sechelper.com/" class="theme-link">sechelper</a>
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
