@@ -25,7 +25,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java安全 反序列化(二)">
 <meta property="og:url" content="https://blog.sechelper.com/20230327/code-review/java-deserialization2/index.html">
-<meta property="og:site_name" content="助安社区 - 极度开放的网络安全自学社区">
+<meta property="og:site_name" content="助安社区 - 帮助成员上岸，找到心仪工作">
 <meta property="og:description" content="¶前言 寻找反序列化链(Gadget)   在项目里找漏洞 readObject里的漏洞一般比较少   寻找项目的依赖库类中的Gadget 一些依赖也会有反序列化的操作，如果jar包中的某些类在进行反序列化时有可控的点，就可以利用jar包中存在的漏洞来构造调用链">
 <meta property="og:locale">
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/ace03ab928792a8918ed428060700e51.png">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://static.sechelper.com/img/2022/11/30/b34a2b07c66d2e11c1a01deaa730237b.png">
 <meta property="article:published_time" content="2023-03-27T02:16:00.000Z">
 <meta property="article:modified_time" content="2023-03-27T02:10:27.206Z">
-<meta property="article:author" content="狗头君师">
+<meta property="article:author" content="坤哥">
 <meta property="article:tag" content="渗透测试">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://static.sechelper.com/img/2022/11/30/ace03ab928792a8918ed428060700e51.png">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>Java安全 反序列化(二) | 助安社区 - 极度开放的网络安全自学社区</title>
+  <title>Java安全 反序列化(二) | 助安社区 - 帮助成员上岸，找到心仪工作</title>
   
 
 
@@ -105,10 +105,10 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">助安社区 - 极度开放的网络安全自学社区</h1>
+      <h1 class="site-title">助安社区 - 帮助成员上岸，找到心仪工作</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
-      <p class="site-subtitle" itemprop="description">关注公众号【助安社区】，订阅最优质网络安全学习知识</p>
+      <p class="site-subtitle" itemprop="description">助安社区-坤门，以 “帮助成员上岸，找到心仪工作” 为终极目标 ，不是像某些圈子只分享工具、教程而已。【<a herf="http://show.secself.com/">了解一下</a>】</p>
   </div>
 
   <div class="site-nav-right">
@@ -210,12 +210,12 @@ document.getElementById("qrcode-nav").hidden=true
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="狗头君师">
-      <meta itemprop="description" content="技术烂大街，经验诚可贵">
+      <meta itemprop="name" content="坤哥">
+      <meta itemprop="description" content="助安社区博客，定期同步干货技术文章，更多安全知识关注公众号助安社区">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="助安社区 - 极度开放的网络安全自学社区">
+      <meta itemprop="name" content="助安社区 - 帮助成员上岸，找到心仪工作">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
